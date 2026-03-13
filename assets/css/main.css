@@ -1,0 +1,114 @@
+/**
+ * MundialdeSalsa Magazine Pro - Core Styles
+ */
+
+:root {
+    --primary-color: #e11d48; /* Rose 600 */
+    --secondary-color: #1e293b; /* Slate 800 */
+    --text-color: #334155;
+    --bg-color: #ffffff;
+    --card-bg: #f8fafc;
+    --border-color: #e2e8f0;
+}
+
+body.dark-mode {
+    --bg-color: #0f172a;
+    --text-color: #f1f5f9;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Header Styles */
+.site-header {
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.site-header.is-sticky {
+    padding: 10px 0;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.nav-menu li {
+    margin-left: 25px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Hero Block */
+.mds-block-hero .hero-item {
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+}
+
+.hero-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    width: 100%;
+    padding: 60px 0;
+    color: #fff;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    margin: 15px 0;
+}
+
+.hero-title a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Multimedia Wrappers */
+.post-video-wrapper, .post-audio-wrapper {
+    margin: 30px 0;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.post-video-wrapper iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: inherit;
+    margin-left: 20px;
+}
