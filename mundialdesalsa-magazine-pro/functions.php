@@ -41,7 +41,10 @@ $mds_includes = [
 ];
 
 foreach ( $mds_includes as $file ) {
-	require_once MDS_PRO_DIR . '/' . $file;
+	$filepath = __DIR__ . '/' . $file;
+	if ( file_exists( $filepath ) ) {
+		require_once $filepath;
+	}
 }
 
 /**
