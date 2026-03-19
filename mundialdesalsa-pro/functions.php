@@ -23,6 +23,8 @@ $mds_includes = [
 	'inc/core/setup.php',
 	'inc/core/scripts.php',
 	'inc/core/helpers.php',
+	'inc/core/post-types.php',
+	'inc/core/blocks.php',
 	'inc/core/sidebars.php',
 	'inc/core/custom-css.php',
 	'inc/theme-options/admin-panel.php',

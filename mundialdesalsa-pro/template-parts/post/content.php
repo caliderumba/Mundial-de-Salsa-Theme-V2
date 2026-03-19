@@ -7,6 +7,7 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class('mb-12 pb-12 border-b border-slate-100 dark:border-slate-800'); ?>>
     <header class="entry-header mb-6">
         <?php
+        mds_pro_sponsored_badge();
         if ( is_singular() ) :
             the_title( '<h1 class="entry-title text-4xl md:text-6xl font-black uppercase italic tracking-tighter leading-none text-slate-900 dark:text-white mb-4">', '</h1>' );
         else :
@@ -18,6 +19,17 @@
             <div class="entry-meta flex gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 <span class="posted-on"><?php echo get_the_date(); ?></span>
                 <span class="byline"><?php the_author(); ?></span>
+                <span class="views-count">
+                    <svg class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <?php 
+                    $views = get_post_meta( get_the_ID(), 'mds_pro_views_count', true );
+                    echo $views ? esc_html( $views ) : '0';
+                    ?> <?php esc_html_e( 'vistas', 'mundialdesalsa-pro' ); ?>
+                </span>
+                <span class="reading-time">
+                    <svg class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <?php echo mds_pro_get_reading_time(); ?> <?php esc_html_e( 'min lectura', 'mundialdesalsa-pro' ); ?>
+                </span>
             </div>
             <?php
         endif;

@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --mds-primary: #10b981;
+  --mds-secondary: #064e3b;
+  --mds-accent: #f59e0b;
+  --mds-bg: #ffffff;
+  --mds-text: #1f2937;
+}
+
+body {
+  @apply bg-slate-950 text-slate-200 antialiased;
+  font-family: var(--font-sans);
+}

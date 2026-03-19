@@ -24,7 +24,7 @@ function mds_pro_widgets_init() {
 		'description'   => esc_html__( 'Widgets para la primera columna del footer.', 'mundialdesalsa-pro' ),
 		'before_widget' => '<div id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</div>',
-		'before_title'  => '<h4 class="text-white font-black uppercase tracking-widest text-xs mb-8">',
+		'before_title'  => '<h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-3"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>',
 		'after_title'   => '</h4>',
 	] );
 
@@ -34,7 +34,7 @@ function mds_pro_widgets_init() {
 		'description'   => esc_html__( 'Widgets para la segunda columna del footer.', 'mundialdesalsa-pro' ),
 		'before_widget' => '<div id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</div>',
-		'before_title'  => '<h4 class="text-white font-black uppercase tracking-widest text-xs mb-8">',
+		'before_title'  => '<h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-3"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>',
 		'after_title'   => '</h4>',
 	] );
 }

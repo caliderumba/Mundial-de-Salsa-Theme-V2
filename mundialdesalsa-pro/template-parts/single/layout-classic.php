@@ -38,6 +38,9 @@
 
             <footer class="entry-footer mt-16 pt-12 border-t border-slate-100 dark:border-slate-800">
                 <?php
+                // Social Sharing
+                mds_pro_social_sharing();
+
                 get_template_part( 'template-parts/post/related-posts' );
                 
                 if ( comments_open() || get_comments_number() ) :

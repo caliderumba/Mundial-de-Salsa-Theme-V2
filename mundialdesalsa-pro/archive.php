@@ -30,13 +30,16 @@ get_header();
                         endwhile;
                         echo '</div>';
 
-                        if ( get_option('mds_enable_infinite_scroll') ) : ?>
+                        if ( mds_pro_get_option( 'performance', 'infinite_scroll', false ) ) : ?>
                             <div class="text-center py-12">
-                                <div class="loading-spinner hidden"><?php _e('Cargando más...', 'mundialdesalsa-pro'); ?></div>
+                                <button id="load-more-btn" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-2xl transition-all" data-page="1" data-max="<?php echo $wp_query->max_num_pages; ?>">
+                                    <?php esc_html_e( 'Cargar más', 'mundialdesalsa-pro' ); ?>
+                                </button>
+                                <div class="loading-spinner hidden mt-4"><?php _e('Cargando más...', 'mundialdesalsa-pro'); ?></div>
                             </div>
                         <?php else : ?>
                             <div class="py-12">
-                                <?php the_posts_navigation(); ?>
+                                <?php the_posts_pagination(); ?>
                             </div>
                         <?php endif;
 

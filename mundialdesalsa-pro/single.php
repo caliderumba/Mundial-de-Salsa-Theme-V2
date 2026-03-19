@@ -30,12 +30,6 @@ $layout = mds_pro_get_layout('post');
 
                     get_template_part( 'template-parts/single/layout', $layout );
 
-                    // Social Sharing
-                    mds_pro_social_sharing();
-
-                    // Related Posts
-                    get_template_part( 'template-parts/post/related-posts' );
-
                 endwhile;
                 ?>
 

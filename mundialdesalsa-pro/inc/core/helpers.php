@@ -67,6 +67,91 @@ add_action( 'wp_ajax_mds_pro_load_more', 'mds_pro_load_more' );
 add_action( 'wp_ajax_nopriv_mds_pro_load_more', 'mds_pro_load_more' );
 
 /**
+ * Output JSON-LD Structured Data
+ */
+function mds_pro_json_ld() {
+    if ( ! is_singular() ) {
+        return;
+    }
+
+    $post = get_post();
+    $data = [
+        "@context" => "https://schema.org",
+        "@type"    => is_single() ? "BlogPosting" : "WebPage",
+        "headline" => get_the_title(),
+        "image"    => [ get_the_post_thumbnail_url( $post->ID, 'full' ) ],
+        "datePublished" => get_the_date( 'c' ),
+        "dateModified"  => get_the_modified_date( 'c' ),
+        "author" => [
+            "@type" => "Person",
+            "name"  => get_the_author(),
+            "url"   => get_author_posts_url( get_the_author_meta( 'ID' ) )
+        ],
+        "publisher" => [
+            "@type" => "Organization",
+            "name"  => get_bloginfo( 'name' ),
+            "logo"  => [
+                "@type" => "ImageObject",
+                "url"   => mds_pro_get_option( 'general', 'favicon', '' )
+            ]
+        ],
+        "description" => wp_trim_words( get_the_excerpt(), 25 )
+    ];
+
+    echo '<script type="application/ld+json">' . json_encode( $data ) . '</script>';
+}
+add_action( 'wp_head', 'mds_pro_json_ld' );
+
+/**
+ * Sponsored Content Meta Box
+ */
+function mds_pro_add_sponsored_meta_box() {
+    add_meta_box(
+        'mds_pro_sponsored_meta',
+        __( 'Contenido Patrocinado', 'mundialdesalsa-pro' ),
+        'mds_pro_sponsored_meta_box_callback',
+        'post',
+        'side'
+    );
+}
+add_action( 'add_meta_boxes', 'mds_pro_add_sponsored_meta_box' );
+
+function mds_pro_sponsored_meta_box_callback( $post ) {
+    wp_nonce_field( 'mds_pro_save_sponsored_meta', 'mds_pro_sponsored_nonce' );
+    $value = get_post_meta( $post->ID, '_mds_pro_is_sponsored', true );
+    ?>
+    <label for="mds_pro_is_sponsored">
+        <input type="checkbox" id="mds_pro_is_sponsored" name="mds_pro_is_sponsored" value="1" <?php checked( $value, '1' ); ?> />
+        <?php _e( 'Marcar como contenido patrocinado', 'mundialdesalsa-pro' ); ?>
+    </label>
+    <?php
+}
+
+function mds_pro_save_sponsored_meta( $post_id ) {
+    if ( ! isset( $_POST['mds_pro_sponsored_nonce'] ) || ! wp_verify_nonce( $_POST['mds_pro_sponsored_nonce'], 'mds_pro_save_sponsored_meta' ) ) {
+        return;
+    }
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        return;
+    }
+    $is_sponsored = isset( $_POST['mds_pro_is_sponsored'] ) ? '1' : '0';
+    update_post_meta( $post_id, '_mds_pro_is_sponsored', $is_sponsored );
+}
+add_action( 'save_post', 'mds_pro_save_sponsored_meta' );
+
+/**
+ * Display Sponsored Badge
+ */
+function mds_pro_sponsored_badge() {
+    if ( get_post_meta( get_the_ID(), '_mds_pro_is_sponsored', true ) === '1' ) {
+        echo '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2 inline-block dark:bg-amber-900 dark:text-amber-100">' . __( 'Patrocinado', 'mundialdesalsa-pro' ) . '</span>';
+    }
+}
+
+/**
  * Breadcrumbs Functionality
  */
 function mds_pro_breadcrumbs() {
@@ -150,4 +235,15 @@ function mds_pro_social_sharing() {
         </div>
     </div>
     <?php
+}
+
+/**
+ * Calculate Reading Time
+ */
+function mds_pro_get_reading_time() {
+    $content = get_post_field( 'post_content', get_the_ID() );
+    $word_count = str_word_count( strip_tags( $content ) );
+    $reading_time = ceil( $word_count / 200 ); // Average 200 words per minute
+    
+    return $reading_time;
 }

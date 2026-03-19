@@ -22,6 +22,9 @@
 
             <footer class="entry-footer mt-16 pt-12 border-t border-slate-50 dark:border-slate-800">
                 <?php
+                // Related Posts
+                get_template_part( 'template-parts/post/related-posts' );
+
                 if ( comments_open() || get_comments_number() ) :
                     comments_template();
                 endif;

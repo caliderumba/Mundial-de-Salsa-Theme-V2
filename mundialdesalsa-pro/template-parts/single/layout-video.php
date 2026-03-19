@@ -20,7 +20,8 @@
 
         <div class="max-w-4xl mx-auto">
             <header class="entry-header mb-8">
-                <div class="mb-4">
+                <div class="mb-4 flex gap-2">
+                    <?php mds_pro_sponsored_badge(); ?>
                     <span class="bg-red-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full text-white flex items-center gap-2 w-fit">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                         Video
@@ -31,6 +32,7 @@
                 <div class="flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-slate-400">
                     <span><?php the_author(); ?></span>
                     <span><?php echo get_the_date(); ?></span>
+                    <span><?php echo mds_pro_get_reading_time(); ?> min</span>
                 </div>
             </header>
 
@@ -40,6 +42,9 @@
 
             <footer class="entry-footer mt-16 pt-12 border-t border-slate-100 dark:border-slate-800">
                 <?php
+                // Social Sharing
+                mds_pro_social_sharing();
+
                 get_template_part( 'template-parts/post/related-posts' );
                 
                 if ( comments_open() || get_comments_number() ) :

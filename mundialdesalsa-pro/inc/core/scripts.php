@@ -16,7 +16,7 @@ function mds_pro_scripts() {
 	wp_enqueue_style( 'mds-pro-style', $style_url, [], MDS_PRO_VERSION );
 
 	// Main JS
-	wp_enqueue_script( 'mds-pro-main', MDS_PRO_URI . '/assets/js/main.js', [ 'jquery' ], MDS_PRO_VERSION, true );
+	wp_enqueue_script( 'mds-pro-app', MDS_PRO_URI . '/assets/js/app.js', [ 'jquery' ], MDS_PRO_VERSION, false );
 
 	// Threaded comments
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -25,7 +25,7 @@ function mds_pro_scripts() {
 
     // Localize for AJAX
     global $wp_query;
-    wp_localize_script( 'mds-pro-main', 'mds_pro_vars', [
+    wp_localize_script( 'mds-pro-app', 'mds_pro_vars', [
         'ajax_url'      => admin_url( 'admin-ajax.php' ),
         'nonce'         => wp_create_nonce( 'mds_pro_nonce' ),
         'current_query' => json_encode( $wp_query->query_vars ),
