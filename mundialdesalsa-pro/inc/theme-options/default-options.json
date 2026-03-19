@@ -1,0 +1,25 @@
+{
+    "general": {
+        "dark_mode": false
+    },
+    "colors": {
+        "primary": "#10b981",
+        "secondary": "#064e3b",
+        "background": "#ffffff",
+        "text": "#1f2937",
+        "accent": "#f59e0b"
+    },
+    "typography": {
+        "body_font": "Inter",
+        "headings_font": "Space Grotesk",
+        "body_size": "16"
+    },
+    "header": {
+        "header_bg_color": "#ffffff",
+        "menu_text_color": "#1f2937"
+    },
+    "footer": {
+        "footer_bg_color": "#111827",
+        "footer_text_color": "#9ca3af"
+    }
+}

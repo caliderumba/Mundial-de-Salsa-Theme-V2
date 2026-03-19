@@ -9,6 +9,7 @@
 </div><!-- #page -->
 
 <?php wp_footer(); ?>
+<?php echo mds_pro_get_option( 'custom_code', 'footer_code', '' ); ?>
 
 </body>
 </html>

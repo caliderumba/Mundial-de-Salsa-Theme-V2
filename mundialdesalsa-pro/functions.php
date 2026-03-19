@@ -21,14 +21,16 @@ define( 'MDS_PRO_URI', get_template_directory_uri() );
  */
 $mds_includes = [
 	'inc/core/setup.php',
-	'inc/core/theme-support.php',
 	'inc/core/scripts.php',
 	'inc/core/helpers.php',
-	'inc/core/menus.php',
 	'inc/core/sidebars.php',
-	'inc/admin/theme-options.php',
+	'inc/core/custom-css.php',
+	'inc/theme-options/admin-panel.php',
+	'inc/theme-options/settings.php',
+	'inc/theme-options/fields.php',
 	'inc/admin/metaboxes.php',
-	'inc/admin/widgets.php',
+	'inc/admin/dashboard.php',
+	'inc/admin/rest-api.php',
 	'inc/builder/builder-init.php',
 	'inc/modules/ads-system.php',
 	'inc/modules/mega-menu.php',
@@ -40,6 +42,8 @@ $mds_includes = [
 	'inc/integrations/pwa.php',
 ];
 
+require __DIR__ . '/inc/redux-config.php';
+
 foreach ( $mds_includes as $file ) {
 	$filepath = __DIR__ . '/' . $file;
 	if ( file_exists( $filepath ) ) {
@@ -47,10 +51,19 @@ foreach ( $mds_includes as $file ) {
 	}
 }
 
+require __DIR__ . '/inc/core/security.php';
+require __DIR__ . '/inc/theme-options/rest-api.php';
+
 /**
  * Initialize Theme
  */
 function mds_pro_init() {
-    // Initialization logic if needed
+    if ( ! get_option( 'mds_pro_options' ) ) {
+        $default_options_file = __DIR__ . '/inc/theme-options/default-options.json';
+        if ( file_exists( $default_options_file ) ) {
+            $default_options = json_decode( file_get_contents( $default_options_file ), true );
+            update_option( 'mds_pro_options', $default_options );
+        }
+    }
 }
 add_action( 'after_setup_theme', 'mds_pro_init' );
