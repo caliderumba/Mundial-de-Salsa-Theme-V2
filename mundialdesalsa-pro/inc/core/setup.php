@@ -45,6 +45,11 @@ function mds_pro_setup() {
         'flex-width'  => true,
     ) );
 
+    // Spectra & Gutenberg Optimizations
+    add_theme_support( 'align-wide' );
+    add_theme_support( 'editor-styles' );
+    add_editor_style( 'assets/css/editor-style.css' );
+
     // Custom Image Sizes
     add_image_size( 'mds-pro-magazine', 800, 600, true );
     add_image_size( 'mds-pro-hero', 1200, 800, true );

@@ -204,6 +204,28 @@ Redux::setSection( $opt_name, array(
             ),
             'default'  => 'right',
         ),
+        array(
+            'id'       => 'responsive_gap',
+            'type'     => 'spacing',
+            'title'    => __( 'Espaciado Responsivo (Gap)', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Define el espacio entre bloques para Desktop y Mobile.', 'mundialdesalsa-pro' ),
+            'mode'     => 'padding',
+            'units'    => array( 'px', 'em', 'rem' ),
+            'default'  => array(
+                'padding-top'    => '30px',
+                'padding-bottom' => '15px',
+            ),
+        ),
+        array(
+            'id'       => 'border_radius',
+            'type'     => 'slider',
+            'title'    => __( 'Radio de Borde (px)', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Define el redondeo de las esquinas en bloques y botones.', 'mundialdesalsa-pro' ),
+            'min'      => 0,
+            'max'      => 50,
+            'step'     => 1,
+            'default'  => 8,
+        ),
     ),
 ) );
 

@@ -26,6 +26,10 @@ function mds_pro_custom_css() {
     $site_width       = mds_pro_get_option( 'layout', 'site_width', '1200' );
     $header_width     = mds_pro_get_option( 'layout', 'header_width', 'boxed' );
     $footer_width     = mds_pro_get_option( 'layout', 'footer_width', 'boxed' );
+    
+    $border_radius    = mds_pro_get_option( 'layout', 'border_radius', '8' );
+    $gap_desktop      = mds_pro_get_option( 'layout', 'responsive_gap', ['padding-top' => '30px'] )['padding-top'];
+    $gap_mobile       = mds_pro_get_option( 'layout', 'responsive_gap', ['padding-bottom' => '15px'] )['padding-bottom'];
 
     ?>
     <style id="mds-pro-custom-css">
@@ -41,6 +45,14 @@ function mds_pro_custom_css() {
             
             --mds-body-size: <?php echo esc_attr( $body_size ); ?>px;
             --mds-site-width: <?php echo esc_attr( $site_width ); ?>px;
+            --mds-radius: <?php echo esc_attr( $border_radius ); ?>px;
+            --mds-gap: <?php echo esc_attr( $gap_desktop ); ?>;
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --mds-gap: <?php echo esc_attr( $gap_mobile ); ?>;
+            }
         }
 
         /* Global Layout Width */
