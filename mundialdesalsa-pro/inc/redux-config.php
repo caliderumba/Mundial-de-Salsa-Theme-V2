@@ -208,6 +208,65 @@ Redux::setSection( $opt_name, array(
 ) );
 
 Redux::setSection( $opt_name, array(
+    'title'  => __( 'Header', 'mundialdesalsa-pro' ),
+    'id'     => 'header_settings',
+    'icon'   => 'el el-cog',
+    'fields' => array(
+        array(
+            'id'       => 'header_layout',
+            'type'     => 'select',
+            'title'    => __( 'Diseño de Cabecera', 'mundialdesalsa-pro' ),
+            'options'  => array(
+                'standard' => 'Estándar (Logo Izquierda, Menú Derecha)',
+                'centered' => 'Centrado (Logo Arriba, Menú Abajo)',
+                'minimal'  => 'Minimalista (Logo Centro, Menú Hamburguesa)',
+                'split'    => 'Dividido (Menú Izquierda/Derecha, Logo Centro)',
+            ),
+            'default'  => 'standard',
+        ),
+        array(
+            'id'       => 'header_sticky',
+            'type'     => 'switch',
+            'title'    => __( 'Cabecera Pegajosa (Sticky)', 'mundialdesalsa-pro' ),
+            'default'  => true,
+        ),
+        array(
+            'id'       => 'header_top_bar',
+            'type'     => 'switch',
+            'title'    => __( 'Mostrar Barra Superior', 'mundialdesalsa-pro' ),
+            'default'  => true,
+        ),
+        array(
+            'id'       => 'header_search',
+            'type'     => 'switch',
+            'title'    => __( 'Mostrar Buscador', 'mundialdesalsa-pro' ),
+            'default'  => true,
+        ),
+        array(
+            'id'       => 'header_logo',
+            'type'     => 'media',
+            'title'    => __( 'Logo Principal', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Sube tu logo en formato PNG o SVG.', 'mundialdesalsa-pro' ),
+        ),
+        array(
+            'id'       => 'header_logo_dark',
+            'type'     => 'media',
+            'title'    => __( 'Logo Modo Oscuro', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Logo optimizado para fondos oscuros.', 'mundialdesalsa-pro' ),
+        ),
+        array(
+            'id'       => 'header_height',
+            'type'     => 'slider',
+            'title'    => __( 'Altura de Cabecera (px)', 'mundialdesalsa-pro' ),
+            'min'      => 60,
+            'max'      => 120,
+            'step'     => 1,
+            'default'  => 80,
+        ),
+    ),
+) );
+
+Redux::setSection( $opt_name, array(
     'title'  => __( 'Performance', 'mundialdesalsa-pro' ),
     'id'     => 'performance',
     'icon'   => 'el el-dashboard',

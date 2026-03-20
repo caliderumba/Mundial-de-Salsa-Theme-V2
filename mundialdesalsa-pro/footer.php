@@ -1,45 +1,92 @@
 <?php
 /**
  * The template for displaying the footer
+ * 
+ * @package MundialdeSalsa_Pro
  */
 ?>
-	<footer id="colophon" class="site-footer">
-		<?php get_template_part( 'template-parts/footer/footer-main' ); ?>
-	</footer>
+
+	<footer id="colophon" class="site-footer bg-slate-900 dark:bg-black text-white py-16 mt-12">
+		<div class="container mx-auto px-4">
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+				
+				<?php /* Columna 1: Sobre Nosotros */ ?>
+				<div class="footer-column about-us">
+					<?php if ( is_active_sidebar( 'footer-1' ) ) : ?>
+						<?php dynamic_sidebar( 'footer-1' ); ?>
+					<?php else : ?>
+						<h3 class="text-xl font-black uppercase tracking-tighter italic mb-6 text-emerald-500">Sobre Nosotros</h3>
+						<p class="text-slate-400 text-sm leading-relaxed">
+							<?php echo esc_html( get_bloginfo( 'description' ) ); ?>
+						</p>
+					<?php endif; ?>
+				</div>
+
+				<?php /* Columna 2: Enlaces Rápidos */ ?>
+				<div class="footer-column quick-links">
+					<?php if ( is_active_sidebar( 'footer-2' ) ) : ?>
+						<?php dynamic_sidebar( 'footer-2' ); ?>
+					<?php else : ?>
+						<h3 class="text-xl font-black uppercase tracking-tighter italic mb-6 text-emerald-500">Enlaces Rápidos</h3>
+						<nav class="footer-navigation">
+							<?php
+							wp_nav_menu(
+								array(
+									'theme_location' => 'footer-menu',
+									'menu_class'     => 'flex flex-col gap-3 text-sm text-slate-400',
+									'container'      => false,
+									'fallback_cb'    => false,
+								)
+							);
+							?>
+						</nav>
+					<?php endif; ?>
+				</div>
+
+				<?php /* Columna 3: Redes Sociales */ ?>
+				<div class="footer-column social-media">
+					<?php if ( is_active_sidebar( 'footer-3' ) ) : ?>
+						<?php dynamic_sidebar( 'footer-3' ); ?>
+					<?php else : ?>
+						<h3 class="text-xl font-black uppercase tracking-tighter italic mb-6 text-emerald-500">Síguenos</h3>
+						<div class="flex gap-4">
+							<?php
+							$socials = array( 'facebook', 'instagram', 'youtube', 'twitter', 'tiktok' );
+							foreach ( $socials as $social ) :
+								$url = mds_pro_get_option( 'social', $social . '_url', '#' );
+								if ( $url && '#' !== $url ) :
+									?>
+									<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener" class="p-3 bg-white/5 hover:bg-emerald-500 rounded-lg transition-all duration-300">
+										<span class="screen-reader-text"><?php echo esc_html( ucfirst( $social ) ); ?></span>
+										<i class="fab fa-<?php echo esc_attr( $social ); ?>"></i>
+									</a>
+									<?php
+								endif;
+							endforeach;
+							?>
+						</div>
+					<?php endif; ?>
+				</div>
+
+			</div>
+
+			<div class="footer-bottom mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+				<p class="copyright">
+					&copy; <?php echo date( 'Y' ); ?> <?php bloginfo( 'name' ); ?>. <?php esc_html_e( 'Todos los derechos reservados.', 'mundialdesalsa-pro' ); ?>
+				</p>
+				<p class="credits">
+					<?php esc_html_e( 'Diseñado para melómanos.', 'mundialdesalsa-pro' ); ?>
+				</p>
+			</div>
+		</div>
+	</footer><!-- #colophon -->
+
 </div><!-- #page -->
 
-    <!-- Floating Player -->
-    <div id="floating-player" class="fixed bottom-6 right-6 z-50 transition-all duration-500 translate-y-20 opacity-0 pointer-events-none">
-        <div class="relative group">
-            <!-- Player Container -->
-            <div id="player-container" class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden w-80 sm:w-96 transition-all duration-500 max-h-0">
-                <div class="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Reproductor Mundial</span>
-                    </div>
-                    <button id="player-close" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
-                    </button>
-                </div>
-                <div class="aspect-video bg-black">
-                    <iframe id="player-iframe" width="100%" height="100%" frameborder="0" allowtransparency="true" allow="encrypted-media; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                </div>
-            </div>
-
-            <!-- Toggle Button -->
-            <button id="player-toggle" class="absolute -bottom-2 -right-2 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 z-10">
-                <div class="relative w-6 h-6">
-                    <svg id="icon-play" class="absolute inset-0 transition-all duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                    <svg id="icon-close" class="absolute inset-0 opacity-0 scale-0 transition-all duration-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
-                </div>
-            </button>
-        </div>
-    </div>
+<?php /* Optimización: Scripts de analítica (Google Analytics, Pixel, etc.) deben ir aquí o mediante hooks para no bloquear el renderizado */ ?>
+<!-- Analytics Scripts Placeholder -->
 
 <?php wp_footer(); ?>
-<?php echo mds_pro_get_option( 'footer_settings', 'footer_scripts', '' ); ?>
-<?php echo mds_pro_get_option( 'custom_code', 'footer_code', '' ); ?>
 
 </body>
 </html>

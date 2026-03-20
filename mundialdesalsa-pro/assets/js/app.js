@@ -383,4 +383,111 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     initFloatingPlayer();
+
+    // --- Header & Search Logic ---
+    const initHeader = () => {
+        const header = document.getElementById('masthead');
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchTriggers = document.querySelectorAll('.search-trigger');
+        const searchClose = document.getElementById('search-close');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results-container');
+        const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+        const sidePanelClose = document.getElementById('side-panel-close');
+        const sidePanelOverlay = document.getElementById('side-panel-overlay');
+
+        // Side Panel Toggle - Vanilla JS
+        const toggleSidePanel = (show) => {
+            if (show) {
+                document.body.classList.add('panel-open');
+            } else {
+                document.body.classList.remove('panel-open');
+            }
+        };
+
+        mobileMenuTrigger?.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleSidePanel(true);
+        });
+
+        sidePanelClose?.addEventListener('click', () => toggleSidePanel(false));
+        sidePanelOverlay?.addEventListener('click', () => toggleSidePanel(false));
+
+        // Sticky Header
+        if (header && header.classList.contains('sticky-header')) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    header.classList.add('header-scrolled', 'bg-white/95', 'dark:bg-slate-950/95', 'shadow-xl', 'backdrop-blur-md');
+                    header.classList.remove('bg-white', 'dark:bg-slate-950');
+                } else {
+                    header.classList.remove('header-scrolled', 'bg-white/95', 'dark:bg-slate-950/95', 'shadow-xl', 'backdrop-blur-md');
+                    header.classList.add('bg-white', 'dark:bg-slate-950');
+                }
+            });
+        }
+
+        // Search Overlay Toggle
+        const toggleSearch = (show) => {
+            if (show) {
+                searchOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                searchOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                setTimeout(() => searchInput.focus(), 100);
+                document.body.style.overflow = 'hidden';
+            } else {
+                searchOverlay.classList.add('opacity-0', 'pointer-events-none');
+                searchOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = '';
+            }
+        };
+
+        searchTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleSearch(true);
+            });
+        });
+
+        searchClose?.addEventListener('click', () => toggleSearch(false));
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchOverlay.classList.contains('opacity-100')) {
+                toggleSearch(false);
+            }
+        });
+
+        // AJAX Search in Overlay
+        let searchTimeout;
+        searchInput?.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value;
+
+            if (query.length < 3) {
+                searchResults.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                searchResults.innerHTML = '<div class="flex justify-center py-12"><div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>';
+                
+                fetch(mds_pro_vars.ajax_url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'mds_pro_search',
+                        query: query,
+                        nonce: mds_pro_vars.nonce,
+                    }),
+                })
+                .then(res => res.text())
+                .then(data => {
+                    searchResults.innerHTML = data;
+                });
+            }, 300);
+        });
+    };
+
+    initHeader();
 });

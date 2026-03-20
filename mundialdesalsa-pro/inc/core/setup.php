@@ -33,9 +33,17 @@ function mds_pro_setup() {
 
     // Register Navigation Menus
     register_nav_menus( [
-        'menu-1' => esc_html__( 'Primary Menu', 'mundialdesalsa-pro' ),
-        'footer' => esc_html__( 'Footer Menu', 'mundialdesalsa-pro' ),
+        'menu-1'      => esc_html__( 'Primary Menu', 'mundialdesalsa-pro' ),
+        'footer-menu' => esc_html__( 'Footer Menu', 'mundialdesalsa-pro' ),
     ] );
+
+    // Add support for Custom Logo
+    add_theme_support( 'custom-logo', array(
+        'height'      => 100,
+        'width'       => 400,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ) );
 
     // Custom Image Sizes
     add_image_size( 'mds-pro-magazine', 800, 600, true );

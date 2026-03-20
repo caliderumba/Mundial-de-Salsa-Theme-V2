@@ -248,3 +248,40 @@ function mds_pro_get_reading_time() {
     
     return $reading_time;
 }
+
+/**
+ * Get Theme Logo
+ */
+function mds_pro_get_logo() {
+    $logo_main = mds_pro_get_option( 'header_settings', 'header_logo', array() );
+    $logo_dark = mds_pro_get_option( 'header_settings', 'header_logo_dark', array() );
+    $site_name = mds_pro_get_option( 'general', 'site_name', 'MundialdeSalsa' );
+    
+    $output = '';
+    
+    if ( ! empty( $logo_main['url'] ) ) {
+        $output .= sprintf(
+            '<img src="%s" alt="%s" class="header-logo-main %s">',
+            esc_url( $logo_main['url'] ),
+            esc_attr( $site_name ),
+            ! empty( $logo_dark['url'] ) ? 'dark:hidden' : ''
+        );
+    }
+    
+    if ( ! empty( $logo_dark['url'] ) ) {
+        $output .= sprintf(
+            '<img src="%s" alt="%s" class="header-logo-dark hidden dark:block">',
+            esc_url( $logo_dark['url'] ),
+            esc_attr( $site_name )
+        );
+    }
+    
+    if ( empty( $output ) ) {
+        $output = sprintf(
+            '<span class="text-3xl md:text-4xl font-black uppercase tracking-tighter italic leading-none text-slate-900 dark:text-white">%s<span class="text-emerald-500">.</span></span>',
+            esc_html( $site_name )
+        );
+    }
+    
+    return $output;
+}

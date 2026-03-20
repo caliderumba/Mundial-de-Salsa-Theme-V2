@@ -15,3 +15,352 @@ Tags: news, magazine, multimedia, video, podcast, dark-mode, responsive-layout
   Este es el archivo principal de estilos. 
   La mayoría de los estilos se cargarán de forma modular desde assets/css/ 
 */
+
+/**
+ * Mega Menu Post Cards - Impactful & Vibrant Style
+ */
+.mega-post-card {
+    background: transparent;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.mega-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(231, 76, 60, 0.15); /* Soft red shadow */
+}
+
+.mega-post-card .feria-badge {
+    background-color: #e74c3c !important;
+    color: #ffffff !important;
+    font-family: var(--mds-body-font, sans-serif);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mega-post-card .mega-post-title {
+    font-family: var(--mds-heading-font, sans-serif);
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-top: 12px;
+    line-height: 1.2;
+}
+
+.mega-post-card .mega-post-title a {
+    color: #2c3e50 !important;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.2s ease;
+}
+
+.dark .mega-post-card .mega-post-title a {
+    color: #ffffff !important;
+}
+
+.mega-post-card .mega-post-title a:hover {
+    color: #e74c3c !important;
+}
+
+.mega-post-card .aspect-video img {
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mega-post-card:hover .aspect-video img {
+    transform: scale(1.1);
+}
+
+/**
+ * Off-Canvas Side Panel - Impactful & Vibrant
+ */
+body.panel-open {
+    overflow: hidden;
+}
+
+body.panel-open #side-panel-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+body.panel-open #side-panel {
+    transform: translateX(0);
+}
+
+.side-panel-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.side-panel-nav li a {
+    display: block;
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-style: italic;
+}
+
+.side-panel-nav li a:hover {
+    color: #e74c3c;
+    transform: translateX(8px);
+}
+
+.side-panel-nav li.current-menu-item a {
+    color: #e74c3c;
+}
+
+.news-text-list .news-item h5 {
+    font-family: var(--mds-heading-font, sans-serif);
+}
+
+/* Custom Scrollbar for Side Panel */
+#side-panel .flex-1::-webkit-scrollbar {
+    width: 3px;
+}
+
+#side-panel .flex-1::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#side-panel .flex-1::-webkit-scrollbar-thumb {
+    background: rgba(231, 76, 60, 0.2);
+    border-radius: 10px;
+}
+
+/**
+ * Front Page - Hero Slider
+ */
+.hero-slider .slider-slide {
+    z-index: 1;
+}
+
+.hero-slider .slider-slide[style*="opacity: 1"] {
+    z-index: 2;
+}
+
+.slider-dot {
+    cursor: pointer;
+}
+
+/**
+ * Front Page - News Grid & Cards
+ */
+.news-card {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .news-card {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.news-card:hover {
+    box-shadow: 0 10px 30px rgba(231, 76, 60, 0.25);
+}
+
+.card-thumb img {
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/**
+ * Front Page - Category Blocks
+ */
+.cat-block .divide-y article:last-child {
+    border-bottom: none;
+}
+
+.cat-block h3 {
+    letter-spacing: -0.05em;
+}
+
+.cat-block h4 {
+    letter-spacing: -0.02em;
+}
+
+/**
+ * Utility Overrides
+ */
+.font-black {
+    font-weight: 900;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.tracking-tighter {
+    letter-spacing: -0.05em;
+}
+
+/**
+ * Feria de Cali - Front Page List Style
+ */
+.feria-news-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feria-news-list li a {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 1.4;
+    display: block;
+}
+
+.feria-news-list li span {
+    font-size: 11px;
+    color: #94a3b8; /* slate-400 */
+}
+
+/**
+ * Vibrant Button Style
+ */
+.btn-vibrante {
+    display: inline-block;
+    background-color: #e74c3c;
+    color: #ffffff !important;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 12px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+    cursor: pointer;
+}
+
+.btn-vibrante:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+    background-color: #f05a4a;
+    color: #ffffff !important;
+}
+
+/**
+ * Single Post Styles
+ */
+.entry-content {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #334155; /* slate-700 */
+}
+
+.dark .entry-content {
+    color: #cbd5e1; /* slate-300 */
+}
+
+.entry-content h1, 
+.entry-content h2, 
+.entry-content h3 {
+    font-family: var(--mds-heading-font, sans-serif);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: #0f172a; /* slate-900 */
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+.dark .entry-content h1, 
+.dark .entry-content h2, 
+.dark .entry-content h3 {
+    color: #ffffff;
+}
+
+.entry-content blockquote {
+    border-left: 4px solid #e74c3c;
+    padding-left: 2em;
+    font-style: italic;
+    font-size: 1.25em;
+    color: #475569; /* slate-600 */
+    margin: 2em 0;
+    position: relative;
+}
+
+.entry-content blockquote::before {
+    content: "“";
+    font-family: serif;
+    font-size: 4em;
+    color: #e74c3c;
+    position: absolute;
+    left: -0.2em;
+    top: -0.2em;
+    opacity: 0.2;
+}
+
+.entry-content blockquote p:first-of-type::first-letter {
+    font-size: 2em;
+    font-weight: 900;
+    color: #e74c3c;
+    float: left;
+    margin-right: 0.1em;
+    line-height: 1;
+}
+
+.post-tags a {
+    display: inline-block;
+    background: #f1f5f9; /* slate-100 */
+    color: #64748b; /* slate-500 */
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.dark .post-tags a {
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+}
+
+.post-tags a:hover {
+    background: #e74c3c;
+    color: #ffffff;
+}
+
+.entry-content a {
+    color: #e74c3c;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+}
+
+.entry-content a:hover {
+    color: #0f172a;
+}
+
+.dark .entry-content a:hover {
+    color: #ffffff;
+}
+
+/**
+ * Single Post Layouts
+ */
+.post-layout-wrapper.full-width-content {
+    display: block;
+}
+
+.post-layout-wrapper.grid {
+    display: grid;
+}
+
+@media (min-width: 1024px) {
+    .post-layout-wrapper.full-width-content .entry-content {
+        font-size: 19px; /* Slightly larger for readability in full width */
+    }
+}
+
