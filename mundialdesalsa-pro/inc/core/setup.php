@@ -69,3 +69,62 @@ function mds_pro_file_is_displayable_image( $result, $path ) {
     return $result;
 }
 add_filter( 'file_is_displayable_image', 'mds_pro_file_is_displayable_image', 10, 2 );
+
+/**
+ * Fix "Attempt to read property 'name' on false" in nav-menus.php
+ * This happens when a menu item points to a missing term/post or invalid post type.
+ */
+function mds_pro_fix_nav_menu_warning( $items ) {
+    if ( ! is_admin() || ! is_array( $items ) ) {
+        return $items;
+    }
+
+    foreach ( $items as $key => $item ) {
+        if ( ! isset( $item->type ) ) continue;
+
+        if ( 'taxonomy' === $item->type ) {
+            $tax = get_taxonomy( $item->object );
+            if ( ! $tax ) {
+                unset( $items[ $key ] );
+                continue;
+            }
+            $term = get_term( $item->object_id, $item->object );
+            if ( ! $term || is_wp_error( $term ) ) {
+                unset( $items[ $key ] );
+            }
+        } elseif ( 'post_type' === $item->type ) {
+            $pt = get_post_type_object( $item->object );
+            if ( ! $pt ) {
+                unset( $items[ $key ] );
+                continue;
+            }
+            $post = get_post( $item->object_id );
+            if ( ! $post && '0' != $item->object_id ) { // 0 might be a placeholder
+                unset( $items[ $key ] );
+            }
+        }
+    }
+
+    return $items;
+}
+add_filter( 'wp_get_nav_menu_items', 'mds_pro_fix_nav_menu_warning', 10, 1 );
+
+/**
+ * Additional safeguard for nav menu item setup
+ */
+function mds_pro_setup_nav_menu_item_safeguard( $item ) {
+    if ( ! is_admin() ) return $item;
+
+    if ( isset( $item->type ) && 'post_type' === $item->type ) {
+        if ( ! get_post_type_object( $item->object ) ) {
+            $item->_invalid = true;
+        }
+    }
+    if ( isset( $item->type ) && 'taxonomy' === $item->type ) {
+        if ( ! get_taxonomy( $item->object ) ) {
+            $item->_invalid = true;
+        }
+    }
+    return $item;
+}
+add_filter( 'wp_setup_nav_menu_item', 'mds_pro_setup_nav_menu_item_safeguard' );

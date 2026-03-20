@@ -59,6 +59,10 @@ if ( is_single() ) {
                     <svg id="moon-icon" class="hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 </button>
                 <div class="flex gap-3 ml-2 border-l border-white/10 pl-4">
+                    <button id="favorites-toggle" class="relative group hover:text-rose-400 transition-colors mr-2" title="Mis Favoritos">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        <span id="favorites-count" class="absolute -top-2 -right-2 bg-rose-500 text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center opacity-0 transition-opacity duration-300">0</span>
+                    </button>
                     <?php
                     $social_links = [
                         'facebook'  => [
@@ -94,43 +98,82 @@ if ( is_single() ) {
         </div>
     </div>
 
-	<header id="masthead" class="site-header bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-        <!-- Main Logo Area -->
-        <div class="container mx-auto px-4 py-8 flex flex-col items-center gap-6">
-            <div class="site-branding">
-                <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none text-slate-900 dark:text-white">
-                    <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-                        <?php 
-                        $site_name = mds_pro_get_option( 'general', 'site_name', 'MundialdeSalsa' );
-                        echo esc_html( $site_name );
-                        ?><span class="text-emerald-500">.</span>
-                    </a>
-                </h1>
-                <p class="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mt-2">La Revista Digital de la Salsa</p>
-            </div>
-            
-            <!-- Ad Space in Header (Optional) -->
-            <?php if ( $header_ad = mds_pro_get_option('ads', 'header_ad') ) : ?>
-                <div class="w-full max-w-4xl mx-auto">
-                    <?php echo $header_ad; ?>
+	<header id="masthead" class="site-header bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 header-layout-<?php echo esc_attr( mds_pro_get_option( 'header', 'header_layout', 'standard' ) ); ?>">
+        <?php 
+        $header_layout = mds_pro_get_option( 'header', 'header_layout', 'standard' );
+        if ( 'standard' === $header_layout ) : ?>
+            <!-- Main Logo Area -->
+            <div class="container mx-auto px-4 py-8 flex flex-col items-center gap-6">
+                <div class="site-branding">
+                    <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none text-slate-900 dark:text-white">
+                        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+                            <?php 
+                            $site_name = mds_pro_get_option( 'general', 'site_name', 'MundialdeSalsa' );
+                            echo esc_html( $site_name );
+                            ?><span class="text-emerald-500">.</span>
+                        </a>
+                    </h1>
+                    <p class="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mt-2">La Revista Digital de la Salsa</p>
                 </div>
-            <?php endif; ?>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="border-t border-slate-100 dark:border-slate-800 py-4">
-            <div class="container mx-auto px-4 flex justify-center">
-                <?php
-                wp_nav_menu( [
-                    'theme_location' => 'menu-1',
-                    'menu_id'        => 'primary-menu',
-                    'container'      => false,
-                    'menu_class'     => 'flex gap-8 text-xs font-black uppercase tracking-widest text-slate-900 dark:text-slate-200',
-                    'fallback_cb'    => 'mds_pro_fallback_menu',
-                ] );
-                ?>
+                
+                <!-- Ad Space in Header (Optional) -->
+                <?php if ( $header_ad = mds_pro_get_option('ads', 'header_ad') ) : ?>
+                    <div class="w-full max-w-4xl mx-auto">
+                        <?php echo $header_ad; ?>
+                    </div>
+                <?php endif; ?>
             </div>
-        </nav>
+        <?php elseif ( 'centered' === $header_layout ) : ?>
+             <!-- Centered Logo Area -->
+             <div class="container mx-auto px-4 py-12 flex flex-col items-center">
+                <div class="site-branding text-center">
+                    <h1 class="text-6xl md:text-8xl font-black uppercase tracking-tighter italic leading-none text-slate-900 dark:text-white">
+                        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+                            <?php echo esc_html( mds_pro_get_option( 'general', 'site_name', 'MundialdeSalsa' ) ); ?><span class="text-emerald-500">.</span>
+                        </a>
+                    </h1>
+                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mt-4">La Revista Digital de la Salsa</p>
+                </div>
+            </div>
+        <?php elseif ( 'minimal' === $header_layout ) : ?>
+            <!-- Minimal Logo Area -->
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="site-branding">
+                    <h1 class="text-2xl font-black uppercase tracking-tighter italic leading-none text-slate-900 dark:text-white">
+                        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+                            <?php echo esc_html( mds_pro_get_option( 'general', 'site_name', 'M' ) ); ?><span class="text-emerald-500">.</span>
+                        </a>
+                    </h1>
+                </div>
+                <nav class="hidden md:block">
+                    <?php
+                    wp_nav_menu( [
+                        'theme_location' => 'menu-1',
+                        'container'      => false,
+                        'menu_class'     => 'flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-slate-200',
+                        'fallback_cb'    => 'mds_pro_fallback_menu',
+                    ] );
+                    ?>
+                </nav>
+            </div>
+        <?php endif; ?>
+
+        <?php if ( 'minimal' !== $header_layout ) : ?>
+            <!-- Navigation -->
+            <nav class="border-t border-slate-100 dark:border-slate-800 py-4">
+                <div class="container mx-auto px-4 flex justify-center">
+                    <?php
+                    wp_nav_menu( [
+                        'theme_location' => 'menu-1',
+                        'menu_id'        => 'primary-menu',
+                        'container'      => false,
+                        'menu_class'     => 'flex gap-8 text-xs font-black uppercase tracking-widest text-slate-900 dark:text-slate-200',
+                        'fallback_cb'    => 'mds_pro_fallback_menu',
+                    ] );
+                    ?>
+                </div>
+            </nav>
+        <?php endif; ?>
 	</header>
 
     <!-- News Ticker -->

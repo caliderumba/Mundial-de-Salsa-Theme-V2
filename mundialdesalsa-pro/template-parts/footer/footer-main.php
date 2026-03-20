@@ -83,6 +83,25 @@ $footer_text   = mds_pro_get_option( 'footer', 'footer_text_color', '#9ca3af' );
                     </ul>
                 </div>
             </div>
+        <?php elseif ( 'widgets' === $footer_layout ) : ?>
+            <!-- Widgets Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24">
+                <?php if ( is_active_sidebar( 'footer-1' ) ) : ?>
+                    <div class="footer-widget-area">
+                        <?php dynamic_sidebar( 'footer-1' ); ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ( is_active_sidebar( 'footer-2' ) ) : ?>
+                    <div class="footer-widget-area">
+                        <?php dynamic_sidebar( 'footer-2' ); ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ( is_active_sidebar( 'footer-3' ) ) : ?>
+                    <div class="footer-widget-area">
+                        <?php dynamic_sidebar( 'footer-3' ); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         <?php else : ?>
             <!-- Simple Layout -->
             <div class="flex flex-col items-center text-center mb-12 space-y-6">

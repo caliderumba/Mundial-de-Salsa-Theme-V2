@@ -1,23 +1,19 @@
 <?php
 /**
- * Single Post Template
+ * The template for displaying all pages
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
 get_header();
 
-$layout = mds_pro_get_layout('single');
+$layout = mds_pro_get_layout('page');
 ?>
 
 <main id="primary" class="site-main layout-<?php echo esc_attr($layout); ?> py-12">
     <div class="container mx-auto px-4">
-        <?php if ( $layout === 'wide' || $layout === 'minimal' ) : ?>
-            <div class="max-w-4xl mx-auto">
-        <?php elseif ( $layout === 'video' ) : ?>
+        <?php if ( $layout === 'full' ) : ?>
             <div class="w-full">
+        <?php elseif ( $layout === 'narrow' ) : ?>
+            <div class="max-w-3xl mx-auto">
         <?php else : ?>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <div class="lg:col-span-8">
@@ -27,15 +23,19 @@ $layout = mds_pro_get_layout('single');
                 while ( have_posts() ) :
                     the_post();
 
-                    // Track views
-                    mds_pro_track_post_views();
+                    get_template_part( 'template-parts/content', 'page' );
 
-                    get_template_part( 'template-parts/single/layout', $layout );
+                    // If comments are open or we have at least one comment, load up the comment template.
+                    if ( comments_open() || get_comments_number() ) :
+                        comments_template();
+                    endif;
 
                 endwhile;
                 ?>
 
-        <?php if ( $layout === 'wide' || $layout === 'minimal' || $layout === 'video' ) : ?>
+        <?php if ( $layout === 'full' ) : ?>
+            </div>
+        <?php elseif ( $layout === 'narrow' ) : ?>
             </div>
         <?php else : ?>
                 </div>

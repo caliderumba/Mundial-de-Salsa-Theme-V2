@@ -23,6 +23,10 @@ function mds_pro_custom_css() {
 
     $is_dark_mode     = mds_pro_get_option( 'general', 'dark_mode', false );
 
+    $site_width       = mds_pro_get_option( 'layout', 'site_width', '1200' );
+    $header_width     = mds_pro_get_option( 'layout', 'header_width', 'boxed' );
+    $footer_width     = mds_pro_get_option( 'layout', 'footer_width', 'boxed' );
+
     ?>
     <style id="mds-pro-custom-css">
         :root {
@@ -36,7 +40,33 @@ function mds_pro_custom_css() {
             --mds-heading-font: '<?php echo esc_attr( $heading_font ); ?>', sans-serif;
             
             --mds-body-size: <?php echo esc_attr( $body_size ); ?>px;
+            --mds-site-width: <?php echo esc_attr( $site_width ); ?>px;
         }
+
+        /* Global Layout Width */
+        .container {
+            max-width: var(--mds-site-width) !important;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Header Width Control */
+        <?php if ( 'full' === $header_width ) : ?>
+        .site-header .container {
+            max-width: 100% !important;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        <?php endif; ?>
+
+        /* Footer Width Control */
+        <?php if ( 'full' === $footer_width ) : ?>
+        .site-footer .container {
+            max-width: 100% !important;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        <?php endif; ?>
 
         /* Dark Mode Overrides */
         html.dark {

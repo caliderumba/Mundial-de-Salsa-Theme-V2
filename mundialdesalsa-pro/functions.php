@@ -39,6 +39,7 @@ $mds_includes = [
 	'inc/modules/editorial-engine.php', // New: Trending & Views
 	'inc/modules/traffic-engine.php',   // New: Infinite Scroll & Next Post
 	'inc/modules/layout-engine.php',    // New: Dynamic Layout Switcher
+	'inc/widgets/trending-widget.php',  // New: Trending Widget
 	'inc/performance/clean-up.php',
 	'inc/integrations/schema.php',
 	'inc/integrations/pwa.php',

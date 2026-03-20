@@ -109,15 +109,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Load More
+    // --- Load More with Skeleton Screens ---
     const loadMoreBtn = document.getElementById('load-more-btn');
     const postsContainer = document.getElementById('posts-container');
     let page = 1;
     
+    const skeletonHTML = `
+        <div class="skeleton-post mb-12 pb-12 border-b border-slate-100 dark:border-slate-800 relative overflow-hidden">
+            <div class="skeleton-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-slate-700/20 to-transparent -translate-x-full animate-shimmer"></div>
+            <div class="h-8 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-4"></div>
+            <div class="flex gap-4 mb-6">
+                <div class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-20"></div>
+                <div class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-20"></div>
+            </div>
+            <div class="h-64 bg-slate-200 dark:bg-slate-800 rounded-2xl mb-8"></div>
+            <div class="space-y-3">
+                <div class="h-4 bg-slate-200 dark:bg-slate-800 rounded w-full"></div>
+                <div class="h-4 bg-slate-200 dark:bg-slate-800 rounded w-5/6"></div>
+                <div class="h-4 bg-slate-200 dark:bg-slate-800 rounded w-4/6"></div>
+            </div>
+        </div>
+    `;
+
+    // Add shimmer animation to Tailwind
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+            animation: shimmer 1.5s infinite;
+        }
+    `;
+    document.head.appendChild(style);
+
     if (loadMoreBtn && postsContainer) {
         loadMoreBtn.addEventListener('click', () => {
-            loadMoreBtn.textContent = 'Cargando...';
-            loadMoreBtn.disabled = true;
+            loadMoreBtn.classList.add('opacity-0', 'pointer-events-none');
+            
+            // Add 2 skeletons
+            postsContainer.insertAdjacentHTML('beforeend', skeletonHTML + skeletonHTML);
             
             fetch(mds_pro_vars.ajax_url, {
                 method: 'POST',
@@ -131,18 +162,149 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(res => res.text())
             .then(data => {
+                // Remove skeletons
+                const skeletons = postsContainer.querySelectorAll('.skeleton-post');
+                skeletons.forEach(s => s.remove());
+
                 if (data.trim() === '') {
                     loadMoreBtn.textContent = 'No hay más artículos';
+                    loadMoreBtn.classList.remove('opacity-0', 'pointer-events-none');
                     loadMoreBtn.disabled = true;
                 } else {
                     postsContainer.insertAdjacentHTML('beforeend', data);
                     page++;
-                    loadMoreBtn.textContent = 'Cargar más';
-                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    
+                    // Re-init features for new posts
+                    initFavorites();
+                    initReactions();
                 }
             });
         });
     }
+
+    // --- Favoritos (Save for Later) ---
+    const initFavorites = () => {
+        const favoriteBtns = document.querySelectorAll('.favorite-btn');
+        const favoritesCount = document.getElementById('favorites-count');
+        let favorites = JSON.parse(localStorage.getItem('mds_favorites') || '[]');
+
+        const updateCounter = () => {
+            if (favoritesCount) {
+                const count = favorites.length;
+                favoritesCount.textContent = count;
+                if (count > 0) {
+                    favoritesCount.classList.remove('opacity-0');
+                    favoritesCount.classList.add('opacity-100');
+                } else {
+                    favoritesCount.classList.add('opacity-0');
+                    favoritesCount.classList.remove('opacity-100');
+                }
+            }
+        };
+
+        updateCounter();
+
+        favoriteBtns.forEach(btn => {
+            const postId = btn.dataset.postId;
+            const icon = btn.querySelector('.favorite-icon');
+            const text = btn.querySelector('.favorite-text');
+            
+            const isFavorited = favorites.includes(postId);
+            if (isFavorited) {
+                icon.classList.add('fill-rose-500', 'text-rose-500');
+                if (text) text.textContent = text.textContent.includes('Favoritos') ? 'En Favoritos' : 'Guardado';
+            }
+
+            // Remove old listener to avoid duplicates
+            btn.onclick = null; 
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                favorites = JSON.parse(localStorage.getItem('mds_favorites') || '[]');
+                const index = favorites.indexOf(postId);
+                
+                if (index > -1) {
+                    favorites.splice(index, 1);
+                    icon.classList.remove('fill-rose-500', 'text-rose-500');
+                    if (text) text.textContent = text.textContent.includes('Favoritos') ? 'Guardar en Favoritos' : 'Guardar';
+                } else {
+                    favorites.push(postId);
+                    icon.classList.add('fill-rose-500', 'text-rose-500');
+                    if (text) text.textContent = text.textContent.includes('Favoritos') ? 'En Favoritos' : 'Guardado';
+                    
+                    // Small animation
+                    icon.classList.add('scale-125');
+                    setTimeout(() => icon.classList.remove('scale-125'), 200);
+                }
+                
+                localStorage.setItem('mds_favorites', JSON.stringify(favorites));
+                updateCounter();
+            });
+        });
+    };
+
+    // --- Reacciones (Micro-interactions) ---
+    const initReactions = () => {
+        const reactionBtns = document.querySelectorAll('.reaction-btn');
+        let userReactions = JSON.parse(localStorage.getItem('mds_reactions') || '{}');
+
+        reactionBtns.forEach(btn => {
+            const postId = btn.closest('[data-post-id]').dataset.postId;
+            const reactionType = btn.dataset.reaction;
+            
+            const applyStyles = (isActive) => {
+                const ringColor = reactionType === 'salsa' ? 'ring-emerald-500' : (reactionType === 'fuego' ? 'ring-orange-500' : 'ring-indigo-500');
+                const bgColor = reactionType === 'salsa' ? 'bg-emerald-50' : (reactionType === 'fuego' ? 'bg-orange-50' : 'bg-indigo-50');
+                const darkBgColor = reactionType === 'salsa' ? 'dark:bg-emerald-900/20' : (reactionType === 'fuego' ? 'dark:bg-orange-900/20' : 'dark:bg-indigo-900/20');
+                
+                if (isActive) {
+                    btn.classList.add('ring-2', ringColor, bgColor, darkBgColor);
+                } else {
+                    btn.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-900/20', 'ring-orange-500', 'bg-orange-50', 'dark:bg-orange-900/20', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20');
+                }
+            };
+
+            const hasReacted = userReactions[postId] === reactionType;
+            if (hasReacted) {
+                applyStyles(true);
+            }
+
+            btn.onclick = null;
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                userReactions = JSON.parse(localStorage.getItem('mds_reactions') || '{}');
+                
+                const currentReaction = userReactions[postId];
+                
+                // Remove active state from all siblings
+                const siblings = btn.closest('.post-reactions').querySelectorAll('.reaction-btn');
+                siblings.forEach(s => s.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-900/20', 'ring-orange-500', 'bg-orange-50', 'dark:bg-orange-900/20', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20'));
+
+                if (currentReaction === reactionType) {
+                    // Toggle off
+                    delete userReactions[postId];
+                    applyStyles(false);
+                } else {
+                    // Toggle on or switch
+                    userReactions[postId] = reactionType;
+                    applyStyles(true);
+                    
+                    // Scaling animation
+                    const icon = btn.querySelector('span');
+                    icon.classList.add('scale-150');
+                    setTimeout(() => icon.classList.remove('scale-150'), 300);
+                }
+                
+                localStorage.setItem('mds_reactions', JSON.stringify(userReactions));
+            });
+        });
+    };
+
+    initFavorites();
+    initReactions();
 
     // 4. Mini-Reproductor Flotante
     const initFloatingPlayer = () => {
@@ -161,9 +323,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Parse URL to get Embed URL
         let embedUrl = '';
         if (playlistUrl.includes('spotify.com')) {
-            embedUrl = playlistUrl.replace('open.spotify.com/', 'open.spotify.com/embed/');
-            if (!embedUrl.includes('/embed/')) {
-                embedUrl = embedUrl.replace('spotify.com/', 'spotify.com/embed/');
+            if (playlistUrl.includes('/embed/')) {
+                embedUrl = playlistUrl;
+            } else {
+                embedUrl = playlistUrl.replace('open.spotify.com/', 'open.spotify.com/embed/');
+            }
+        } else if (playlistUrl.includes('soundcloud.com')) {
+            if (playlistUrl.includes('w.soundcloud.com/player')) {
+                embedUrl = playlistUrl;
+            } else {
+                embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(playlistUrl)}&color=%2310b981&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`;
             }
         } else if (playlistUrl.includes('youtube.com') || playlistUrl.includes('youtu.be')) {
             let videoId = '';

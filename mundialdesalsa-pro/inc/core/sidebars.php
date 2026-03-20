@@ -37,5 +37,15 @@ function mds_pro_widgets_init() {
 		'before_title'  => '<h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-3"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>',
 		'after_title'   => '</h4>',
 	] );
+
+    register_sidebar( [
+		'name'          => esc_html__( 'Footer 3', 'mundialdesalsa-pro' ),
+		'id'            => 'footer-3',
+		'description'   => esc_html__( 'Widgets para la tercera columna del footer.', 'mundialdesalsa-pro' ),
+		'before_widget' => '<div id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h4 class="text-white font-black uppercase tracking-widest text-xs mb-8 flex items-center gap-3"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>',
+		'after_title'   => '</h4>',
+	] );
 }
 add_action( 'widgets_init', 'mds_pro_widgets_init' );

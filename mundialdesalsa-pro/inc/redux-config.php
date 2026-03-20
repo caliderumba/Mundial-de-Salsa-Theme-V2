@@ -129,6 +129,36 @@ Redux::setSection( $opt_name, array(
     'icon'   => 'el el-website',
     'fields' => array(
         array(
+            'id'       => 'site_width',
+            'type'     => 'slider',
+            'title'    => __( 'Ancho del Sitio (px)', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Define el ancho máximo del contenedor principal.', 'mundialdesalsa-pro' ),
+            'min'      => 1000,
+            'max'      => 1600,
+            'step'     => 10,
+            'default'  => 1200,
+        ),
+        array(
+            'id'       => 'header_width',
+            'type'     => 'button_set',
+            'title'    => __( 'Ancho del Header', 'mundialdesalsa-pro' ),
+            'options'  => array(
+                'full'  => 'Ancho Completo',
+                'boxed' => 'En Caja (Boxed)',
+            ),
+            'default'  => 'boxed',
+        ),
+        array(
+            'id'       => 'footer_width',
+            'type'     => 'button_set',
+            'title'    => __( 'Ancho del Footer', 'mundialdesalsa-pro' ),
+            'options'  => array(
+                'full'  => 'Ancho Completo',
+                'boxed' => 'En Caja (Boxed)',
+            ),
+            'default'  => 'boxed',
+        ),
+        array(
             'id'       => 'homepage',
             'type'     => 'select',
             'title'    => __( 'Layout de Portada', 'mundialdesalsa-pro' ),
@@ -140,17 +170,28 @@ Redux::setSection( $opt_name, array(
             'default'  => 'magazine',
         ),
         array(
-            'id'       => 'single',
+            'id'       => 'single_layout',
             'type'     => 'select',
             'title'    => __( 'Layout de Artículo', 'mundialdesalsa-pro' ),
             'options'  => array(
-                'classic'  => 'Classic',
-                'wide'     => 'Wide',
-                'magazine' => 'Magazine',
-                'video'    => 'Video',
-                'minimal'  => 'Minimal',
+                'classic'  => 'Classic (Sidebar)',
+                'wide'     => 'Wide (No Sidebar)',
+                'magazine' => 'Magazine Style',
+                'video'    => 'Video Layout',
+                'minimal'  => 'Minimalist',
             ),
             'default'  => 'classic',
+        ),
+        array(
+            'id'       => 'page_layout',
+            'type'     => 'select',
+            'title'    => __( 'Layout de Páginas', 'mundialdesalsa-pro' ),
+            'options'  => array(
+                'standard' => 'Estándar (Sidebar)',
+                'full'     => 'Ancho Completo',
+                'narrow'   => 'Estrecho (Centrado)',
+            ),
+            'default'  => 'standard',
         ),
         array(
             'id'       => 'sidebar_position',
@@ -181,9 +222,21 @@ Redux::setSection( $opt_name, array(
         array(
             'id'       => 'lazy_load',
             'type'     => 'switch',
-            'title'    => __( 'Lazy Load Images', 'mundialdesalsa-pro' ),
+            'title'    => __( 'Lazy Load de Imágenes', 'mundialdesalsa-pro' ),
             'subtitle' => __( 'Optimizar la carga de imágenes.', 'mundialdesalsa-pro' ),
             'default'  => true,
+        ),
+        array(
+            'id'       => 'minify_css',
+            'type'     => 'switch',
+            'title'    => __( 'Minificar CSS', 'mundialdesalsa-pro' ),
+            'default'  => false,
+        ),
+        array(
+            'id'       => 'pwa',
+            'type'     => 'switch',
+            'title'    => __( 'Activar PWA', 'mundialdesalsa-pro' ),
+            'default'  => false,
         ),
         array(
             'id'       => 'amp_support',
@@ -219,10 +272,42 @@ Redux::setSection( $opt_name, array(
             'subtitle' => __( 'Pega aquí el código de tu anuncio.', 'mundialdesalsa-pro' ),
         ),
         array(
+            'id'       => 'content_ad',
+            'type'     => 'textarea',
+            'title'    => __( 'Anuncio en Contenido', 'mundialdesalsa-pro' ),
+        ),
+        array(
             'id'       => 'newsletter_shortcode',
             'type'     => 'text',
             'title'    => __( 'Shortcode de Newsletter', 'mundialdesalsa-pro' ),
             'subtitle' => __( 'Pega el shortcode de tu formulario de suscripción.', 'mundialdesalsa-pro' ),
+        ),
+    ),
+) );
+
+// Review Settings Section
+Redux::setSection( $opt_name, array(
+    'title'      => __( 'Sistema de Críticas', 'mundialdesalsa-pro' ),
+    'id'         => 'reviews',
+    'icon'       => 'el el-star',
+    'fields'     => array(
+        array(
+            'id'       => 'enable_reviews',
+            'type'     => 'switch',
+            'title'    => __( 'Habilitar Sistema de Críticas', 'mundialdesalsa-pro' ),
+            'default'  => true,
+        ),
+        array(
+            'id'       => 'review_title',
+            'type'     => 'text',
+            'title'    => __( 'Título del Box de Crítica', 'mundialdesalsa-pro' ),
+            'default'  => __( 'Veredicto Mundial', 'mundialdesalsa-pro' ),
+        ),
+        array(
+            'id'       => 'review_color',
+            'type'     => 'color',
+            'title'    => __( 'Color de Acento de Crítica', 'mundialdesalsa-pro' ),
+            'default'  => '#10b981',
         ),
     ),
 ) );
@@ -233,10 +318,32 @@ Redux::setSection( $opt_name, array(
     'icon'   => 'el el-website-alt',
     'fields' => array(
         array(
-            'id'       => 'footer_text',
-            'type'     => 'editor',
-            'title'    => __( 'Texto del Pie de Página', 'mundialdesalsa-pro' ),
-            'default'  => '© ' . date('Y') . ' MundialdeSalsa. Todos los derechos reservados.',
+            'id'       => 'footer_layout',
+            'type'     => 'select',
+            'title'    => __( 'Diseño de Footer', 'mundialdesalsa-pro' ),
+            'options'  => array(
+                'standard' => 'Estándar (4 Columnas)',
+                'simple'   => 'Simple',
+            ),
+            'default'  => 'standard',
+        ),
+        array(
+            'id'       => 'footer_bg_color',
+            'type'     => 'color',
+            'title'    => __( 'Color de Fondo Footer', 'mundialdesalsa-pro' ),
+            'default'  => '#111827',
+        ),
+        array(
+            'id'       => 'footer_text_color',
+            'type'     => 'color',
+            'title'    => __( 'Color de Texto Footer', 'mundialdesalsa-pro' ),
+            'default'  => '#9ca3af',
+        ),
+        array(
+            'id'       => 'copyright_text',
+            'type'     => 'text',
+            'title'    => __( 'Texto de Copyright', 'mundialdesalsa-pro' ),
+            'default'  => '© ' . date('Y') . ' MundialdeSalsa Magazine. Todos los derechos reservados.',
         ),
         array(
             'id'       => 'footer_scripts',
@@ -308,129 +415,6 @@ Redux::setSection( $opt_name, array(
             'type'     => 'color',
             'title'    => __( 'Color de Texto', 'mundialdesalsa-pro' ),
             'default'  => '#1f2937',
-        ),
-    ),
-) );
-
-Redux::setSection( $opt_name, array(
-    'title'  => __( 'Header', 'mundialdesalsa-pro' ),
-    'id'     => 'header',
-    'icon'   => 'el el-arrow-up',
-    'fields' => array(
-        array(
-            'id'       => 'header_layout',
-            'type'     => 'select',
-            'title'    => __( 'Diseño de Header', 'mundialdesalsa-pro' ),
-            'options'  => array(
-                'standard' => 'Estándar',
-                'centered' => 'Centrado',
-                'minimal'  => 'Minimalista',
-            ),
-            'default'  => 'standard',
-        ),
-        array(
-            'id'       => 'header_bg_color',
-            'type'     => 'color',
-            'title'    => __( 'Color de Fondo Header', 'mundialdesalsa-pro' ),
-            'default'  => '#ffffff',
-        ),
-        array(
-            'id'       => 'menu_text_color',
-            'type'     => 'color',
-            'title'    => __( 'Color de Texto Menú', 'mundialdesalsa-pro' ),
-            'default'  => '#1f2937',
-        ),
-        array(
-            'id'       => 'sticky_header',
-            'type'     => 'switch',
-            'title'    => __( 'Header Pegajoso', 'mundialdesalsa-pro' ),
-            'default'  => true,
-        ),
-    ),
-) );
-
-Redux::setSection( $opt_name, array(
-    'title'  => __( 'Footer', 'mundialdesalsa-pro' ),
-    'id'     => 'footer',
-    'icon'   => 'el el-arrow-down',
-    'fields' => array(
-        array(
-            'id'       => 'footer_layout',
-            'type'     => 'select',
-            'title'    => __( 'Diseño de Footer', 'mundialdesalsa-pro' ),
-            'options'  => array(
-                'standard' => 'Estándar (4 Columnas)',
-                'simple'   => 'Simple',
-            ),
-            'default'  => 'standard',
-        ),
-        array(
-            'id'       => 'footer_bg_color',
-            'type'     => 'color',
-            'title'    => __( 'Color de Fondo Footer', 'mundialdesalsa-pro' ),
-            'default'  => '#111827',
-        ),
-        array(
-            'id'       => 'footer_text_color',
-            'type'     => 'color',
-            'title'    => __( 'Color de Texto Footer', 'mundialdesalsa-pro' ),
-            'default'  => '#9ca3af',
-        ),
-        array(
-            'id'       => 'copyright_text',
-            'type'     => 'text',
-            'title'    => __( 'Texto de Copyright', 'mundialdesalsa-pro' ),
-            'default'  => '© ' . date('Y') . ' MundialdeSalsa Magazine. Todos los derechos reservados.',
-        ),
-    ),
-) );
-
-Redux::setSection( $opt_name, array(
-    'title'  => __( 'Publicidad', 'mundialdesalsa-pro' ),
-    'id'     => 'ads',
-    'icon'   => 'el el-megaphone',
-    'fields' => array(
-        array(
-            'id'       => 'header_ad',
-            'type'     => 'textarea',
-            'title'    => __( 'Anuncio en Header', 'mundialdesalsa-pro' ),
-            'subtitle' => __( 'Código HTML o AdSense.', 'mundialdesalsa-pro' ),
-        ),
-        array(
-            'id'       => 'sidebar_ad',
-            'type'     => 'textarea',
-            'title'    => __( 'Anuncio en Sidebar', 'mundialdesalsa-pro' ),
-        ),
-        array(
-            'id'       => 'content_ad',
-            'type'     => 'textarea',
-            'title'    => __( 'Anuncio en Contenido', 'mundialdesalsa-pro' ),
-        ),
-    ),
-) );
-
-Redux::setSection( $opt_name, array(
-    'title'  => __( 'Performance', 'mundialdesalsa-pro' ),
-    'id'     => 'performance',
-    'icon'   => 'el el-dashboard',
-    'fields' => array(
-        array(
-            'id'       => 'lazy_load',
-            'type'     => 'switch',
-            'title'    => __( 'Lazy Load de Imágenes', 'mundialdesalsa-pro' ),
-            'default'  => true,
-        ),
-        array(
-            'id'       => 'minify_css',
-            'type'     => 'switch',
-            'title'    => __( 'Minificar CSS', 'mundialdesalsa-pro' ),
-            'default'  => false,
-        ),
-        array(
-            'id'       => 'pwa',
-            'type'     => 'switch',
-            'title'    => __( 'Activar PWA', 'mundialdesalsa-pro' ),
-            'default'  => false,
         ),
     ),
 ) );

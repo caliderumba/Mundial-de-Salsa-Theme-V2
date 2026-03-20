@@ -202,6 +202,7 @@ function mds_pro_track_post_views() {
 
     update_post_meta( $post_id, 'mds_pro_views_count', $count );
 }
+add_action( 'wp_head', 'mds_pro_track_post_views' );
 
 /**
  * Social Sharing Buttons
