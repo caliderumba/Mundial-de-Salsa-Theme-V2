@@ -57,8 +57,44 @@ function mds_pro_setup() {
     add_image_size( 'mds-pro-magazine', 800, 600, true );
     add_image_size( 'mds-pro-hero', 1200, 800, true );
     add_image_size( 'mds-pro-thumbnail', 400, 300, true );
+
+    // Block Templates
+    $post_type_object = get_post_type_object( 'post' );
+    $post_type_object->template = array(
+        array( 'mds-pro/video-hero' ),
+        array( 'mds-pro/editorial-highlights' ),
+        array( 'core/paragraph', array(
+            'placeholder' => 'Comienza a escribir la historia de la salsa...',
+        ) ),
+    );
+
+    $page_type_object = get_post_type_object( 'page' );
+    // We can't easily set a global page template that only applies to "Home" without more logic,
+    // but we can define a default for new pages or use a specific page template.
 }
 add_action( 'after_setup_theme', 'mds_pro_setup' );
+
+/**
+ * Set default content for the Home page if it's new
+ */
+function mds_pro_set_home_template( $post_id, $post, $update ) {
+    if ( $update ) return;
+    if ( $post->post_type !== 'page' ) return;
+    
+    // Check if this is intended to be the home page (e.g. title is "Inicio" or "Home")
+    if ( in_array( strtolower($post->post_title), ['inicio', 'home'] ) ) {
+        $content = '
+            <!-- wp:mds-pro/bento-grid {"category":"mundial"} /-->
+            <!-- wp:mds-pro/smart-list {"category":"feria"} /-->
+            <!-- wp:mds-pro/editorial-highlights /-->
+        ';
+        wp_update_post( array(
+            'ID'           => $post_id,
+            'post_content' => $content,
+        ) );
+    }
+}
+add_action( 'wp_insert_post', 'mds_pro_set_home_template', 10, 3 );
 
 /**
  * Enable WebP and SVG Support

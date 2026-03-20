@@ -10,130 +10,186 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Output custom CSS in the head
  */
-function mds_pro_custom_css() {
-    // Layout Presets Logic
-    $layout_preset = mds_pro_get_option( 'layout_pro', 'layout_preset', 'meloso' );
-    
-    $presets = array(
-        'suave'  => array( 'width' => '1400', 'gap' => '40', 'radius' => '20' ),
-        'meloso' => array( 'width' => '1200', 'gap' => '30', 'radius' => '12' ),
-        'brava'  => array( 'width' => '1100', 'gap' => '20', 'radius' => '4' ),
-    );
+/**
+ * Get custom CSS variables based on theme options
+ */
+function mds_pro_get_custom_css_vars() {
+    global $mds_pro_options;
 
-    if ( 'custom' === $layout_preset ) {
-        $site_width    = mds_pro_get_option( 'layout_pro', 'custom_site_width', '1200' );
-        $border_radius = mds_pro_get_option( 'layout_pro', 'custom_radius', '12' );
-        $gap_desktop   = mds_pro_get_option( 'layout_pro', 'custom_gap', '30' );
-    } else {
-        $site_width    = $presets[$layout_preset]['width'];
-        $border_radius = $presets[$layout_preset]['radius'];
-        $gap_desktop   = $presets[$layout_preset]['gap'];
+    // Container Width
+    $container_width = isset( $mds_pro_options['container_width'] ) ? $mds_pro_options['container_width'] : '1200';
+
+    // Typography
+    $main_title = isset( $mds_pro_options['main_title_typo'] ) ? $mds_pro_options['main_title_typo'] : array();
+    $subtitle   = isset( $mds_pro_options['subtitle_typo'] ) ? $mds_pro_options['subtitle_typo'] : array();
+    $paragraph  = isset( $mds_pro_options['paragraph_typo'] ) ? $mds_pro_options['paragraph_typo'] : array();
+
+    // Primary Color (Fallback to salsa red)
+    $primary_color = isset( $mds_pro_options['primary'] ) ? $mds_pro_options['primary'] : '#e74c3c';
+
+    // Header Transparent
+    $header_transparent = isset( $mds_pro_options['header_transparent_home'] ) && $mds_pro_options['header_transparent_home'] && is_front_page();
+
+    ob_start();
+    ?>
+    :root {
+        --mds-primary: <?php echo esc_attr( $primary_color ); ?>;
+        --mds-container-width: <?php echo esc_attr( $container_width ); ?>px;
+        
+        /* Typography Variables */
+        --mds-font-main-title: <?php echo isset($main_title['font-family']) ? esc_attr($main_title['font-family']) : 'Space Grotesk'; ?>, sans-serif;
+        --mds-font-subtitle: <?php echo isset($subtitle['font-family']) ? esc_attr($subtitle['font-family']) : 'Inter'; ?>, sans-serif;
+        --mds-font-paragraph: <?php echo isset($paragraph['font-family']) ? esc_attr($paragraph['font-family']) : 'Inter'; ?>, sans-serif;
+
+        --mds-size-main-title: <?php echo isset($main_title['font-size']) ? esc_attr($main_title['font-size']) : '48px'; ?>;
+        --mds-size-subtitle: <?php echo isset($subtitle['font-size']) ? esc_attr($subtitle['font-size']) : '24px'; ?>;
+        --mds-size-paragraph: <?php echo isset($paragraph['font-size']) ? esc_attr($paragraph['font-size']) : '16px'; ?>;
+
+        --mds-weight-main-title: <?php echo isset($main_title['font-weight']) ? esc_attr($main_title['font-weight']) : '700'; ?>;
+        --mds-weight-subtitle: <?php echo isset($subtitle['font-weight']) ? esc_attr($subtitle['font-weight']) : '600'; ?>;
+        --mds-weight-paragraph: <?php echo isset($paragraph['font-weight']) ? esc_attr($paragraph['font-weight']) : '400'; ?>;
+        
+        --mds-gap: 30px;
+        --mds-radius: 12px;
     }
 
-    // Colors Logic
-    $palette = mds_pro_get_option( 'colors_pro', 'color_palette', 'clasica' );
-    $palettes = array(
-        'clasica'  => '#e74c3c',
-        'tropical' => '#2ecc71',
-        'noche'    => '#8e44ad',
-    );
+    body {
+        font-family: var(--mds-font-paragraph);
+        font-size: var(--mds-size-paragraph);
+        font-weight: var(--mds-weight-paragraph);
+        color: #1f2937;
+        background-color: #ffffff;
+    }
+
+    h1, h2, h3, .main-title {
+        font-family: var(--mds-font-main-title);
+        font-weight: var(--mds-weight-main-title);
+        text-transform: uppercase;
+    }
+
+    h1 { font-size: var(--mds-size-main-title); }
+
+    .subtitle, h4, h5, h6 {
+        font-family: var(--mds-font-subtitle);
+        font-weight: var(--mds-weight-subtitle);
+        font-size: var(--mds-size-subtitle);
+    }
+
+    .container {
+        max-width: var(--mds-container-width);
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    <?php if ( $header_transparent ) : ?>
+    .site-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: transparent !important;
+        border-bottom: none !important;
+        z-index: 50;
+    }
+    <?php endif; ?>
+
+    .bg-salsa { background-color: var(--mds-primary); color: #fff; }
+    .text-salsa { color: var(--mds-primary); }
+    .border-salsa { border-color: var(--mds-primary); }
     
-    $primary_color = mds_pro_get_option( 'colors_pro', 'primary_color', $palettes[$palette] );
+    .rounded-salsa { border-radius: var(--mds-radius); }
 
-    // Mobile Gap (50% of desktop gap for mobile-first responsiveness)
-    $gap_mobile = intval( $gap_desktop ) * 0.5;
+    /* Mega Menu Pro Styles */
+    .mega-menu-pro .mega-menu-content {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .mega-menu-pro article img {
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mega-menu-pro article:hover img {
+        transform: scale(1.05);
+    }
 
-    ?>
-    <style id="mds-pro-custom-css">
-        :root {
-            --mds-primary: <?php echo esc_attr( $primary_color ); ?>;
-            --mds-bg: #ffffff;
-            --mds-text: #1f2937;
-            
-            /* Fluid Typography */
-            --mds-font-heading: clamp(2rem, 5vw, 4rem);
-            
-            --mds-site-width: <?php echo esc_attr( $site_width ); ?>px;
-            --mds-radius: <?php echo esc_attr( $border_radius ); ?>px;
-            --mds-gap: <?php echo esc_attr( $gap_desktop ); ?>px;
-        }
+    /* Mobile Accordion Nav */
+    .mobile-accordion-nav a {
+        display: block;
+        font-size: 16px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s ease;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .mobile-accordion-nav a:hover {
+        color: var(--mds-primary);
+    }
+    .mobile-accordion-nav .sub-menu {
+        padding-left: 20px;
+        margin-top: 10px;
+        border-left: 2px solid var(--mds-primary);
+    }
 
-        @media (max-width: 768px) {
-            :root {
-                --mds-gap: <?php echo esc_attr( $gap_mobile ); ?>px;
-            }
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            color: var(--mds-text);
-            background-color: var(--mds-bg);
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        h1 { font-size: var(--mds-font-heading); }
-
-        .container {
-            max-width: var(--mds-site-width);
-            margin: 0 auto;
-            padding: 0 var(--mds-gap);
-        }
-
-        .bg-salsa { background-color: var(--mds-primary); color: #fff; }
-        .text-salsa { color: var(--mds-primary); }
-        .border-salsa { border-color: var(--mds-primary); }
-        
-        .rounded-salsa { border-radius: var(--mds-radius); }
-
-        /* Mega Menu Pro Styles */
-        .mega-menu-pro .mega-menu-content {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        .mega-menu-pro article img {
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .mega-menu-pro article:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Mobile Accordion Nav */
-        .mobile-accordion-nav a {
-            display: block;
-            font-size: 16px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-            color: rgba(255, 255, 255, 0.7);
-            transition: color 0.3s ease;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .mobile-accordion-nav a:hover {
-            color: var(--mds-primary);
-        }
-        .mobile-accordion-nav .sub-menu {
-            padding-left: 20px;
-            margin-top: 10px;
-            border-left: 2px solid var(--mds-primary);
-        }
-    </style>
+    /* Block Specific Styles */
+    .mds-bento-grid article { border-radius: var(--mds-radius); }
+    .mds-smart-list article img { border-radius: var(--mds-radius); }
+    .mds-video-hero { border-radius: var(--mds-radius); }
+    
+    #mds-theater-container.theater-active {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90vw;
+        max-width: 1200px;
+        z-index: 100;
+        margin: 0;
+    }
+    
+    #mds-theater-container.theater-active #mds-theater-toggle {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        color: black;
+        z-index: 101;
+    }
     <?php
+    return ob_get_clean();
+}
+
+/**
+ * Output custom CSS in the head
+ */
+function mds_pro_custom_css() {
+    $css = mds_pro_get_custom_css_vars();
+    echo '<style id="mds-pro-custom-css">' . $css . '</style>';
 }
 add_action( 'wp_head', 'mds_pro_custom_css', 100 );
+
+/**
+ * Output custom CSS in the block editor
+ */
+function mds_pro_editor_custom_css() {
+    $css = mds_pro_get_custom_css_vars();
+    wp_add_inline_style( 'wp-edit-blocks', $css );
+}
+add_action( 'enqueue_block_editor_assets', 'mds_pro_editor_custom_css' );
 
 /**
  * Enqueue Google Fonts dynamically
  */
 function mds_pro_enqueue_custom_fonts() {
-    $body_font    = mds_pro_get_option( 'typography', 'body_font', 'Inter' );
-    $heading_font = mds_pro_get_option( 'typography', 'headings_font', 'Space Grotesk' );
+    global $mds_pro_options;
     
-    $fonts = array_unique([$body_font, $heading_font]);
+    $fonts = array();
+    if ( isset( $mds_pro_options['main_title_typo']['font-family'] ) ) $fonts[] = $mds_pro_options['main_title_typo']['font-family'];
+    if ( isset( $mds_pro_options['subtitle_typo']['font-family'] ) ) $fonts[] = $mds_pro_options['subtitle_typo']['font-family'];
+    if ( isset( $mds_pro_options['paragraph_typo']['font-family'] ) ) $fonts[] = $mds_pro_options['paragraph_typo']['font-family'];
+
+    $fonts = array_unique( array_filter( $fonts ) );
     $font_families = [];
     
     foreach ($fonts as $font) {

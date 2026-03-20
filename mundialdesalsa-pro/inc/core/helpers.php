@@ -285,3 +285,89 @@ function mds_pro_get_logo() {
     
     return $output;
 }
+
+/**
+ * Render Post Video (SEO Priority)
+ */
+function mds_pro_render_post_video() {
+    $video_url   = get_post_meta( get_the_ID(), 'mds_post_video_url', true );
+    $video_embed = get_post_meta( get_the_ID(), 'mds_post_video_embed', true );
+    $video_self  = get_post_meta( get_the_ID(), 'mds_post_video_self', true );
+    $layout      = get_post_meta( get_the_ID(), 'mds_post_video_layout', true );
+
+    if ( empty( $video_url ) && empty( $video_embed ) && empty( $video_self['url'] ) ) {
+        return;
+    }
+
+    $container_class = 'mds-video-container mb-8 overflow-hidden rounded-salsa shadow-lg';
+    if ( $layout === 'boxed' ) {
+        $container_class .= ' container mx-auto px-4';
+    }
+
+    echo '<div class="' . esc_attr( $container_class ) . '" style="--mds-radius: var(--mds-radius, 12px);">';
+    
+    if ( ! empty( $video_embed ) ) {
+        echo '<div class="aspect-video w-full">' . $video_embed . '</div>';
+    } elseif ( ! empty( $video_url ) ) {
+        echo '<div class="aspect-video w-full">' . wp_oembed_get( $video_url ) . '</div>';
+    } elseif ( ! empty( $video_self['url'] ) ) {
+        echo '<video controls class="w-full h-auto"><source src="' . esc_url( $video_self['url'] ) . '" type="video/mp4"></video>';
+    }
+
+    echo '</div>';
+}
+
+/**
+ * Render Post Highlights
+ */
+function mds_pro_render_post_highlights() {
+    $highlights = get_post_meta( get_the_ID(), 'mds_post_highlights', true );
+
+    if ( empty( $highlights ) || ! is_array( $highlights ) ) {
+        return;
+    }
+
+    ?>
+    <div class="mds-post-highlights p-6 mb-8 border-l-4 border-salsa bg-slate-50 dark:bg-slate-900 rounded-r-salsa" style="--mds-primary: var(--mds-primary, #e74c3c); --mds-radius: var(--mds-radius, 12px);">
+        <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4"><?php _e( 'Puntos Clave', 'mundialdesalsa-pro' ); ?></h4>
+        <ul class="list-none p-0 m-0 space-y-3">
+            <?php foreach ( $highlights as $point ) : if ( empty( $point ) ) continue; ?>
+                <li class="flex items-start gap-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <svg class="w-5 h-5 text-salsa shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <span><?php echo esc_html( $point ); ?></span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <?php
+}
+
+/**
+ * Render Post Sources
+ */
+function mds_pro_render_post_sources() {
+    $sources = get_post_meta( get_the_ID(), 'mds_post_sources', true );
+    $links   = get_post_meta( get_the_ID(), 'mds_post_source_links', true );
+
+    if ( empty( $sources ) || ! is_array( $sources ) ) {
+        return;
+    }
+
+    ?>
+    <div class="mds-post-sources mt-12 pt-8 border-t border-slate-100 dark:border-slate-800">
+        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-4"><?php _e( 'Fuentes & Via:', 'mundialdesalsa-pro' ); ?></span>
+        <div class="flex flex-wrap gap-x-6 gap-y-2">
+            <?php foreach ( $sources as $index => $source ) : if ( empty( $source ) ) continue; ?>
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <?php if ( ! empty( $links[$index] ) ) : ?>
+                        <a href="<?php echo esc_url( $links[$index] ); ?>" target="_blank" rel="nofollow" class="hover:text-salsa transition-colors"><?php echo esc_html( $source ); ?></a>
+                    <?php else : ?>
+                        <span><?php echo esc_html( $source ); ?></span>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+}

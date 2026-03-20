@@ -57,6 +57,38 @@ function mds_pro_register_blocks() {
         ),
     ) );
 
+    // MDS Bento Grid
+    register_block_type( 'mds-pro/bento-grid', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_bento_grid',
+        'attributes'      => array(
+            'category' => array( 'type' => 'string', 'default' => '' ),
+            'count'    => array( 'type' => 'number', 'default' => 3 ),
+        ),
+    ) );
+
+    // MDS Smart List
+    register_block_type( 'mds-pro/smart-list', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_smart_list',
+        'attributes'      => array(
+            'category' => array( 'type' => 'string', 'default' => '' ),
+            'count'    => array( 'type' => 'number', 'default' => 5 ),
+        ),
+    ) );
+
+    // MDS Editorial Highlights
+    register_block_type( 'mds-pro/editorial-highlights', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_editorial_highlights',
+    ) );
+
+    // MDS Video Hero
+    register_block_type( 'mds-pro/video-hero', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_video_hero',
+    ) );
+
     // Register a simple block for Event Info
     wp_register_script(
         'mds-pro-event-block',

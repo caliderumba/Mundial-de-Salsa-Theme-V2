@@ -33,7 +33,12 @@ $show_author_box = mds_pro_get_option( 'post_settings', 'opt_show_author_box', t
                     </div>
                 </header>
 
-                <?php if ( has_post_thumbnail() ) : ?>
+                <?php 
+                // Render Video (SEO Priority: Before Content)
+                mds_pro_render_post_video(); 
+                ?>
+
+                <?php if ( has_post_thumbnail() && empty( get_post_meta( get_the_ID(), 'mds_post_video_url', true ) ) && empty( get_post_meta( get_the_ID(), 'mds_post_video_embed', true ) ) ) : ?>
                     <div class="post-thumbnail mb-12 rounded-salsa overflow-hidden shadow-2xl">
                         <?php the_post_thumbnail( 'full', array( 'class' => 'w-full h-auto' ) ); ?>
                     </div>
@@ -41,9 +46,20 @@ $show_author_box = mds_pro_get_option( 'post_settings', 'opt_show_author_box', t
 
                 <div class="flex flex-wrap -mx-4">
                     <div class="w-full <?php echo $show_sidebar ? 'lg:w-2/3' : 'w-full'; ?> px-4">
+                        
+                        <?php 
+                        // Render Highlights
+                        mds_pro_render_post_highlights(); 
+                        ?>
+
                         <div class="entry-content prose prose-lg max-w-none mb-12">
                             <?php the_content(); ?>
                         </div>
+
+                        <?php 
+                        // Render Sources
+                        mds_pro_render_post_sources(); 
+                        ?>
 
                         <?php if ( $show_author_box ) : ?>
                             <div class="author-box p-8 bg-gray-50 rounded-salsa flex flex-col md:flex-row items-center gap-8 mb-12 border-l-8 border-salsa">

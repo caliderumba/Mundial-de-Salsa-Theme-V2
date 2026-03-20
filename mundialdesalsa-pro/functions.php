@@ -32,6 +32,7 @@ $mds_includes = [
 	'inc/theme-options/settings.php',
 	'inc/theme-options/fields.php',
 	'inc/admin/metaboxes.php',
+	'inc/admin/metabox-config.php',
 	'inc/admin/dashboard.php',
 	'inc/admin/rest-api.php',
 	'inc/builder/builder-init.php',

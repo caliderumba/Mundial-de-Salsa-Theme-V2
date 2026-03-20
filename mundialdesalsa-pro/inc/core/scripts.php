@@ -18,6 +18,11 @@ function mds_pro_scripts() {
 	// Main JS
 	wp_enqueue_script( 'mds-pro-app', MDS_PRO_URI . '/assets/js/app.js', [ 'jquery' ], MDS_PRO_VERSION, false );
 
+    // Theater Mode for Video Hero
+    if ( is_single() ) {
+        wp_enqueue_script( 'mds-pro-theater-mode', MDS_PRO_URI . '/assets/js/blocks/theater-mode.js', [], MDS_PRO_VERSION, true );
+    }
+
 	// Threaded comments
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
