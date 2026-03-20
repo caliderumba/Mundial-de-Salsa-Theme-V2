@@ -413,6 +413,41 @@ document.addEventListener('DOMContentLoaded', () => {
         sidePanelClose?.addEventListener('click', () => toggleSidePanel(false));
         sidePanelOverlay?.addEventListener('click', () => toggleSidePanel(false));
 
+        // Mobile Accordion Toggle
+        const accordionItems = document.querySelectorAll('.mobile-accordion-nav .menu-item-has-children > a');
+        accordionItems.forEach(item => {
+            const arrow = document.createElement('span');
+            arrow.innerHTML = '<i class="fa-solid fa-chevron-down ml-auto text-[10px] transition-transform duration-300"></i>';
+            arrow.className = 'flex items-center ml-auto';
+            item.classList.add('flex', 'items-center', 'justify-between');
+            item.appendChild(arrow);
+
+            item.addEventListener('click', (e) => {
+                if (window.innerWidth < 1024) {
+                    e.preventDefault();
+                    const subMenu = item.nextElementSibling;
+                    const icon = arrow.querySelector('i');
+                    
+                    if (subMenu && subMenu.classList.contains('sub-menu')) {
+                        const isOpen = subMenu.classList.contains('open');
+                        
+                        // Close others
+                        const allSubMenus = document.querySelectorAll('.mobile-accordion-nav .sub-menu');
+                        const allIcons = document.querySelectorAll('.mobile-accordion-nav .menu-item-has-children i');
+                        allSubMenus.forEach(sm => sm.classList.remove('open', 'block'));
+                        allSubMenus.forEach(sm => sm.style.display = 'none');
+                        allIcons.forEach(i => i.classList.remove('rotate-180'));
+
+                        if (!isOpen) {
+                            subMenu.classList.add('open', 'block');
+                            subMenu.style.display = 'block';
+                            icon.classList.add('rotate-180');
+                        }
+                    }
+                }
+            });
+        });
+
         // Sticky Header
         if (header && header.classList.contains('sticky-header')) {
             window.addEventListener('scroll', () => {

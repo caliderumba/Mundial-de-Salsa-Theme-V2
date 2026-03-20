@@ -11,26 +11,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
-// Access Redux Global Options
 global $mds_pro_options;
-$show_sidebar = isset($mds_pro_options['single_sidebar_toggle']) ? $mds_pro_options['single_sidebar_toggle'] : true;
+$show_sidebar = mds_pro_get_option( 'layout', 'sidebar_position', 'right' ) !== 'none';
 ?>
 
-<main id="primary" class="site-main py-12 bg-white dark:bg-slate-950">
-    <div class="container mx-auto px-4">
+<main id="primary" class="site-main py-12">
+    <div class="container">
         
-        <!-- Category Header -->
-        <header class="archive-header mb-12 border-b-4 border-[#e74c3c] inline-block pb-2">
-            <h1 class="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
+        <header class="archive-header mb-12 border-b-4 border-salsa inline-block pb-2">
+            <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">
                 <?php single_cat_title(); ?>
             </h1>
-            <?php the_archive_description( '<div class="archive-description text-slate-500 mt-2">', '</div>' ); ?>
+            <?php the_archive_description( '<div class="archive-description text-gray-500 mt-2">', '</div>' ); ?>
         </header>
 
-        <div class="row category-layout-row">
-            
-            <!-- Main Content Column -->
-            <div class="category-content-col <?php echo $show_sidebar ? 'col-md-8' : 'col-md-12'; ?>">
+        <div class="flex flex-wrap -mx-4">
+            <div class="w-full <?php echo $show_sidebar ? 'lg:w-2/3' : 'w-full'; ?> px-4">
                 
                 <?php if ( have_posts() ) : ?>
                     <div class="category-posts-wrapper">
@@ -39,96 +35,69 @@ $show_sidebar = isset($mds_pro_options['single_sidebar_toggle']) ? $mds_pro_opti
                         while ( have_posts() ) : the_post(); 
                             
                             if ( $count == 0 ) : ?>
-                                <!-- Featured Post (First Item) -->
-                                <div class="col-12 mb-10">
-                                    <article id="post-<?php the_ID(); ?>" <?php post_class('category-featured-post group relative rounded-2xl overflow-hidden shadow-2xl h-[450px]'); ?>>
-                                        <a href="<?php the_permalink(); ?>" class="absolute inset-0 z-0">
-                                            <?php if ( has_post_thumbnail() ) : ?>
-                                                <?php the_post_thumbnail( 'full', array( 'class' => 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110' ) ); ?>
-                                            <?php else : ?>
-                                                <div class="w-full h-full bg-slate-200 dark:bg-slate-800"></div>
-                                            <?php endif; ?>
-                                        </a>
-                                        
-                                        <!-- Gradient Overlay -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
-                                        
-                                        <!-- Content -->
-                                        <div class="absolute bottom-0 left-0 p-8 md:p-12 z-20 w-full">
-                                            <div class="category-badge-wrapper mb-4">
-                                                <span class="bg-[#e74c3c] text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1 rounded-full">
-                                                    <?php single_cat_title(); ?>
-                                                </span>
-                                            </div>
-                                            <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none text-white drop-shadow-lg">
-                                                <a href="<?php the_permalink(); ?>" class="hover:text-[#e74c3c] transition-colors">
-                                                    <?php the_title(); ?>
-                                                </a>
+                                <!-- Featured Post -->
+                                <article id="post-<?php the_ID(); ?>" <?php post_class('relative h-[500px] mb-12 rounded-salsa overflow-hidden group shadow-2xl'); ?>>
+                                    <a href="<?php the_permalink(); ?>" class="block h-full w-full">
+                                        <?php if ( has_post_thumbnail() ) : ?>
+                                            <?php the_post_thumbnail( 'full', array( 'class' => 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110' ) ); ?>
+                                        <?php endif; ?>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                                        <div class="absolute bottom-0 left-0 p-8 md:p-12 w-full">
+                                            <span class="inline-block bg-salsa text-white text-xs font-black uppercase px-4 py-1 rounded-full mb-4">
+                                                <?php single_cat_title(); ?>
+                                            </span>
+                                            <h2 class="text-3xl md:text-5xl font-black text-white uppercase leading-tight mb-4 group-hover:text-salsa transition-colors">
+                                                <?php the_title(); ?>
                                             </h2>
-                                            <div class="flex items-center gap-4 mt-4 text-xs text-white/70 font-bold uppercase tracking-widest">
-                                                <span><?php the_author(); ?></span>
-                                                <span>/</span>
-                                                <time datetime="<?php echo get_the_date('c'); ?>"><?php echo get_the_date(); ?></time>
+                                            <div class="text-gray-300 text-xs uppercase tracking-widest">
+                                                <?php echo get_the_date(); ?> | <?php the_author(); ?>
                                             </div>
                                         </div>
-                                    </article>
-                                </div>
-                                
-                                <!-- Start Grid for subsequent posts -->
-                                <div class="row category-grid">
+                                    </a>
+                                </article>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <?php else : ?>
-                                <!-- Grid Post (Subsequent Items) -->
-                                <div class="col-md-6 mb-8">
-                                    <article id="post-<?php the_ID(); ?>" <?php post_class('category-grid-item flex gap-4 group'); ?>>
-                                        <div class="grid-thumb shrink-0 w-32 h-24 md:w-40 md:h-28 rounded-xl overflow-hidden shadow-md">
-                                            <a href="<?php the_permalink(); ?>" class="block h-full">
-                                                <?php if ( has_post_thumbnail() ) : ?>
-                                                    <?php the_post_thumbnail( 'medium', array( 'class' => 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110' ) ); ?>
-                                                <?php else : ?>
-                                                    <div class="w-full h-full bg-slate-100 dark:bg-slate-800"></div>
-                                                <?php endif; ?>
-                                            </a>
+                                <!-- Grid Post -->
+                                <article id="post-<?php the_ID(); ?>" <?php post_class('group'); ?>>
+                                    <a href="<?php the_permalink(); ?>" class="block">
+                                        <div class="aspect-video mb-4 overflow-hidden rounded-salsa bg-gray-200 shadow-md">
+                                            <?php if ( has_post_thumbnail() ) : ?>
+                                                <?php the_post_thumbnail( 'medium_large', array( 'class' => 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110' ) ); ?>
+                                            <?php endif; ?>
                                         </div>
-                                        <div class="grid-content flex flex-col justify-center">
-                                            <h3 class="text-lg font-black uppercase tracking-tight leading-tight mb-2">
-                                                <a href="<?php the_permalink(); ?>" class="text-slate-900 dark:text-white hover:text-[#e74c3c] transition-colors">
-                                                    <?php the_title(); ?>
-                                                </a>
-                                            </h3>
-                                            <time class="text-[10px] font-bold uppercase tracking-widest text-slate-400" datetime="<?php echo get_the_date('c'); ?>">
-                                                <?php echo get_the_date(); ?>
-                                            </time>
+                                        <h3 class="text-xl font-bold uppercase mb-2 transition-colors group-hover:text-salsa">
+                                            <?php the_title(); ?>
+                                        </h3>
+                                        <div class="text-gray-500 text-[10px] uppercase tracking-widest">
+                                            <?php echo get_the_date(); ?>
                                         </div>
-                                    </article>
-                                </div>
+                                    </a>
+                                </article>
                             <?php endif; ?>
                             
                             <?php 
                             $count++;
                         endwhile; 
                         
-                        // Close grid div if it was opened
                         if ( $count > 1 ) echo '</div>';
                         ?>
                         
-                        <!-- Pagination -->
-                        <div class="pagination-wrapper mt-12">
+                        <div class="pagination-wrapper mt-12 py-8 border-t border-gray-200 flex justify-center">
                             <?php the_posts_pagination( array(
-                                'prev_text' => '<i class="fa-solid fa-arrow-left"></i>',
-                                'next_text' => '<i class="fa-solid fa-arrow-right"></i>',
+                                'prev_text' => '<i class="fas fa-arrow-left"></i>',
+                                'next_text' => '<i class="fas fa-arrow-right"></i>',
                                 'class'     => 'mds-pagination',
                             ) ); ?>
                         </div>
                     </div>
                 <?php else : ?>
-                    <p class="text-slate-500 italic">No se encontraron noticias en esta categoría.</p>
+                    <p class="text-gray-500 italic">No se encontraron noticias en esta categoría.</p>
                 <?php endif; ?>
 
             </div>
 
-            <!-- Sidebar Column -->
             <?php if ( $show_sidebar ) : ?>
-                <aside class="category-sidebar-col col-md-4">
+                <aside class="w-full lg:w-1/3 px-4">
                     <?php get_sidebar(); ?>
                 </aside>
             <?php endif; ?>

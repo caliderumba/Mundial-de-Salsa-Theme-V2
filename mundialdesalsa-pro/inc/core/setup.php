@@ -51,6 +51,9 @@ function mds_pro_setup() {
     add_editor_style( 'assets/css/editor-style.css' );
 
     // Custom Image Sizes
+    add_image_size( 'card-thumb', 400, 250, true );
+    add_image_size( 'featured-main', 1200, 600, true );
+    add_image_size( 'square-mini', 150, 150, true );
     add_image_size( 'mds-pro-magazine', 800, 600, true );
     add_image_size( 'mds-pro-hero', 1200, 800, true );
     add_image_size( 'mds-pro-thumbnail', 400, 300, true );
@@ -58,13 +61,25 @@ function mds_pro_setup() {
 add_action( 'after_setup_theme', 'mds_pro_setup' );
 
 /**
- * Enable WebP Support
+ * Enable WebP and SVG Support
  */
 function mds_pro_upload_mimes( $mimes ) {
     $mimes['webp'] = 'image/webp';
+    $mimes['svg']  = 'image/svg+xml';
+    $mimes['svgz'] = 'image/svg+xml';
     return $mimes;
 }
 add_filter( 'upload_mimes', 'mds_pro_upload_mimes' );
+
+/**
+ * Prefer WebP for generated images
+ */
+function mds_pro_prefer_webp( $formats ) {
+    $formats['image/jpeg'] = 'image/webp';
+    $formats['image/png']  = 'image/webp';
+    return $formats;
+}
+add_filter( 'image_editor_output_format', 'mds_pro_prefer_webp' );
 
 /**
  * Display WebP in Media Library

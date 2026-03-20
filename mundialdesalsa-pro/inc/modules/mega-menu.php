@@ -20,69 +20,106 @@ class Mundial_Salsa_Mega_Menu_Walker extends Walker_Nav_Menu {
     public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         $classes = empty( $item->classes ) ? array() : (array) $item->classes;
         
-        // Check if it has the mega-menu-feria class
-        if ( in_array( 'mega-menu-feria', $classes ) ) {
+        // Check if it has the mega-menu-pro class
+        if ( in_array( 'mega-menu-pro', $classes ) ) {
             $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
             
-            $output .= $indent . '<li class="menu-item mega-menu-item mega-menu-feria group relative">';
-            $output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link flex items-center gap-1">' . esc_html( $item->title ) . ' <i class="fa-solid fa-chevron-down text-[8px] opacity-50 group-hover:rotate-180 transition-transform"></i></a>';
+            $output .= $indent . '<li class="menu-item mega-menu-item mega-menu-pro group relative">';
+            $output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link flex items-center gap-1 py-6">' . esc_html( $item->title ) . ' <i class="fa-solid fa-chevron-down text-[8px] opacity-50 group-hover:rotate-180 transition-transform"></i></a>';
             
-            // Mega Menu Content Container
-            $cat_id   = get_cat_ID( 'Feria de Cali' );
-            $cat_link = $cat_id ? get_category_link( $cat_id ) : '#';
-
-            $output .= '<div class="mega-menu-content absolute left-1/2 -translate-x-1/2 top-full w-[700px] bg-white dark:bg-slate-900 shadow-2xl p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[500] border-t-4 border-emerald-500 mt-2 rounded-b-xl">';
+            // Mega Menu Content Container (70/20/10 Layout)
+            $output .= '<div class="mega-menu-content absolute left-1/2 -translate-x-1/2 top-full w-[1100px] bg-white dark:bg-slate-900 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[500] border-t-4 border-[var(--mds-primary)] mt-0 rounded-b-[var(--mds-radius)] overflow-hidden">';
             
-            $output .= '<div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-800 pb-3">';
-            $output .= '<h4 class="text-[10px] uppercase tracking-[0.2em] text-emerald-600 font-black">' . esc_html__( 'Especial: Feria de Cali', 'mundialdesalsa-pro' ) . '</h4>';
-            $output .= '<a href="' . esc_url( $cat_link ) . '" class="text-[9px] uppercase font-bold text-slate-400 hover:text-emerald-500 transition-colors">' . esc_html__( 'Ver todo', 'mundialdesalsa-pro' ) . ' →</a>';
-            $output .= '</div>';
+            $output .= '<div class="flex flex-wrap">';
             
-            // WP_Query for Feria de Cali
-            $query_args = array(
-                'category_name'  => 'feria-de-cali',
-                'posts_per_page' => 3,
-                'post_status'    => 'publish',
-                'no_found_rows'  => true, // Performance optimization
-            );
+            // --- SECTION 1: 70% (Mundial de Salsa) ---
+            $output .= '<div class="w-[70%] p-8 border-r border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/20">';
+            $output .= '<h4 class="text-[10px] uppercase tracking-[0.2em] text-[var(--mds-primary)] font-black mb-6">' . esc_html__( 'Mundial de Salsa: Lo Último', 'mundialdesalsa-pro' ) . '</h4>';
             
-            $feria_query = new WP_Query( $query_args );
+            $salsa_query = new WP_Query( array(
+                'category_name'  => 'mundial-de-salsa',
+                'posts_per_page' => 1,
+                'no_found_rows'  => true,
+            ) );
             
-            if ( $feria_query->have_posts() ) {
-                $output .= '<div class="grid grid-cols-3 gap-6">';
-                while ( $feria_query->have_posts() ) {
-                    $feria_query->the_post();
-                    $output .= '<article class="mega-post-card group/post">';
-                    
+            if ( $salsa_query->have_posts() ) {
+                while ( $salsa_query->have_posts() ) {
+                    $salsa_query->the_post();
+                    $output .= '<article class="relative h-[300px] rounded-[var(--mds-radius)] overflow-hidden group/salsa shadow-lg">';
+                    $output .= '<a href="' . get_permalink() . '" class="block h-full w-full">';
                     if ( has_post_thumbnail() ) {
-                        $output .= '<div class="relative mb-3 overflow-hidden rounded-lg aspect-video bg-slate-100 dark:bg-slate-800">';
-                        $output .= '<span class="feria-badge absolute top-2 left-2 z-10 bg-[#e74c3c] text-white text-[8px] font-black px-2 py-1 rounded uppercase tracking-widest">' . esc_html__( 'FERIA DE CALI', 'mundialdesalsa-pro' ) . '</span>';
-                        $output .= '<a href="' . get_permalink() . '" class="block w-full h-full">';
-                        $output .= get_the_post_thumbnail( get_the_ID(), 'mds-pro-thumbnail', array( 'class' => 'w-full h-full object-cover group-hover/post:scale-110 transition-transform duration-700' ) );
-                        $output .= '</a>';
-                        $output .= '</div>';
+                        $output .= get_the_post_thumbnail( get_the_ID(), 'full', array( 'class' => 'w-full h-full object-cover transition-transform duration-700 group-hover/salsa:scale-105', 'loading' => 'lazy' ) );
+                    } else {
+                        $output .= '<img src="https://picsum.photos/seed/salsa/1200/800" class="w-full h-full object-cover" loading="lazy" alt="Salsa Default">';
                     }
-                    
-                    $output .= '<h5 class="mega-post-title text-xs font-black leading-snug mb-2 text-[#2c3e50] dark:text-white uppercase tracking-tight italic">';
-                    $output .= '<a href="' . get_permalink() . '" class="hover:text-[#e74c3c] transition-colors line-clamp-2">' . get_the_title() . '</a>';
-                    $output .= '</h5>';
-                    
-                    $output .= '<div class="flex items-center gap-2 text-[9px] text-slate-400 font-mono uppercase">';
-                    $output .= '<span>' . get_the_date() . '</span>';
+                    $output .= '<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>';
+                    $output .= '<div class="absolute bottom-0 left-0 p-8 w-full">';
+                    $output .= '<h5 class="text-2xl font-black text-white uppercase leading-tight group-hover/salsa:text-[var(--mds-primary)] transition-colors">' . get_the_title() . '</h5>';
                     $output .= '</div>';
-                    
+                    $output .= '</a>';
                     $output .= '</article>';
                 }
-                $output .= '</div>';
-                
-                // Security: Reset post data
                 wp_reset_postdata();
-            } else {
-                $output .= '<div class="py-8 text-center">';
-                $output .= '<p class="text-[10px] text-slate-400 uppercase tracking-widest">' . esc_html__( 'No hay noticias recientes de la Feria.', 'mundialdesalsa-pro' ) . '</p>';
-                $output .= '</div>';
             }
+            $output .= '</div>';
             
+            // --- SECTION 2: 20% (Feria de Cali) ---
+            $output .= '<div class="w-[20%] p-8 border-r border-gray-100 dark:border-slate-800">';
+            $output .= '<h4 class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-black mb-6">' . esc_html__( 'Feria de Cali', 'mundialdesalsa-pro' ) . '</h4>';
+            
+            $feria_query = new WP_Query( array(
+                'category_name'  => 'feria-de-cali',
+                'posts_per_page' => 4,
+                'no_found_rows'  => true,
+            ) );
+            
+            if ( $feria_query->have_posts() ) {
+                $output .= '<ul class="space-y-6">';
+                while ( $feria_query->have_posts() ) {
+                    $feria_query->the_post();
+                    $output .= '<li class="flex items-center gap-3 group/item">';
+                    if ( has_post_thumbnail() ) {
+                        $output .= '<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 shadow-sm">';
+                        $output .= get_the_post_thumbnail( get_the_ID(), 'thumbnail', array( 'class' => 'w-full h-full object-cover', 'loading' => 'lazy' ) );
+                        $output .= '</div>';
+                    }
+                    $output .= '<a href="' . get_permalink() . '" class="text-[11px] font-bold uppercase leading-tight group-hover/item:text-[var(--mds-primary)] transition-colors line-clamp-2">' . get_the_title() . '</a>';
+                    $output .= '</li>';
+                }
+                $output .= '</ul>';
+                wp_reset_postdata();
+            }
+            $output .= '</div>';
+            
+            // --- SECTION 3: 10% (Petronio & Blog) ---
+            $output .= '<div class="w-[10%] p-8 bg-gray-50/30 dark:bg-slate-800/10">';
+            $output .= '<h4 class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-black mb-6">' . esc_html__( 'Más', 'mundialdesalsa-pro' ) . '</h4>';
+            
+            $more_query = new WP_Query( array(
+                'category_name'  => 'petronio,blog',
+                'posts_per_page' => 4,
+                'no_found_rows'  => true,
+            ) );
+            
+            if ( $more_query->have_posts() ) {
+                $output .= '<ul class="space-y-6">';
+                while ( $more_query->have_posts() ) {
+                    $more_query->the_post();
+                    $output .= '<li class="flex items-center gap-3 group/item">';
+                    if ( has_post_thumbnail() ) {
+                        $output .= '<div class="w-8 h-8 rounded-md overflow-hidden shrink-0 shadow-sm">';
+                        $output .= get_the_post_thumbnail( get_the_ID(), 'thumbnail', array( 'class' => 'w-full h-full object-cover', 'loading' => 'lazy' ) );
+                        $output .= '</div>';
+                    }
+                    $output .= '<a href="' . get_permalink() . '" class="text-[10px] font-bold uppercase leading-tight group-hover/item:text-[var(--mds-primary)] transition-colors line-clamp-2">' . get_the_title() . '</a>';
+                    $output .= '</li>';
+                }
+                $output .= '</ul>';
+                wp_reset_postdata();
+            }
+            $output .= '</div>';
+            
+            $output .= '</div>'; // End flex
             $output .= '</div>'; // End mega-menu-content
             $output .= '</li>';
         } else {

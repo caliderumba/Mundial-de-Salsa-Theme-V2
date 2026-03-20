@@ -1,257 +1,223 @@
 <?php
 /**
- * The main homepage template file
+ * The front page template file
  *
  * @package MundialdeSalsa_Pro
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 get_header();
 
-/**
- * 2. Hero Slider Logic (Destacados)
- */
-$destacados_cat_id = get_cat_ID('Destacados');
-$slider_query = new WP_Query( array(
-    'cat'            => $destacados_cat_id,
-    'posts_per_page' => 3,
-    'post_status'    => 'publish',
-    'no_found_rows'  => true,
-) );
+global $mds_pro_options;
 
-$slider_ids = array();
+/**
+ * Helper function to inject related articles between silos
+ */
+function mds_pro_inject_related_silo( $category_slug, $count = 2 ) {
+    $args = array(
+        'category_name'  => $category_slug,
+        'posts_per_page' => $count,
+        'post__not_in'   => get_option( 'sticky_posts' ),
+    );
+    $query = new WP_Query( $args );
+
+    if ( $query->have_posts() ) : ?>
+        <div class="silo-interlinking my-8 p-6 bg-gray-50 rounded-[var(--mds-radius)] border-l-4 border-[var(--mds-primary)]">
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block">Te puede interesar:</span>
+            <ul class="space-y-2">
+                <?php while ( $query->have_posts() ) : $query->the_post(); ?>
+                    <li>
+                        <a href="<?php the_permalink(); ?>" class="text-sm font-bold hover:text-[var(--mds-primary)] transition-colors">
+                            <i class="fas fa-chevron-right text-[10px] mr-2 text-salsa"></i><?php the_title(); ?>
+                        </a>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        </div>
+    <?php endif;
+    wp_reset_postdata();
+}
 ?>
 
-<main id="primary" class="site-main">
-
-    <?php /* HERO SLIDER SECTION */ ?>
-    <?php if ( $slider_query->have_posts() ) : ?>
-        <section class="hero-slider relative h-[650px] bg-black overflow-hidden">
-            <div class="slider-wrapper h-full">
-                <?php while ( $slider_query->have_posts() ) : $slider_query->the_post(); 
-                    $slider_ids[] = get_the_ID();
-                ?>
-                    <div class="slider-slide absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out flex items-center" 
-                         style="background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.7) 100%), url('<?php echo get_the_post_thumbnail_url(get_the_ID(), 'full'); ?>') center/cover no-repeat;">
-                        <div class="container mx-auto px-4">
-                            <div class="max-w-4xl">
-                                <span class="inline-block bg-[#e74c3c] text-white text-[10px] font-black uppercase tracking-[0.3em] px-4 py-1.5 mb-6">
-                                    <?php esc_html_e( 'Destacado', 'mundialdesalsa-pro' ); ?>
-                                </span>
-                                <h2 class="text-5xl md:text-8xl font-black uppercase italic tracking-tighter text-[#e74c3c] mb-6 leading-[0.85]">
-                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                </h2>
-                                <div class="flex items-center gap-4 text-white/50 text-[11px] font-black uppercase tracking-widest mb-8">
-                                    <span class="flex items-center gap-2">
-                                        <i class="fa-regular fa-user text-[#e74c3c]"></i> <?php the_author(); ?>
-                                    </span>
-                                    <span class="w-1 h-1 bg-white/20 rounded-full"></span>
-                                    <span class="flex items-center gap-2">
-                                        <i class="fa-regular fa-calendar text-[#e74c3c]"></i> <?php echo get_the_date(); ?>
-                                    </span>
-                                </div>
-                                <p class="text-white/80 text-lg md:text-xl font-medium max-w-2xl mb-10 line-clamp-3 leading-relaxed">
-                                    <?php echo wp_trim_words( get_the_excerpt(), 25 ); ?>
-                                </p>
-                                <a href="<?php the_permalink(); ?>" class="inline-flex items-center gap-3 bg-[#e74c3c] text-white px-10 py-5 font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-500 group">
-                                    <?php esc_html_e( 'Leer Noticia', 'mundialdesalsa-pro' ); ?>
-                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endwhile; wp_reset_postdata(); ?>
+<div class="front-page-wrapper py-12">
+    <div class="container mx-auto px-4">
+        
+        <!-- SECTION 1: 70% - Mundial de Salsa -->
+        <section class="section-mundial mb-16">
+            <div class="flex items-center justify-between mb-8 border-b-2 border-gray-100 pb-4">
+                <h2 class="text-3xl font-black uppercase tracking-tighter">
+                    Mundial de <span class="text-[var(--mds-primary)]">Salsa</span>
+                </h2>
+                <a href="<?php echo get_category_link( get_category_by_slug('mundial-de-salsa') ); ?>" class="text-xs font-bold uppercase tracking-widest hover:text-[var(--mds-primary)]">Ver todo</a>
             </div>
 
-            <div class="slider-controls absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-20">
-                <?php for($i=0; $i<$slider_query->post_count; $i++): ?>
-                    <button class="slider-dot w-16 h-1.5 bg-white/20 hover:bg-[#e74c3c] transition-all duration-300" data-index="<?php echo $i; ?>"></button>
-                <?php endfor; ?>
+            <div class="flex flex-wrap -mx-[calc(var(--mds-gap)/2)]">
+                <?php
+                $args_salsa = array(
+                    'category_name'  => 'mundial-de-salsa',
+                    'posts_per_page' => 3,
+                );
+                $query_salsa = new WP_Query( $args_salsa );
+                $count = 0;
+
+                if ( $query_salsa->have_posts() ) :
+                    while ( $query_salsa->have_posts() ) : $query_salsa->the_post();
+                        if ( 0 === $count ) : ?>
+                            <!-- Left: Big Featured Post -->
+                            <div class="w-full lg:w-2/3 px-[calc(var(--mds-gap)/2)] mb-8 lg:mb-0">
+                                <article class="relative h-[500px] rounded-[var(--mds-radius)] overflow-hidden group shadow-xl">
+                                    <a href="<?php the_permalink(); ?>" class="block h-full w-full">
+                                        <?php if ( has_post_thumbnail() ) : ?>
+                                            <?php the_post_thumbnail( 'full', array( 'class' => 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-105' ) ); ?>
+                                        <?php endif; ?>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                                        <div class="absolute bottom-0 left-0 p-8 md:p-12 w-full">
+                                            <span class="inline-block bg-[var(--mds-primary)] text-white text-[10px] font-black uppercase px-4 py-1 rounded-full mb-4">Destacado</span>
+                                            <h3 class="text-3xl md:text-5xl font-black text-white uppercase leading-tight mb-4 group-hover:text-[var(--mds-primary)] transition-colors">
+                                                <?php the_title(); ?>
+                                            </h3>
+                                            <div class="text-gray-300 text-xs uppercase tracking-widest">
+                                                <?php echo get_the_date(); ?> | <?php the_author(); ?>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </article>
+                            </div>
+                            <div class="w-full lg:w-1/3 px-[calc(var(--mds-gap)/2)] flex flex-col gap-[var(--mds-gap)]">
+                        <?php else : ?>
+                            <!-- Right: Small Posts -->
+                            <article class="relative h-[238px] rounded-[var(--mds-radius)] overflow-hidden group shadow-md">
+                                <a href="<?php the_permalink(); ?>" class="block h-full w-full">
+                                    <?php if ( has_post_thumbnail() ) : ?>
+                                        <?php the_post_thumbnail( 'medium_large', array( 'class' => 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110' ) ); ?>
+                                    <?php endif; ?>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                                    <div class="absolute bottom-0 left-0 p-6 w-full">
+                                        <h4 class="text-lg font-bold text-white uppercase leading-tight group-hover:text-[var(--mds-primary)] transition-colors">
+                                            <?php the_title(); ?>
+                                        </h4>
+                                    </div>
+                                </a>
+                            </article>
+                        <?php endif;
+                        $count++;
+                    endwhile;
+                    echo '</div>'; // Close right column
+                endif;
+                wp_reset_postdata();
+                ?>
+            </div>
+
+            <?php mds_pro_inject_related_silo( 'feria-de-cali', 2 ); ?>
+        </section>
+
+        <!-- SECTION 2: 20% - Feria de Cali -->
+        <section class="section-feria mb-16 bg-gray-900 -mx-4 px-4 py-16 text-white rounded-[var(--mds-radius)]">
+            <div class="container mx-auto">
+                <div class="flex items-center justify-between mb-12 border-b border-white/10 pb-4">
+                    <h2 class="text-3xl font-black uppercase tracking-tighter">
+                        Feria de <span class="text-[var(--mds-primary)]">Cali</span>
+                    </h2>
+                    <a href="<?php echo get_category_link( get_category_by_slug('feria-de-cali') ); ?>" class="text-xs font-bold uppercase tracking-widest hover:text-[var(--mds-primary)]">Explorar Feria</a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-[var(--mds-gap)]">
+                    <?php
+                    $args_feria = array(
+                        'category_name'  => 'feria-de-cali',
+                        'posts_per_page' => 3,
+                    );
+                    $query_feria = new WP_Query( $args_feria );
+
+                    if ( $query_feria->have_posts() ) :
+                        while ( $query_feria->have_posts() ) : $query_feria->the_post(); ?>
+                            <article class="group">
+                                <a href="<?php the_permalink(); ?>" class="block">
+                                    <div class="aspect-video mb-6 overflow-hidden rounded-[var(--mds-radius)] bg-gray-800">
+                                        <?php if ( has_post_thumbnail() ) : ?>
+                                            <?php the_post_thumbnail( 'medium_large', array( 'class' => 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110' ) ); ?>
+                                        <?php endif; ?>
+                                    </div>
+                                    <h3 class="text-xl font-black uppercase mb-3 transition-colors group-hover:text-[var(--mds-primary)]">
+                                        <?php the_title(); ?>
+                                    </h3>
+                                    <div class="text-gray-400 text-[10px] uppercase tracking-widest">
+                                        <?php echo get_the_date(); ?>
+                                    </div>
+                                </a>
+                            </article>
+                        <?php endwhile;
+                    endif;
+                    wp_reset_postdata();
+                    ?>
+                </div>
             </div>
         </section>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const slides = document.querySelectorAll('.slider-slide');
-                const dots = document.querySelectorAll('.slider-dot');
-                let current = 0;
+        <!-- SECTION 3: 10% - Petronio & Blog -->
+        <section class="section-bottom">
+            <div class="flex flex-wrap -mx-4">
+                <!-- Petronio Column -->
+                <div class="w-full md:w-1/2 px-4 mb-8 md:mb-0">
+                    <div class="p-8 bg-white border-t-4 border-salsa rounded-[var(--mds-radius)] shadow-sm">
+                        <h2 class="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-2">
+                            <i class="fas fa-drum text-salsa"></i> Petronio Álvarez
+                        </h2>
+                        <ul class="space-y-4">
+                            <?php
+                            $args_petronio = array(
+                                'category_name'  => 'petronio',
+                                'posts_per_page' => 4,
+                            );
+                            $query_petronio = new WP_Query( $args_petronio );
 
-                function showSlide(index) {
-                    slides.forEach(s => s.style.opacity = '0');
-                    dots.forEach(d => d.style.backgroundColor = 'rgba(255,255,255,0.2)');
-                    slides[index].style.opacity = '1';
-                    dots[index].style.backgroundColor = '#e74c3c';
-                    dots[index].style.width = '24px';
-                    dots.forEach((d, i) => { if(i !== index) d.style.width = '16px'; });
-                }
-
-                function nextSlide() {
-                    current = (current + 1) % slides.length;
-                    showSlide(current);
-                }
-
-                dots.forEach((dot, index) => {
-                    dot.addEventListener('click', () => {
-                        current = index;
-                        showSlide(current);
-                    });
-                });
-
-                showSlide(0);
-                setInterval(nextSlide, 6000);
-            });
-        </script>
-    <?php endif; ?>
-
-    <?php /* NEWS GRID SECTION */ ?>
-    <section class="news-grid py-24 bg-slate-50 dark:bg-slate-900">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-                <div class="section-header">
-                    <span class="text-[11px] font-black uppercase tracking-[0.4em] text-[#e74c3c] mb-4 block">Magazine Pro</span>
-                    <h2 class="text-5xl md:text-6xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white leading-none">
-                        Últimas <span class="text-[#e74c3c]">Noticias</span>
-                    </h2>
-                </div>
-                <div class="flex gap-4">
-                    <a href="#" class="px-6 py-3 border-2 border-slate-200 dark:border-white/10 text-[10px] font-black uppercase tracking-widest hover:border-[#e74c3c] hover:text-[#e74c3c] transition-all">Ver Todas</a>
-                </div>
-            </div>
-
-            <?php
-            $news_query = new WP_Query( array(
-                'post_type'      => 'post',
-                'posts_per_page' => 8,
-                'post__not_in'   => $slider_ids,
-                'post_status'    => 'publish',
-                'no_found_rows'  => true,
-            ) );
-
-            if ( $news_query->have_posts() ) : ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    <?php while ( $news_query->have_posts() ) : $news_query->the_post(); ?>
-                        <article class="news-card group bg-white dark:bg-slate-800 rounded-[8px] overflow-hidden shadow-[0_4px_15px_rgba(231,76,60,0.15)] hover:-translate-y-2 transition-all duration-500">
-                            <div class="card-thumb relative h-64 overflow-hidden">
-                                <?php if ( has_post_thumbnail() ) : ?>
-                                    <?php the_post_thumbnail('medium_large', array('class' => 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-700')); ?>
-                                <?php endif; ?>
-                                <div class="absolute top-5 left-5">
-                                    <?php
-                                    $cats = get_the_category();
-                                    if ( ! empty( $cats ) ) : ?>
-                                        <span class="bg-[#e74c3c] text-white text-[9px] font-black uppercase px-3 py-1 tracking-widest">
-                                            <?php echo esc_html( $cats[0]->name ); ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="card-content p-8">
-                                <h3 class="text-2xl font-black uppercase italic tracking-tight text-slate-900 dark:text-white mb-6 line-clamp-2 leading-tight group-hover:text-[#e74c3c] transition-colors">
-                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                </h3>
-                                <div class="flex items-center justify-between">
-                                    <div class="author-info flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-[#e74c3c]/20">
-                                            <?php echo get_avatar( get_the_author_meta( 'ID' ), 40 ); ?>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white"><?php the_author(); ?></span>
-                                            <span class="text-[9px] uppercase text-slate-400 font-bold"><?php echo get_the_date(); ?></span>
-                                        </div>
-                                    </div>
-                                    <a href="<?php the_permalink(); ?>" class="text-[#e74c3c] hover:translate-x-1 transition-transform">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </article>
-                    <?php endwhile; wp_reset_postdata(); ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </section>
-
-    <?php /* MODULAR CATEGORY SECTIONS */ ?>
-    <section class="category-blocks py-24 bg-white dark:bg-slate-950">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
-                
-                <?php
-                $blocks = [
-                    ['title' => 'Orquestas', 'cat' => get_cat_ID('Orquestas')],
-                    ['title' => 'Feria de Cali', 'cat' => 76],
-                    ['title' => 'Escuelas', 'cat' => get_cat_ID('Escuelas')]
-                ];
-
-                foreach($blocks as $block):
-                ?>
-                    <div class="cat-block">
-                        <div class="flex items-center gap-5 mb-10">
-                            <h3 class="text-3xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white"><?php echo $block['title']; ?></h3>
-                            <div class="flex-1 h-0.5 bg-[#e74c3c]/20"></div>
-                        </div>
-
-                        <?php
-                        $block_query = new WP_Query( array(
-                            'cat'            => $block['cat'],
-                            'posts_per_page' => 3,
-                            'post_status'    => 'publish',
-                            'no_found_rows'  => true,
-                        ) );
-
-                        if ( $block_query->have_posts() ) : 
-                            $is_feria = ($block['cat'] == 76);
-                            ?>
-                            <ul class="<?php echo $is_feria ? 'feria-news-list' : ''; ?> divide-y divide-slate-100 dark:divide-white/5">
-                                <?php while ( $block_query->have_posts() ) : $block_query->the_post(); ?>
-                                    <li class="py-5 group">
-                                        <?php if ($is_feria) : ?>
-                                            <a href="<?php the_permalink(); ?>" class="block font-bold text-slate-900 dark:text-white hover:text-[#e74c3c] transition-colors mb-1">
-                                                <?php the_title(); ?>
-                                            </a>
-                                            <span class="text-[11px] text-slate-400">
-                                                <?php echo get_the_date('j \d\e F, Y'); ?>
-                                            </span>
-                                        <?php else : ?>
-                                            <a href="<?php the_permalink(); ?>" class="block">
-                                                <h4 class="text-[14px] font-black uppercase italic tracking-tight text-slate-800 dark:text-white/80 group-hover:text-[#e74c3c] transition-colors leading-snug mb-2">
-                                                    <?php the_title(); ?>
-                                                </h4>
-                                                <div class="flex items-center gap-3 text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                                                    <span><?php echo get_the_date(); ?></span>
-                                                    <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
-                                                    <span><?php the_author(); ?></span>
-                                                </div>
-                                            </a>
-                                        <?php endif; ?>
+                            if ( $query_petronio->have_posts() ) :
+                                while ( $query_petronio->have_posts() ) : $query_petronio->the_post(); ?>
+                                    <li>
+                                        <a href="<?php the_permalink(); ?>" class="text-sm font-bold uppercase hover:text-[var(--mds-primary)] transition-colors block border-b border-gray-50 pb-2">
+                                            <?php the_title(); ?>
+                                        </a>
                                     </li>
-                                <?php endwhile; wp_reset_postdata(); ?>
-                            </ul>
-                            <?php if ($is_feria) : ?>
-                                <div class="text-center mt-10">
-                                    <a href="<?php echo get_category_link($block['cat']); ?>" class="btn-vibrante">
-                                        <?php esc_html_e( 'Explorar Feria', 'mundialdesalsa-pro' ); ?>
-                                    </a>
-                                </div>
-                            <?php else : ?>
-                                <a href="<?php echo get_category_link($block['cat']); ?>" class="inline-block mt-8 text-[10px] font-black uppercase tracking-[0.25em] text-[#e74c3c] hover:text-slate-900 dark:hover:text-white transition-colors">
-                                    Explorar Más <i class="fa-solid fa-plus ml-1"></i>
-                                </a>
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <p class="text-xs text-slate-400 italic"><?php esc_html_e( 'No hay noticias recientes en esta sección.', 'mundialdesalsa-pro' ); ?></p>
-                        <?php endif; ?>
+                                <?php endwhile;
+                            endif;
+                            wp_reset_postdata();
+                            ?>
+                        </ul>
                     </div>
-                <?php endforeach; ?>
+                </div>
 
+                <!-- Blog Column -->
+                <div class="w-full md:w-1/2 px-4">
+                    <div class="p-8 bg-white border-t-4 border-gray-900 rounded-[var(--mds-radius)] shadow-sm">
+                        <h2 class="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-2">
+                            <i class="fas fa-pen-nib text-gray-900"></i> Blog & Notas
+                        </h2>
+                        <ul class="space-y-4">
+                            <?php
+                            $args_blog = array(
+                                'category_name'  => 'blog',
+                                'posts_per_page' => 4,
+                            );
+                            $query_blog = new WP_Query( $args_blog );
+
+                            if ( $query_blog->have_posts() ) :
+                                while ( $query_blog->have_posts() ) : $query_blog->the_post(); ?>
+                                    <li>
+                                        <a href="<?php the_permalink(); ?>" class="text-sm font-bold uppercase hover:text-[var(--mds-primary)] transition-colors block border-b border-gray-50 pb-2">
+                                            <?php the_title(); ?>
+                                        </a>
+                                    </li>
+                                <?php endwhile;
+                            endif;
+                            wp_reset_postdata();
+                            ?>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-</main>
+    </div>
+</div>
 
 <?php
 get_footer();

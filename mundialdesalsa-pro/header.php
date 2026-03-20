@@ -106,56 +106,54 @@
 	<div id="side-panel-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[150] opacity-0 invisible transition-all duration-300"></div>
 	<nav id="side-panel" class="fixed top-0 left-0 w-[320px] h-full bg-[#000] text-white z-[200] transform -translate-x-full transition-transform duration-500 ease-in-out flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)]">
 		<div class="p-6 flex justify-between items-center border-b border-white/5">
-			<span class="text-xs font-black uppercase tracking-widest italic text-[#e74c3c]"><?php bloginfo( 'name' ); ?></span>
-			<button id="side-panel-close" class="p-2 text-white/40 hover:text-[#e74c3c] transition-colors">
+			<span class="text-xs font-black uppercase tracking-widest italic text-[var(--mds-primary)]"><?php bloginfo( 'name' ); ?></span>
+			<button id="side-panel-close" class="p-2 text-white/40 hover:text-[var(--mds-primary)] transition-colors">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 			</button>
 		</div>
 
 		<div class="flex-1 overflow-y-auto p-8">
-			<?php /* WordPress Menu */ ?>
+			<?php /* Mobile Accordion Menu (Text Only) */ ?>
 			<div class="mb-12">
-				<h4 class="text-[9px] uppercase tracking-[0.3em] text-white/20 font-black mb-6"><?php esc_html_e( 'Navegación Principal', 'mundialdesalsa-pro' ); ?></h4>
+				<h4 class="text-[9px] uppercase tracking-[0.3em] text-white/20 font-black mb-6"><?php esc_html_e( 'Menú Principal', 'mundialdesalsa-pro' ); ?></h4>
 				<?php
 				wp_nav_menu(
 					array(
 						'theme_location' => 'menu-1',
 						'container'      => false,
-						'menu_class'     => 'side-panel-nav space-y-5',
+						'menu_class'     => 'mobile-accordion-nav space-y-4',
 						'fallback_cb'    => false,
+						'items_wrap'     => '<ul id="%1$s" class="%2$s">%3$s</ul>',
 					)
 				);
 				?>
 			</div>
 
-			<?php /* Feria de Cali - Text List Section (ID 76) */ ?>
+			<?php /* Quick Links Section */ ?>
 			<div class="side-panel-news">
-				<h4 class="text-[9px] uppercase tracking-[0.3em] text-[#e74c3c] font-black mb-6"><?php esc_html_e( 'Última Hora: Feria', 'mundialdesalsa-pro' ); ?></h4>
+				<h4 class="text-[9px] uppercase tracking-[0.3em] text-[var(--mds-primary)] font-black mb-6"><?php esc_html_e( 'Lo Más Visto', 'mundialdesalsa-pro' ); ?></h4>
 				<?php
-				$feria_news_query = new WP_Query( array(
-					'cat'            => 76,
+				$trending_query = new WP_Query( array(
 					'posts_per_page' => 3,
 					'post_status'    => 'publish',
+					'orderby'        => 'meta_value_num',
+					'meta_key'       => 'mds_pro_views_count',
 					'no_found_rows'  => true,
 				) );
 
-				if ( $feria_news_query->have_posts() ) :
-					echo '<ul class="news-text-list space-y-0">';
-					while ( $feria_news_query->have_posts() ) : $feria_news_query->the_post();
+				if ( $trending_query->have_posts() ) :
+					echo '<ul class="space-y-4">';
+					while ( $trending_query->have_posts() ) : $trending_query->the_post();
 						?>
-						<li class="news-item border-b border-white/5 last:border-0">
-							<a href="<?php the_permalink(); ?>" class="block py-4 group">
-								<h5 class="text-[12px] font-black leading-snug text-white/80 group-hover:text-[#e74c3c] transition-colors uppercase italic tracking-tight">
-									<?php the_title(); ?>
-								</h5>
+						<li>
+							<a href="<?php the_permalink(); ?>" class="text-[13px] font-bold text-white/80 hover:text-[var(--mds-primary)] transition-colors uppercase italic leading-tight block">
+								<?php the_title(); ?>
 							</a>
 						</li>
 						<?php
 					endwhile;
 					echo '</ul>';
 					wp_reset_postdata();
-				else:
-					echo '<p class="text-[10px] text-white/20 uppercase italic">' . esc_html__( 'Próximamente más noticias...', 'mundialdesalsa-pro' ) . '</p>';
 				endif;
 				?>
 			</div>
