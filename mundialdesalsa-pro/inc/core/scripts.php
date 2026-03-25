@@ -23,6 +23,16 @@ function mds_pro_scripts() {
         wp_enqueue_script( 'mds-pro-theater-mode', MDS_PRO_URI . '/assets/js/blocks/theater-mode.js', [], MDS_PRO_VERSION, true );
     }
 
+    // Live Updates Script
+    if ( is_page_template( 'template-live-coverage.php' ) || has_block( 'mds-pro/live-updates' ) ) {
+        wp_enqueue_script( 'mds-pro-live-updates', MDS_PRO_URI . '/assets/js/live-updates.js', array( 'jquery' ), MDS_PRO_VERSION, true );
+        wp_localize_script( 'mds-pro-live-updates', 'mdsLive', array(
+            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( 'mds_live_nonce' ),
+            'postId'  => get_the_ID(),
+        ) );
+    }
+
 	// Threaded comments
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );

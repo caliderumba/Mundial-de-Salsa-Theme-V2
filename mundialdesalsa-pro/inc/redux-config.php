@@ -175,6 +175,32 @@ Redux::setSection( $opt_name, array(
 ) );
 
 Redux::setSection( $opt_name, array(
+    'title'  => __( 'Colores Globales', 'mundialdesalsa-pro' ),
+    'id'     => 'global_colors',
+    'icon'   => 'el el-brush',
+    'fields' => array(
+        array(
+            'id'      => 'primary',
+            'type'    => 'color',
+            'title'   => __( 'Color Primario', 'mundialdesalsa-pro' ),
+            'default' => '#e74c3c',
+        ),
+        array(
+            'id'      => 'secondary',
+            'type'    => 'color',
+            'title'   => __( 'Color Secundario', 'mundialdesalsa-pro' ),
+            'default' => '#2c3e50',
+        ),
+        array(
+            'id'      => 'accent',
+            'type'    => 'color',
+            'title'   => __( 'Color de Acento', 'mundialdesalsa-pro' ),
+            'default' => '#f1c40f',
+        ),
+    ),
+) );
+
+Redux::setSection( $opt_name, array(
     'title'  => __( 'Pie de Página', 'mundialdesalsa-pro' ),
     'id'     => 'footer_pro',
     'icon'   => 'el el-website-alt',
@@ -201,29 +227,33 @@ Redux::setSection( $opt_name, array(
 ) );
 
 Redux::setSection( $opt_name, array(
-    'title'  => __( 'Código Personalizado', 'mundialdesalsa-pro' ),
-    'id'     => 'custom_code',
-    'icon'   => 'el el-css',
+    'title'  => __( 'SEO & Scripts', 'mundialdesalsa-pro' ),
+    'id'     => 'seo_scripts',
+    'icon'   => 'el el-graph',
     'fields' => array(
+        array(
+            'id'       => 'google_analytics',
+            'type'     => 'textarea',
+            'title'    => __( 'Google Analytics / GTM', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Pega aquí el código de seguimiento (Head).', 'mundialdesalsa-pro' ),
+        ),
+        array(
+            'id'       => 'footer_scripts',
+            'type'     => 'textarea',
+            'title'    => __( 'Scripts de Footer (Píxeles)', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Pega aquí códigos de Facebook Pixel, etc.', 'mundialdesalsa-pro' ),
+        ),
+        array(
+            'id'       => 'global_meta_tags',
+            'type'     => 'textarea',
+            'title'    => __( 'Meta Tags Globales', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Tags adicionales para verificación de dominio, etc.', 'mundialdesalsa-pro' ),
+        ),
         array(
             'id'       => 'custom_css',
             'type'     => 'ace_editor',
             'title'    => __( 'CSS Personalizado', 'mundialdesalsa-pro' ),
             'mode'     => 'css',
-            'theme'    => 'monokai',
-        ),
-        array(
-            'id'       => 'header_code',
-            'type'     => 'ace_editor',
-            'title'    => __( 'Código en Header', 'mundialdesalsa-pro' ),
-            'mode'     => 'html',
-            'theme'    => 'monokai',
-        ),
-        array(
-            'id'       => 'footer_code',
-            'type'     => 'ace_editor',
-            'title'    => __( 'Código en Footer', 'mundialdesalsa-pro' ),
-            'mode'     => 'html',
             'theme'    => 'monokai',
         ),
     ),

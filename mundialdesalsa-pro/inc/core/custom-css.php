@@ -24,8 +24,13 @@ function mds_pro_get_custom_css_vars() {
     $subtitle   = isset( $mds_pro_options['subtitle_typo'] ) ? $mds_pro_options['subtitle_typo'] : array();
     $paragraph  = isset( $mds_pro_options['paragraph_typo'] ) ? $mds_pro_options['paragraph_typo'] : array();
 
-    // Primary Color (Fallback to salsa red)
-    $primary_color = isset( $mds_pro_options['primary'] ) ? $mds_pro_options['primary'] : '#e74c3c';
+    // Colors
+    $primary_color   = isset( $mds_pro_options['primary'] ) ? $mds_pro_options['primary'] : '#e74c3c';
+    $secondary_color = isset( $mds_pro_options['secondary'] ) ? $mds_pro_options['secondary'] : '#2c3e50';
+    $accent_color    = isset( $mds_pro_options['accent'] ) ? $mds_pro_options['accent'] : '#f1c40f';
+
+    // Custom CSS from Redux
+    $custom_css = isset( $mds_pro_options['custom_css'] ) ? $mds_pro_options['custom_css'] : '';
 
     // Header Transparent
     $header_transparent = isset( $mds_pro_options['header_transparent_home'] ) && $mds_pro_options['header_transparent_home'] && is_front_page();
@@ -34,6 +39,8 @@ function mds_pro_get_custom_css_vars() {
     ?>
     :root {
         --mds-primary: <?php echo esc_attr( $primary_color ); ?>;
+        --mds-secondary: <?php echo esc_attr( $secondary_color ); ?>;
+        --mds-accent: <?php echo esc_attr( $accent_color ); ?>;
         --mds-container-width: <?php echo esc_attr( $container_width ); ?>px;
         
         /* Typography Variables */
@@ -156,6 +163,8 @@ function mds_pro_get_custom_css_vars() {
         color: black;
         z-index: 101;
     }
+
+    <?php echo $custom_css; ?>
     <?php
     return ob_get_clean();
 }

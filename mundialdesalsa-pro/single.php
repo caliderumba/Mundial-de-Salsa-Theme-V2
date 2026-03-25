@@ -2,6 +2,8 @@
 /**
  * Single Post Template - Mundial de Salsa Pro
  * 
+ * Orchestrates the single post display using modular template parts.
+ * 
  * @package MundialdeSalsa_Pro
  */
 
@@ -11,139 +13,134 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
-global $mds_pro_options;
-$show_sidebar = mds_pro_get_option( 'layout', 'sidebar_position', 'right' ) !== 'none';
-$show_author_box = mds_pro_get_option( 'post_settings', 'opt_show_author_box', true );
+while ( have_posts() ) : the_post(); 
+    $post_id = get_the_ID();
+    $context = function_exists('mds_get_post_context') ? mds_get_post_context( $post_id ) : 'news';
+    $show_sidebar = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'layout', 'sidebar_position', 'right' ) !== 'none' : true;
 ?>
 
-<main id="primary" class="site-main py-12">
-    <div class="container">
-        <?php while ( have_posts() ) : the_post(); ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                
-                <header class="post-header mb-10 text-center">
-                    <div class="mb-4">
-                        <?php the_category(' '); ?>
-                    </div>
-                    <h1 class="text-4xl md:text-6xl font-black uppercase leading-tight mb-6">
-                        <?php the_title(); ?>
-                    </h1>
-                    <div class="text-xs text-gray-500 uppercase tracking-widest">
-                        <span><?php the_author(); ?></span> / <time><?php echo get_the_date(); ?></time>
-                    </div>
-                </header>
+<main id="primary" class="site-main py-12 bg-white dark:bg-slate-950 transition-colors duration-500" data-editorial-context="<?php echo esc_attr( $context ); ?>">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+            
+            <?php 
+            // 1. Breadcrumbs
+            if ( function_exists('mds_pro_breadcrumbs') ) {
+                mds_pro_breadcrumbs();
+            }
 
-                <?php 
-                // Render Video (SEO Priority: Before Content)
-                mds_pro_render_post_video(); 
-                ?>
+            // 2. Hero Section (Image/Video)
+            if ( function_exists('mds_single_hero') ) {
+                mds_single_hero(); 
+            }
+            ?>
 
-                <?php if ( has_post_thumbnail() && empty( get_post_meta( get_the_ID(), 'mds_post_video_url', true ) ) && empty( get_post_meta( get_the_ID(), 'mds_post_video_embed', true ) ) ) : ?>
-                    <div class="post-thumbnail mb-12 rounded-salsa overflow-hidden shadow-2xl">
-                        <?php the_post_thumbnail( 'full', array( 'class' => 'w-full h-auto' ) ); ?>
-                    </div>
-                <?php endif; ?>
+            <div class="flex flex-col lg:flex-row gap-12">
+                <div class="w-full <?php echo $show_sidebar ? 'lg:w-2/3' : 'w-full max-w-4xl mx-auto'; ?>">
+                    
+                    <header class="post-header mb-10">
+                        <div class="mb-4 flex flex-wrap items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">
+                            <?php 
+                            $categories = get_the_category();
+                            if ( ! empty( $categories ) ) : 
+                                foreach ( $categories as $cat ) : ?>
+                                    <a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>" class="hover:text-slate-900 dark:hover:text-white transition-colors">
+                                        <?php echo esc_html( $cat->name ); ?>
+                                    </a>
+                                <?php endforeach; 
+                            endif; ?>
+                        </div>
+                        
+                        <h1 class="text-4xl md:text-6xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-8">
+                            <?php the_title(); ?>
+                        </h1>
 
-                <div class="flex flex-wrap -mx-4">
-                    <div class="w-full <?php echo $show_sidebar ? 'lg:w-2/3' : 'w-full'; ?> px-4">
+                        <?php 
+                        // 3. Meta Editorial (Author, Date, Reading Time)
+                        if ( function_exists('mds_single_meta') ) {
+                            mds_single_meta(); 
+                        }
+                        ?>
+                    </header>
+
+                    <div class="entry-content prose prose-xl dark:prose-invert max-w-none prose-slate prose-headings:font-black prose-headings:tracking-tight prose-a:text-emerald-600 prose-img:rounded-3xl prose-img:shadow-2xl mb-12">
                         
                         <?php 
-                        // Render Highlights
-                        mds_pro_render_post_highlights(); 
-                        ?>
-
-                        <div class="entry-content prose prose-lg max-w-none mb-12">
-                            <?php the_content(); ?>
-                        </div>
-
-                        <?php 
-                        // Render Sources
-                        mds_pro_render_post_sources(); 
-                        ?>
-
-                        <?php if ( $show_author_box ) : ?>
-                            <div class="author-box p-8 bg-gray-50 rounded-salsa flex flex-col md:flex-row items-center gap-8 mb-12 border-l-8 border-salsa">
-                                <div class="author-avatar shrink-0">
-                                    <?php echo get_avatar( get_the_author_meta( 'ID' ), 120, '', '', array('class' => 'rounded-full border-4 border-salsa shadow-lg') ); ?>
-                                </div>
-                                <div class="author-info text-center md:text-left">
-                                    <h4 class="text-2xl font-black uppercase mb-2"><?php the_author(); ?></h4>
-                                    <p class="text-gray-600 mb-6"><?php the_author_meta( 'description' ); ?></p>
-                                    
-                                    <div class="author-socials flex gap-4 justify-center md:justify-start">
-                                        <?php 
-                                        $socials = array(
-                                            'facebook'  => array('url' => 'facebook_url', 'color' => '#1877F2', 'icon' => 'fa-facebook-f'),
-                                            'instagram' => array('url' => 'instagram_url', 'color' => '#E4405F', 'icon' => 'fa-instagram'),
-                                            'twitter'   => array('url' => 'twitter_url', 'color' => '#000000', 'icon' => 'fa-x-twitter'),
-                                            'youtube'   => array('url' => 'youtube_url', 'color' => '#FF0000', 'icon' => 'fa-youtube'),
-                                            'tiktok'    => array('url' => 'tiktok_url', 'color' => '#010101', 'icon' => 'fa-tiktok'),
-                                        );
-
-                                        foreach ($socials as $key => $social) :
-                                            $url = mds_pro_get_option('social', $social['url'], '#');
-                                            if ( $url && $url !== '#' ) : ?>
-                                                <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 flex items-center justify-center rounded-full text-white transition-transform hover:scale-110" style="background-color: <?php echo $social['color']; ?>">
-                                                    <i class="fab <?php echo $social['icon']; ?>"></i>
-                                                </a>
-                                            <?php endif;
-                                        endforeach; ?>
+                        // Video Specific Highlights
+                        if ( $context === 'video' ) : 
+                            $video_highlights = get_post_meta( $post_id, 'mds_video_highlights', true );
+                            if ( ! empty( $video_highlights ) ) : ?>
+                                <div class="video-highlights mb-10 p-8 bg-slate-900 text-white rounded-3xl border-l-8 border-red-600 shadow-xl">
+                                    <h4 class="text-red-500 uppercase tracking-widest text-xs font-black mb-4">Puntos clave del video</h4>
+                                    <div class="prose-invert text-slate-300">
+                                        <?php echo wp_kses_post( $video_highlights ); ?>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endif; ?>
+                            <?php endif; 
+                        endif; ?>
 
-                        <div class="related-posts mt-12 pt-12 border-t border-gray-200">
-                            <h3 class="text-2xl font-black uppercase mb-8 border-b-4 border-salsa inline-block">Salsa Relacionada</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <?php
-                                $related_type = mds_pro_get_option( 'post_settings', 'related_posts_type', 'category' );
-                                $related_args = array(
-                                    'posts_per_page' => 3,
-                                    'post__not_in'   => array(get_the_ID()),
-                                    'orderby'        => 'rand',
-                                );
-
-                                if ($related_type === 'category') {
-                                    $cats = wp_get_post_categories(get_the_ID());
-                                    if ($cats) $related_args['category__in'] = $cats;
-                                } else {
-                                    $tags = wp_get_post_tags(get_the_ID());
-                                    if ($tags) $related_args['tag__in'] = wp_list_pluck($tags, 'term_id');
-                                }
-
-                                $related_query = new WP_Query($related_args);
-                                if ($related_query->have_posts()) :
-                                    while ($related_query->have_posts()) : $related_query->the_post(); ?>
-                                        <div class="related-item group">
-                                            <a href="<?php the_permalink(); ?>" class="block">
-                                                <div class="aspect-video mb-4 overflow-hidden rounded-salsa bg-gray-200">
-                                                    <?php if (has_post_thumbnail()) : ?>
-                                                        <?php the_post_thumbnail('medium', array('class' => 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110')); ?>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <h4 class="text-lg font-bold uppercase transition-colors group-hover:text-salsa">
-                                                    <?php the_title(); ?>
-                                                </h4>
-                                            </a>
-                                        </div>
-                                    <?php endwhile; wp_reset_postdata();
-                                endif; ?>
-                            </div>
-                        </div>
+                        <?php the_content(); ?>
                     </div>
 
-                    <?php if ( $show_sidebar ) : ?>
-                        <aside class="w-full lg:w-1/3 px-4">
-                            <?php get_sidebar(); ?>
-                        </aside>
+                    <?php 
+                    // 4. Highlights Block (Legacy/Alternative)
+                    $highlights = get_post_meta( $post_id, 'mds_post_highlights', true );
+                    if ( ! empty( $highlights ) && $context !== 'video' ) : ?>
+                        <div class="post-highlights bg-yellow-50 dark:bg-yellow-900/10 p-8 rounded-3xl mb-12 border-l-8 border-yellow-400 shadow-sm">
+                            <h3 class="text-sm font-black uppercase tracking-widest mb-4 text-yellow-700 dark:text-yellow-500">Lo más destacado</h3>
+                            <div class="prose prose-sm dark:prose-invert leading-relaxed">
+                                <?php echo wp_kses_post( $highlights ); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php 
+                    // 5. Sources Block
+                    $sources = get_post_meta( $post_id, 'mds_post_sources', true );
+                    if ( ! empty( $sources ) ) : ?>
+                        <div class="post-sources mt-16 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 mb-12">
+                            <h5 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Fuentes y Referencias</h5>
+                            <div class="text-sm text-slate-600 dark:text-slate-400">
+                                <?php echo wp_kses_post( $sources ); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php 
+                    // 6. Author Box
+                    if ( function_exists('mds_single_author_box') ) {
+                        mds_single_author_box(); 
+                    }
+                    ?>
+
+                    <?php 
+                    // 7. Related Posts
+                    if ( function_exists('mds_single_related') ) {
+                        mds_single_related(); 
+                    }
+
+                    // 8. Comments
+                    if ( comments_open() || get_comments_number() ) : ?>
+                        <div class="comments-area mt-16 p-8 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800">
+                            <?php comments_template(); ?>
+                        </div>
                     <?php endif; ?>
                 </div>
 
-            </article>
-        <?php endwhile; ?>
+                <?php if ( $show_sidebar ) : ?>
+                    <aside class="w-full lg:w-1/3 mt-12 lg:mt-0">
+                        <div class="sticky top-24">
+                            <?php get_sidebar(); ?>
+                        </div>
+                    </aside>
+                <?php endif; ?>
+            </div>
+
+        </article>
     </div>
 </main>
 
-<?php
+<?php 
+endwhile; 
+
 get_footer();

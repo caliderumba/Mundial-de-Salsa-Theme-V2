@@ -261,6 +261,129 @@ function mds_pro_render_editorial_highlights() {
 }
 
 /**
+ * Render MDS Live Updates
+ */
+function mds_pro_render_live_updates( $attributes ) {
+    $updates = isset( $attributes['updates'] ) ? $attributes['updates'] : array();
+    
+    if ( empty( $updates ) ) {
+        return '<p class="text-slate-400 italic">' . __( 'No hay actualizaciones en vivo aún.', 'mundialdesalsa-pro' ) . '</p>';
+    }
+
+    $output = '<div class="mds-live-timeline relative pl-8 border-l-2 border-slate-100 dark:border-slate-800 space-y-10 my-12">';
+    
+    foreach ( $updates as $update ) {
+        $time = isset( $update['time'] ) ? $update['time'] : date('H:i');
+        $content = isset( $update['content'] ) ? $update['content'] : '';
+        $title = isset( $update['title'] ) ? $update['title'] : '';
+
+        $output .= '<div class="timeline-item relative">';
+        $output .= '<div class="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-salsa border-4 border-white dark:border-slate-900 shadow-sm"></div>';
+        $output .= '<div class="text-[10px] font-black uppercase tracking-widest text-salsa mb-1">' . esc_html( $time ) . '</div>';
+        if ( ! empty( $title ) ) {
+            $output .= '<h4 class="text-lg font-black uppercase italic tracking-tighter leading-none mb-2">' . esc_html( $title ) . '</h4>';
+        }
+        $output .= '<div class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">' . wp_kses_post( $content ) . '</div>';
+        $output .= '</div>';
+    }
+
+    $output .= '</div>';
+    return $output;
+}
+
+/**
+ * Render MDS Live Score
+ */
+function mds_pro_render_live_score( $attributes ) {
+    $scores = isset( $attributes['scores'] ) ? $attributes['scores'] : array();
+    $title = isset( $attributes['title'] ) ? $attributes['title'] : 'Tabla de Posiciones';
+
+    $output = '<div class="mds-live-score my-12 bg-slate-900 rounded-salsa overflow-hidden shadow-2xl border border-slate-800">';
+    $output .= '<div class="bg-salsa p-4"><h3 class="text-white text-xl font-black uppercase italic tracking-tighter m-0">' . esc_html( $title ) . '</h3></div>';
+    $output .= '<div class="p-2">';
+    $output .= '<table class="w-full text-left border-collapse">';
+    $output .= '<thead><tr class="text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-800"><th class="p-4">#</th><th class="p-4">Participante</th><th class="p-4">Categoría</th><th class="p-4 text-right">Puntaje</th></tr></thead>';
+    $output .= '<tbody class="text-white">';
+
+    if ( ! empty( $scores ) ) {
+        foreach ( $scores as $index => $score ) {
+            $name = isset( $score['name'] ) ? $score['name'] : '-';
+            $cat = isset( $score['category'] ) ? $score['category'] : '-';
+            $pts = isset( $score['points'] ) ? $score['points'] : '0.00';
+            
+            $output .= '<tr class="border-b border-slate-800/50 hover:bg-white/5 transition-colors">';
+            $output .= '<td class="p-4 font-black text-salsa">' . ( $index + 1 ) . '</td>';
+            $output .= '<td class="p-4 font-bold">' . esc_html( $name ) . '</td>';
+            $output .= '<td class="p-4 text-xs text-slate-400">' . esc_html( $cat ) . '</td>';
+            $output .= '<td class="p-4 text-right font-black text-xl italic text-emerald-400">' . esc_html( $pts ) . '</td>';
+            $output .= '</tr>';
+        }
+    } else {
+        $output .= '<tr><td colspan="4" class="p-8 text-center text-slate-500 italic">' . __( 'Esperando resultados...', 'mundialdesalsa-pro' ) . '</td></tr>';
+    }
+
+    $output .= '</tbody></table></div></div>';
+    return $output;
+}
+
+/**
+ * Render MDS Audio Playlist
+ */
+function mds_pro_render_audio_playlist( $attributes ) {
+    $category = isset( $attributes['category'] ) ? $attributes['category'] : '';
+    $count = isset( $attributes['count'] ) ? $attributes['count'] : 10;
+
+    $args = array(
+        'post_type'      => 'post',
+        'posts_per_page' => $count,
+        'post_status'    => 'publish',
+        'meta_query'     => array(
+            'relation' => 'OR',
+            array( 'key' => 'mds_post_audio_url', 'compare' => 'EXISTS' ),
+            array( 'key' => 'mds_post_audio_self', 'compare' => 'EXISTS' ),
+        ),
+    );
+
+    if ( ! empty( $category ) ) {
+        $args['category_name'] = $category;
+    }
+
+    $query = new WP_Query( $args );
+    $output = '<div class="mds-audio-playlist my-12 bg-slate-50 dark:bg-slate-900 rounded-salsa p-6 border border-slate-100 dark:border-slate-800">';
+    $output .= '<h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> ' . __( 'Playlist Editorial', 'mundialdesalsa-pro' ) . '</h3>';
+    $output .= '<div class="space-y-4">';
+
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            $audio_url = get_post_meta( get_the_ID(), 'mds_post_audio_url', true );
+            $audio_self = get_post_meta( get_the_ID(), 'mds_post_audio_self', true );
+            
+            $output .= '<div class="audio-item flex items-center gap-4 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all group">';
+            $output .= '<div class="w-12 h-12 shrink-0 rounded-lg overflow-hidden">';
+            $output .= get_the_post_thumbnail( get_the_ID(), 'thumbnail', array( 'class' => 'w-full h-full object-cover' ) );
+            $output .= '</div>';
+            $output .= '<div class="flex-1">';
+            $output .= '<h4 class="text-sm font-bold uppercase italic tracking-tighter leading-none mb-1 group-hover:text-salsa transition-colors">' . get_the_title() . '</h4>';
+            
+            if ( ! empty( $audio_self['url'] ) ) {
+                $output .= '<audio controls class="w-full h-8 mt-2 mds-mini-player"><source src="' . esc_url( $audio_self['url'] ) . '" type="audio/mpeg"></audio>';
+            } elseif ( ! empty( $audio_url ) ) {
+                $output .= '<div class="text-[10px] text-slate-400 uppercase font-black tracking-widest mt-1">' . __( 'External Audio', 'mundialdesalsa-pro' ) . '</div>';
+            }
+            
+            $output .= '</div></div>';
+        }
+        wp_reset_postdata();
+    } else {
+        $output .= '<p class="text-slate-400 italic text-sm">' . __( 'No se encontraron audios.', 'mundialdesalsa-pro' ) . '</p>';
+    }
+
+    $output .= '</div></div>';
+    return $output;
+}
+
+/**
  * Render MDS Video Hero
  */
 function mds_pro_render_video_hero() {

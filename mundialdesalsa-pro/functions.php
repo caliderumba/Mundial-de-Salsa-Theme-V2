@@ -26,8 +26,17 @@ $mds_includes = [
 	'inc/core/walkers.php',
 	'inc/core/post-types.php',
 	'inc/core/blocks.php',
+	'inc/core/blocks-render.php',
+	'inc/core/ajax-handlers.php',
 	'inc/core/sidebars.php',
+	'inc/core/images.php',
+	'inc/core/videos.php',
+	'inc/core/schema.php',
+	'inc/core/social.php',
+	'inc/core/breadcrumbs.php',
+	'inc/core/editorial.php',
 	'inc/core/custom-css.php',
+	'inc/template-tags/single.php',
 	'inc/theme-options/admin-panel.php',
 	'inc/theme-options/settings.php',
 	'inc/theme-options/fields.php',
@@ -38,12 +47,11 @@ $mds_includes = [
 	'inc/builder/builder-init.php',
 	'inc/modules/ads-system.php',
 	'inc/modules/mega-menu.php',
-	'inc/modules/editorial-engine.php', // New: Trending & Views
-	'inc/modules/traffic-engine.php',   // New: Infinite Scroll & Next Post
-	'inc/modules/layout-engine.php',    // New: Dynamic Layout Switcher
-	'inc/widgets/trending-widget.php',  // New: Trending Widget
+	'inc/modules/editorial-engine.php',
+	'inc/modules/traffic-engine.php',
+	'inc/modules/layout-engine.php',
+	'inc/widgets/trending-widget.php',
 	'inc/performance/clean-up.php',
-	'inc/integrations/schema.php',
 	'inc/integrations/pwa.php',
 ];
 
@@ -58,103 +66,6 @@ foreach ( $mds_includes as $file ) {
 
 require __DIR__ . '/inc/core/security.php';
 require __DIR__ . '/inc/theme-options/rest-api.php';
-
-/**
- * SEO JSON-LD for Front Page
- */
-function mds_pro_front_page_schema() {
-    if ( ! is_front_page() ) {
-        return;
-    }
-
-    $logo = has_custom_logo() ? wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' )[0] : '';
-    $site_name = get_bloginfo('name');
-    $site_url = home_url();
-    
-    $schema = [
-        "@context" => "https://schema.org",
-        "@graph" => [
-            [
-                "@type" => "Organization",
-                "@id" => $site_url . "/#organization",
-                "name" => $site_name,
-                "url" => $site_url,
-                "logo" => [
-                    "@type" => "ImageObject",
-                    "url" => $logo
-                ],
-                "description" => get_bloginfo('description')
-            ],
-            [
-                "@type" => "MusicEvent",
-                "name" => "Mundial de Salsa " . date('Y'),
-                "description" => "El evento de salsa más importante del mundo en Cali, Colombia.",
-                "startDate" => date('Y') . "-12-25T18:00:00-05:00",
-                "location" => [
-                    "@type" => "Place",
-                    "name" => "Cali, Colombia",
-                    "address" => [
-                        "@type" => "PostalAddress",
-                        "addressLocality" => "Cali",
-                        "addressRegion" => "Valle del Cauca",
-                        "addressCountry" => "CO"
-                    ]
-                ],
-                "organizer" => [
-                    "@id" => $site_url . "/#organization"
-                ]
-            ]
-        ]
-    ];
-
-    echo "\n" . '<script type="application/ld+json" id="mds-pro-schema">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>' . "\n";
-}
-add_action( 'wp_head', 'mds_pro_front_page_schema' );
-
-/**
- * SEO JSON-LD for Single Posts (NewsArticle)
- */
-function mds_pro_single_post_schema() {
-    if ( ! is_singular( 'post' ) ) {
-        return;
-    }
-
-    global $post;
-    $site_url = home_url();
-    $logo = has_custom_logo() ? wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' )[0] : '';
-
-    $schema = [
-        "@context" => "https://schema.org",
-        "@type" => "NewsArticle",
-        "mainEntityOfPage" => [
-            "@type" => "WebPage",
-            "@id" => get_permalink()
-        ],
-        "headline" => get_the_title(),
-        "image" => [
-            get_the_post_thumbnail_url($post->ID, 'full')
-        ],
-        "datePublished" => get_the_date('c'),
-        "dateModified" => get_the_modified_date('c'),
-        "author" => [
-            "@type" => "Person",
-            "name" => get_the_author(),
-            "url" => get_author_posts_url(get_the_author_meta('ID'))
-        ],
-        "publisher" => [
-            "@type" => "Organization",
-            "name" => get_bloginfo('name'),
-            "logo" => [
-                "@type" => "ImageObject",
-                "url" => $logo
-            ]
-        ],
-        "description" => get_the_excerpt()
-    ];
-
-    echo "\n" . '<script type="application/ld+json" id="mds-pro-single-schema">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>' . "\n";
-}
-add_action( 'wp_head', 'mds_pro_single_post_schema' );
 
 /**
  * Initialize Theme

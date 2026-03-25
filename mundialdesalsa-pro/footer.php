@@ -84,7 +84,12 @@
 </div><!-- #page -->
 
 <?php /* Optimización: Scripts de analítica (Google Analytics, Pixel, etc.) deben ir aquí o mediante hooks para no bloquear el renderizado */ ?>
-<!-- Analytics Scripts Placeholder -->
+<?php 
+global $mds_pro_options;
+if ( ! empty( $mds_pro_options['footer_scripts'] ) ) {
+    echo $mds_pro_options['footer_scripts'];
+}
+?>
 
 <?php wp_footer(); ?>
 

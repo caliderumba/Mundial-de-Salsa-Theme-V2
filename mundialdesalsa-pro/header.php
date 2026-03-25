@@ -11,38 +11,15 @@
 	<link rel="preconnect" href="https://cdnjs.cloudflare.com">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-	<?php /* Marcado Schema: JSON-LD básico para WebSite y Organization */ ?>
-	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@graph": [
-			{
-				"@type": "Organization",
-				"@id": "<?php echo esc_url( home_url( '/#organization' ) ); ?>",
-				"name": "<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>",
-				"url": "<?php echo esc_url( home_url( '/' ) ); ?>",
-				"logo": {
-					"@type": "ImageObject",
-					"url": "<?php echo esc_url( mds_pro_get_option( 'header_settings', 'header_logo', array( 'url' => '' ) )['url'] ); ?>"
-				}
-			},
-			{
-				"@type": "WebSite",
-				"@id": "<?php echo esc_url( home_url( '/#website' ) ); ?>",
-				"url": "<?php echo esc_url( home_url( '/' ) ); ?>",
-				"name": "<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>",
-				"publisher": {
-					"@id": "<?php echo esc_url( home_url( '/#organization' ) ); ?>"
-				},
-				"potentialAction": {
-					"@type": "SearchAction",
-					"target": "<?php echo esc_url( home_url( '/?s={search_term_string}' ) ); ?>",
-					"query-input": "required name=search_term_string"
-				}
-			}
-		]
-	}
-	</script>
+    <?php 
+    global $mds_pro_options;
+    if ( ! empty( $mds_pro_options['google_analytics'] ) ) {
+        echo $mds_pro_options['google_analytics'];
+    }
+    if ( ! empty( $mds_pro_options['global_meta_tags'] ) ) {
+        echo $mds_pro_options['global_meta_tags'];
+    }
+    ?>
 
 	<?php wp_head(); ?>
 </head>

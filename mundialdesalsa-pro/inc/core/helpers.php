@@ -67,42 +67,6 @@ add_action( 'wp_ajax_mds_pro_load_more', 'mds_pro_load_more' );
 add_action( 'wp_ajax_nopriv_mds_pro_load_more', 'mds_pro_load_more' );
 
 /**
- * Output JSON-LD Structured Data
- */
-function mds_pro_json_ld() {
-    if ( ! is_singular() ) {
-        return;
-    }
-
-    $post = get_post();
-    $data = [
-        "@context" => "https://schema.org",
-        "@type"    => is_single() ? "BlogPosting" : "WebPage",
-        "headline" => get_the_title(),
-        "image"    => [ get_the_post_thumbnail_url( $post->ID, 'full' ) ],
-        "datePublished" => get_the_date( 'c' ),
-        "dateModified"  => get_the_modified_date( 'c' ),
-        "author" => [
-            "@type" => "Person",
-            "name"  => get_the_author(),
-            "url"   => get_author_posts_url( get_the_author_meta( 'ID' ) )
-        ],
-        "publisher" => [
-            "@type" => "Organization",
-            "name"  => get_bloginfo( 'name' ),
-            "logo"  => [
-                "@type" => "ImageObject",
-                "url"   => mds_pro_get_option( 'general', 'favicon', '' )
-            ]
-        ],
-        "description" => wp_trim_words( get_the_excerpt(), 25 )
-    ];
-
-    echo '<script type="application/ld+json">' . json_encode( $data ) . '</script>';
-}
-add_action( 'wp_head', 'mds_pro_json_ld' );
-
-/**
  * Sponsored Content Meta Box
  */
 function mds_pro_add_sponsored_meta_box() {
@@ -149,42 +113,6 @@ function mds_pro_sponsored_badge() {
     if ( get_post_meta( get_the_ID(), '_mds_pro_is_sponsored', true ) === '1' ) {
         echo '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2 inline-block dark:bg-amber-900 dark:text-amber-100">' . __( 'Patrocinado', 'mundialdesalsa-pro' ) . '</span>';
     }
-}
-
-/**
- * Breadcrumbs Functionality
- */
-function mds_pro_breadcrumbs() {
-    if ( ! mds_pro_get_option( 'general', 'breadcrumbs', true ) ) {
-        return;
-    }
-
-    if ( is_front_page() ) {
-        return;
-    }
-
-    echo '<nav class="breadcrumbs text-xs font-bold uppercase tracking-widest text-slate-400 mb-8 flex items-center gap-2">';
-    echo '<a href="' . esc_url( home_url( '/' ) ) . '" class="hover:text-emerald-500">' . esc_html__( 'Inicio', 'mundialdesalsa-pro' ) . '</a>';
-    echo '<span class="text-slate-300">/</span>';
-
-    if ( is_category() || is_single() ) {
-        $categories = get_the_category();
-        if ( ! empty( $categories ) ) {
-            echo '<a href="' . esc_url( get_category_link( $categories[0]->term_id ) ) . '" class="hover:text-emerald-500">' . esc_html( $categories[0]->name ) . '</a>';
-        }
-        if ( is_single() ) {
-            echo '<span class="text-slate-300">/</span>';
-            echo '<span class="text-slate-600">' . get_the_title() . '</span>';
-        }
-    } elseif ( is_page() ) {
-        echo '<span class="text-slate-600">' . get_the_title() . '</span>';
-    } elseif ( is_archive() ) {
-        the_archive_title( '<span class="text-slate-600">', '</span>' );
-    } elseif ( is_search() ) {
-        echo '<span class="text-slate-600">' . sprintf( esc_html__( 'Búsqueda: %s', 'mundialdesalsa-pro' ), get_search_query() ) . '</span>';
-    }
-
-    echo '</nav>';
 }
 
 /**
@@ -241,8 +169,9 @@ function mds_pro_social_sharing() {
 /**
  * Calculate Reading Time
  */
-function mds_pro_get_reading_time() {
-    $content = get_post_field( 'post_content', get_the_ID() );
+function mds_pro_get_reading_time( $post_id = 0 ) {
+    $post_id = $post_id ? $post_id : get_the_ID();
+    $content = get_post_field( 'post_content', $post_id );
     $word_count = str_word_count( strip_tags( $content ) );
     $reading_time = ceil( $word_count / 200 ); // Average 200 words per minute
     

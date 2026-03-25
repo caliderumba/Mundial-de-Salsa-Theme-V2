@@ -89,6 +89,35 @@ function mds_pro_register_blocks() {
         'render_callback' => 'mds_pro_render_video_hero',
     ) );
 
+    // MDS Live Updates
+    register_block_type( 'mds-pro/live-updates', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_live_updates',
+        'attributes'      => array(
+            'updates' => array( 'type' => 'array', 'default' => array() ),
+        ),
+    ) );
+
+    // MDS Live Score
+    register_block_type( 'mds-pro/live-score', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_live_score',
+        'attributes'      => array(
+            'scores' => array( 'type' => 'array', 'default' => array() ),
+            'title'  => array( 'type' => 'string', 'default' => 'Tabla de Posiciones' ),
+        ),
+    ) );
+
+    // MDS Audio Playlist
+    register_block_type( 'mds-pro/audio-playlist', array(
+        'editor_script'   => 'mds-pro-blocks-editor',
+        'render_callback' => 'mds_pro_render_audio_playlist',
+        'attributes'      => array(
+            'category' => array( 'type' => 'string', 'default' => '' ),
+            'count'    => array( 'type' => 'number', 'default' => 10 ),
+        ),
+    ) );
+
     // Register a simple block for Event Info
     wp_register_script(
         'mds-pro-event-block',
