@@ -36,6 +36,7 @@ $mds_includes = [
 	'inc/core/breadcrumbs.php',
 	'inc/core/editorial.php',
 	'inc/core/custom-css.php',
+    'inc/core/hooks.php',
 	'inc/template-tags/single.php',
 	'inc/theme-options/admin-panel.php',
 	'inc/theme-options/settings.php',

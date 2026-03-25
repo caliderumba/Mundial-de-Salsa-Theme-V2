@@ -14,11 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Get primary video data for a post.
  * 
- * @param int $post_id Post ID.
+ * @param int|null $post_id Post ID. Null uses get_the_ID().
  * @return array Video data structure.
  */
-function mds_get_primary_video_data( $post_id = 0 ) {
-    $post_id = absint( $post_id ? $post_id : get_the_ID() );
+function mds_get_primary_video_data( $post_id = null ) {
+    $post_id = ( null === $post_id ) ? get_the_ID() : $post_id;
+    $post_id = absint( $post_id );
     
     $data = [
         'has_video'     => false,
@@ -30,7 +31,7 @@ function mds_get_primary_video_data( $post_id = 0 ) {
     ];
 
     if ( ! $post_id ) {
-        return $data;
+        return apply_filters( 'mds_video_data', $data, $post_id );
     }
 
     // Priority 1: url_video_limpia meta
@@ -58,6 +59,39 @@ function mds_get_primary_video_data( $post_id = 0 ) {
     }
 
     return apply_filters( 'mds_video_data', $data, $post_id );
+}
+
+/**
+ * Render Post Video (SEO Priority)
+ */
+function mds_pro_render_post_video() {
+    $post_id     = get_the_ID();
+    $video_url   = get_post_meta( $post_id, 'mds_post_video_url', true );
+    $video_embed = get_post_meta( $post_id, 'mds_post_video_embed', true );
+    $video_self  = get_post_meta( $post_id, 'mds_post_video_self', true );
+    $layout      = get_post_meta( $post_id, 'mds_post_video_layout', true );
+
+    if ( empty( $video_url ) && empty( $video_embed ) && empty( $video_self['url'] ) ) {
+        return;
+    }
+
+    $container_class = 'mds-video-container mb-8 overflow-hidden rounded-salsa shadow-lg';
+    if ( $layout === 'boxed' ) {
+        $container_class .= ' container mx-auto px-4';
+    }
+
+    echo '<div class="' . esc_attr( $container_class ) . '" style="--mds-radius: var(--mds-radius, 12px);">';
+    
+    if ( ! empty( $video_embed ) ) {
+        // Trusted admin content
+        echo $video_embed; 
+    } elseif ( ! empty( $video_url ) ) {
+        echo '<div class="aspect-video w-full">' . wp_oembed_get( $video_url ) . '</div>';
+    } elseif ( ! empty( $video_self['url'] ) ) {
+        echo '<video controls class="w-full h-auto"><source src="' . esc_url( $video_self['url'] ) . '" type="video/mp4"></video>';
+    }
+
+    echo '</div>';
 }
 
 /**

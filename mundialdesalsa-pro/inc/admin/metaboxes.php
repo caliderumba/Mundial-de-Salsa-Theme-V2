@@ -90,5 +90,48 @@ function mds_pro_save_custom_meta( $post_id ) {
             update_post_meta( $post_id, '_mds_playlist_url', esc_url_raw( $_POST['mds_playlist_url'] ) );
         }
     }
+
+    // Sponsored Nonce
+    if ( isset( $_POST['mds_pro_sponsored_nonce'] ) && wp_verify_nonce( $_POST['mds_pro_sponsored_nonce'], 'mds_pro_save_sponsored_meta' ) ) {
+        $is_sponsored = isset( $_POST['mds_pro_is_sponsored'] ) ? '1' : '0';
+        update_post_meta( $post_id, '_mds_pro_is_sponsored', $is_sponsored );
+    }
 }
 add_action( 'save_post', 'mds_pro_save_custom_meta' );
+
+/**
+ * Add Sponsored Meta Box
+ */
+function mds_pro_add_sponsored_meta_box() {
+    add_meta_box(
+        'mds_pro_sponsored_meta',
+        __( 'Contenido Patrocinado', 'mundialdesalsa-pro' ),
+        'mds_pro_sponsored_meta_box_callback',
+        'post',
+        'side'
+    );
+}
+add_action( 'add_meta_boxes', 'mds_pro_add_sponsored_meta_box' );
+
+/**
+ * Sponsored Meta Box Callback
+ */
+function mds_pro_sponsored_meta_box_callback( $post ) {
+    wp_nonce_field( 'mds_pro_save_sponsored_meta', 'mds_pro_sponsored_nonce' );
+    $value = get_post_meta( $post->ID, '_mds_pro_is_sponsored', true );
+    ?>
+    <label for="mds_pro_is_sponsored">
+        <input type="checkbox" id="mds_pro_is_sponsored" name="mds_pro_is_sponsored" value="1" <?php checked( $value, '1' ); ?> />
+        <?php _e( 'Marcar como contenido patrocinado', 'mundialdesalsa-pro' ); ?>
+    </label>
+    <?php
+}
+
+/**
+ * Display Sponsored Badge
+ */
+function mds_pro_sponsored_badge() {
+    if ( get_post_meta( get_the_ID(), '_mds_pro_is_sponsored', true ) === '1' ) {
+        echo '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2 inline-block dark:bg-amber-900 dark:text-amber-100">' . esc_html__( 'Patrocinado', 'mundialdesalsa-pro' ) . '</span>';
+    }
+}

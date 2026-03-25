@@ -85,15 +85,9 @@ function mds_get_schema_organization() {
         $schema['logo'] = [
             '@type' => 'ImageObject',
             'url'   => esc_url_raw( $logo['url'] ),
-            'width' => 600,
-            'height' => 60
+            'width' => ! empty( $logo['width'] ) ? $logo['width'] : 600,
+            'height' => ! empty( $logo['height'] ) ? $logo['height'] : 60
         ];
-    }
-
-    // Social profiles
-    $social = []; // Could be fetched from options
-    if ( ! empty( $social ) ) {
-        $schema['sameAs'] = $social;
     }
 
     return $schema;
@@ -124,8 +118,10 @@ function mds_get_schema_website() {
  * WebPage Schema
  */
 function mds_get_schema_webpage( $post_id ) {
-    $permalink = get_permalink( $post_id );
-    return [
+    $permalink  = get_permalink( $post_id );
+    $image_data = mds_get_primary_image_data( $post_id );
+    
+    $schema = [
         '@type' => 'WebPage',
         '@id'   => $permalink . '#webpage',
         'url'   => $permalink,
@@ -139,6 +135,17 @@ function mds_get_schema_webpage( $post_id ) {
         'datePublished' => get_the_date( 'c', $post_id ),
         'dateModified'  => get_the_modified_date( 'c', $post_id ),
     ];
+
+    if ( $image_data['has_image'] ) {
+        $schema['primaryImageOfPage'] = [
+            '@id' => $permalink . '#primaryimage'
+        ];
+        $schema['image'] = [
+            '@id' => $permalink . '#primaryimage'
+        ];
+    }
+
+    return $schema;
 }
 
 /**
@@ -177,15 +184,16 @@ function mds_get_schema_article( $post_id ) {
     $image_data = mds_get_primary_image_data( $post_id );
     $author_id  = get_post_field( 'post_author', $post_id );
     $site_url   = trailingslashit( home_url() );
+    $permalink  = get_permalink( $post_id );
 
     $schema = [
         '@type' => $type,
-        '@id'   => get_permalink( $post_id ) . '#article',
+        '@id'   => $permalink . '#article',
         'isPartOf' => [
-            '@id' => get_permalink( $post_id ) . '#webpage'
+            '@id' => $permalink . '#webpage'
         ],
         'mainEntityOfPage' => [
-            '@id' => get_permalink( $post_id ) . '#webpage'
+            '@id' => $permalink . '#webpage'
         ],
         'headline' => get_the_title( $post_id ),
         'datePublished' => get_the_date( 'c', $post_id ),
@@ -205,6 +213,7 @@ function mds_get_schema_article( $post_id ) {
     if ( $image_data['has_image'] ) {
         $schema['image'] = [
             '@type' => 'ImageObject',
+            '@id'   => $permalink . '#primaryimage',
             'url'   => esc_url_raw( $image_data['url'] ),
             'width' => $image_data['width'],
             'height' => $image_data['height']
@@ -219,14 +228,22 @@ function mds_get_schema_article( $post_id ) {
  */
 function mds_get_schema_video( $post_id, $video ) {
     $image_data = mds_get_primary_image_data( $post_id );
+    $site_url   = trailingslashit( home_url() );
+    $permalink  = get_permalink( $post_id );
     
     return [
         '@type'        => 'VideoObject',
-        '@id'          => get_permalink( $post_id ) . '#video',
+        '@id'          => $permalink . '#video',
+        'mainEntityOfPage' => [
+            '@id' => $permalink . '#webpage'
+        ],
         'name'         => get_the_title( $post_id ),
         'description'  => wp_strip_all_tags( get_the_excerpt( $post_id ) ),
         'thumbnailUrl' => [ esc_url_raw( $image_data['url'] ) ],
         'uploadDate'   => get_the_date( 'c', $post_id ),
-        'embedUrl'     => esc_url_raw( $video['embed_url'] )
+        'embedUrl'     => esc_url_raw( $video['embed_url'] ),
+        'publisher'    => [
+            '@id' => $site_url . '#organization'
+        ]
     ];
 }

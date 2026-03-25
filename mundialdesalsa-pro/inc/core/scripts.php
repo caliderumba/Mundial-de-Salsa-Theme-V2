@@ -15,6 +15,9 @@ function mds_pro_scripts() {
     }
 	wp_enqueue_style( 'mds-pro-style', $style_url, [], MDS_PRO_VERSION );
 
+    // Font Awesome
+    wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], '6.4.0' );
+
 	// Main JS
 	wp_enqueue_script( 'mds-pro-app', MDS_PRO_URI . '/assets/js/app.js', [ 'jquery' ], MDS_PRO_VERSION, false );
 
@@ -47,3 +50,16 @@ function mds_pro_scripts() {
     ]);
 }
 add_action( 'wp_enqueue_scripts', 'mds_pro_scripts' );
+
+/**
+ * Performance: Resource Hints for external assets.
+ */
+function mds_pro_resource_hints( $urls, $relation_type ) {
+    if ( 'preconnect' === $relation_type ) {
+        $urls[] = 'https://fonts.googleapis.com';
+        $urls[] = 'https://fonts.gstatic.com';
+        $urls[] = 'https://cdnjs.cloudflare.com';
+    }
+    return $urls;
+}
+add_filter( 'wp_resource_hints', 'mds_pro_resource_hints', 10, 2 );
