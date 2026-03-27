@@ -20,17 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Safely get theme option
- * 
- * @param string $section Section key.
- * @param string $key Option key.
- * @param mixed $default Default value.
- * @return mixed Option value.
+ * Note: mds_pro_get_option() has been moved to inc/theme-options/settings.php
+ * to provide a unified entry point for modern and legacy calls.
  */
-function mds_pro_get_option( $section, $key, $default = '' ) {
-    $options = get_option( 'mds_pro_options' );
-    if ( isset( $options[$section][$key] ) ) {
-        return $options[$section][$key];
-    }
-    return $default;
-}
