@@ -70,5 +70,11 @@ function mds_pro_get_option_defaults() {
         'enable_lazyload'         => true,
         'enable_minify'           => false,
         'enable_pwa'              => false,
+        
+        // SEO & Scripts
+        'google_analytics'        => '',
+        'global_meta_tags'        => '',
+        'footer_scripts'          => '',
+        'custom_css'              => '',
     ) );
 }

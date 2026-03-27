@@ -14,26 +14,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Get custom CSS variables based on theme options
  */
 function mds_pro_get_custom_css_vars() {
-    global $mds_pro_options;
-
     // Container Width
-    $container_width = isset( $mds_pro_options['container_width'] ) ? $mds_pro_options['container_width'] : '1200';
+    $container_width = mds_pro_get_option( 'container_width', '1200' );
 
     // Typography
-    $main_title = isset( $mds_pro_options['main_title_typo'] ) ? $mds_pro_options['main_title_typo'] : array();
-    $subtitle   = isset( $mds_pro_options['subtitle_typo'] ) ? $mds_pro_options['subtitle_typo'] : array();
-    $paragraph  = isset( $mds_pro_options['paragraph_typo'] ) ? $mds_pro_options['paragraph_typo'] : array();
+    $main_title = mds_pro_get_option( 'main_title_typo', array() );
+    $subtitle   = mds_pro_get_option( 'subtitle_typo', array() );
+    $paragraph  = mds_pro_get_option( 'paragraph_typo', array() );
 
     // Colors
-    $primary_color   = isset( $mds_pro_options['primary'] ) ? $mds_pro_options['primary'] : '#e74c3c';
-    $secondary_color = isset( $mds_pro_options['secondary'] ) ? $mds_pro_options['secondary'] : '#2c3e50';
-    $accent_color    = isset( $mds_pro_options['accent'] ) ? $mds_pro_options['accent'] : '#f1c40f';
+    $primary_color   = mds_pro_get_option( 'primary', '#e74c3c' );
+    $secondary_color = mds_pro_get_option( 'secondary', '#2c3e50' );
+    $accent_color    = mds_pro_get_option( 'accent', '#f1c40f' );
 
     // Custom CSS from Redux
-    $custom_css = isset( $mds_pro_options['custom_css'] ) ? $mds_pro_options['custom_css'] : '';
+    $custom_css = mds_pro_get_option( 'custom_css', '' );
 
     // Header Transparent
-    $header_transparent = isset( $mds_pro_options['header_transparent_home'] ) && $mds_pro_options['header_transparent_home'] && is_front_page();
+    $header_transparent = mds_pro_get_option( 'header_transparent_home', false ) && is_front_page();
 
     ob_start();
     ?>
@@ -191,12 +189,15 @@ add_action( 'enqueue_block_editor_assets', 'mds_pro_editor_custom_css' );
  * Enqueue Google Fonts dynamically
  */
 function mds_pro_enqueue_custom_fonts() {
-    global $mds_pro_options;
-    
     $fonts = array();
-    if ( isset( $mds_pro_options['main_title_typo']['font-family'] ) ) $fonts[] = $mds_pro_options['main_title_typo']['font-family'];
-    if ( isset( $mds_pro_options['subtitle_typo']['font-family'] ) ) $fonts[] = $mds_pro_options['subtitle_typo']['font-family'];
-    if ( isset( $mds_pro_options['paragraph_typo']['font-family'] ) ) $fonts[] = $mds_pro_options['paragraph_typo']['font-family'];
+    
+    $main_title_typo = mds_pro_get_option( 'main_title_typo', array() );
+    $subtitle_typo   = mds_pro_get_option( 'subtitle_typo', array() );
+    $paragraph_typo  = mds_pro_get_option( 'paragraph_typo', array() );
+
+    if ( isset( $main_title_typo['font-family'] ) ) $fonts[] = $main_title_typo['font-family'];
+    if ( isset( $subtitle_typo['font-family'] ) ) $fonts[] = $subtitle_typo['font-family'];
+    if ( isset( $paragraph_typo['font-family'] ) ) $fonts[] = $paragraph_typo['font-family'];
 
     $fonts = array_unique( array_filter( $fonts ) );
     $font_families = [];

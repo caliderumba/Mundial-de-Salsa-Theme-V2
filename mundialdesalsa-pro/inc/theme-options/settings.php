@@ -30,7 +30,12 @@ function mds_pro_get_all_options() {
     global $mds_pro_options;
     
     // Try Redux global first
-    $saved_options = ( isset( $mds_pro_options ) && ! empty( $mds_pro_options ) ) ? $mds_pro_options : get_option( 'mds_pro_options', array() );
+    $saved_options = ( isset( $mds_pro_options ) && is_array( $mds_pro_options ) && ! empty( $mds_pro_options ) ) ? $mds_pro_options : get_option( 'mds_pro_options', array() );
+    
+    // Ensure $saved_options is an array
+    if ( ! is_array( $saved_options ) ) {
+        $saved_options = array();
+    }
     $defaults      = mds_pro_get_option_defaults();
     
     // Merge defaults with saved options

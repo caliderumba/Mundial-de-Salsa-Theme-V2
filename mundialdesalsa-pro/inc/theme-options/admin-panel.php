@@ -34,17 +34,34 @@ function mds_pro_admin_menu() {
         'mds_pro_render_dashboard'
     );
     
-    // Add link to Redux Options as a submenu
-    add_submenu_page(
-        'mds_pro_dashboard',
-        __( 'Opciones del Theme', 'mundialdesalsa-pro' ),
-        __( 'Opciones del Theme', 'mundialdesalsa-pro' ),
-        'manage_options',
-        'mds_pro_options',
-        null // Redux handles the rendering
-    );
+    // Add link to Redux Options as a submenu only if Redux is NOT active
+    // If Redux is active, it will register itself as a submenu of mds_pro_dashboard
+    if ( ! class_exists( 'Redux' ) ) {
+        add_submenu_page(
+            'mds_pro_dashboard',
+            __( 'Opciones del Theme', 'mundialdesalsa-pro' ),
+            __( 'Opciones del Theme', 'mundialdesalsa-pro' ),
+            'manage_options',
+            'mds_pro_options_panel',
+            'mds_pro_render_no_redux'
+        );
+    }
 }
-add_action( 'admin_menu', 'mds_pro_admin_menu' );
+add_action( 'admin_menu', 'mds_pro_admin_menu', 5 );
+
+/**
+ * Render message when Redux is missing
+ */
+function mds_pro_render_no_redux() {
+    ?>
+    <div class="wrap">
+        <h1><?php _e( 'Redux Framework Requerido', 'mundialdesalsa-pro' ); ?></h1>
+        <div class="notice notice-error">
+            <p><?php _e( 'El plugin <strong>Redux Framework</strong> es necesario para configurar las opciones del theme. Por favor, instálalo y actívalo.', 'mundialdesalsa-pro' ); ?></p>
+        </div>
+    </div>
+    <?php
+}
 
 /**
  * Render Theme Dashboard
@@ -59,7 +76,7 @@ function mds_pro_render_dashboard() {
                 <p style="margin: 10px 0 0; font-size: 16px; opacity: 0.8;"><?php _e( 'Bienvenido al centro de control de tu theme premium.', 'mundialdesalsa-pro' ); ?></p>
             </div>
             <div class="mds-dashboard-actions">
-                <a href="<?php echo admin_url( 'admin.php?page=mds_pro_options' ); ?>" class="button button-primary button-hero"><?php _e( 'Configurar Theme', 'mundialdesalsa-pro' ); ?></a>
+                <a href="<?php echo admin_url( 'admin.php?page=mds_pro_options_panel' ); ?>" class="button button-primary button-hero"><?php _e( 'Configurar Theme', 'mundialdesalsa-pro' ); ?></a>
             </div>
         </div>
 

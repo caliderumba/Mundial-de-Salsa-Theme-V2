@@ -18,14 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 function mds_output_head_scripts() {
     // Analytics
     $analytics = mds_pro_get_option( 'general', 'google_analytics', '' );
-    if ( ! empty( $analytics ) ) {
+    if ( ! empty( $analytics ) && is_string( $analytics ) ) {
         echo "<!-- Google Analytics -->\n";
         echo $analytics . "\n";
     }
 
     // Global Meta Tags
     $meta_tags = mds_pro_get_option( 'general', 'global_meta_tags', '' );
-    if ( ! empty( $meta_tags ) ) {
+    if ( ! empty( $meta_tags ) && is_string( $meta_tags ) ) {
         echo "<!-- Global Meta Tags -->\n";
         echo $meta_tags . "\n";
     }

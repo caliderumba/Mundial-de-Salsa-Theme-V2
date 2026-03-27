@@ -27,6 +27,15 @@ function mds_pro_get_legacy_option_map() {
             'container_width'  => 'container_width',
         ),
         'sidebar_position' => 'single_sidebar_pos',
+
+        // General / SEO
+        'general' => array(
+            'google_analytics' => 'google_analytics',
+            'global_meta_tags' => 'global_meta_tags',
+            'dark_mode'        => 'dark_mode',
+        ),
+        'google_analytics' => 'google_analytics',
+        'global_meta_tags' => 'global_meta_tags',
         
         // Performance
         'performance' => array(
@@ -38,15 +47,27 @@ function mds_pro_get_legacy_option_map() {
         
         // Social
         'social' => array(
-            'facebook'  => 'social_facebook',
-            'twitter'   => 'social_twitter',
-            'instagram' => 'social_instagram',
-            'youtube'   => 'social_youtube',
+            'facebook'      => 'social_facebook',
+            'facebook_url'  => 'social_facebook',
+            'twitter'       => 'social_twitter',
+            'twitter_url'   => 'social_twitter',
+            'instagram'     => 'social_instagram',
+            'instagram_url' => 'social_instagram',
+            'youtube'       => 'social_youtube',
+            'youtube_url'   => 'social_youtube',
+            'tiktok'        => 'social_tiktok',
+            'tiktok_url'    => 'social_tiktok',
         ),
-        'facebook'  => 'social_facebook',
-        'twitter'   => 'social_twitter',
-        'instagram' => 'social_instagram',
-        'youtube'   => 'social_youtube',
+        'facebook'      => 'social_facebook',
+        'facebook_url'  => 'social_facebook',
+        'twitter'       => 'social_twitter',
+        'twitter_url'   => 'social_twitter',
+        'instagram'     => 'social_instagram',
+        'instagram_url' => 'social_instagram',
+        'youtube'       => 'social_youtube',
+        'youtube_url'   => 'social_youtube',
+        'tiktok'        => 'social_tiktok',
+        'tiktok_url'    => 'social_tiktok',
         
         // Header
         'header' => array(

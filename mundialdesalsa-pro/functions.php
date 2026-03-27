@@ -77,15 +77,35 @@ require __DIR__ . '/inc/core/security.php';
 require __DIR__ . '/inc/theme-options/rest-api.php';
 
 /**
- * Initialize Theme
+ * Initialize Theme Options
+ * 
+ * Ensures the options array exists in the database with correct defaults.
  */
 function mds_pro_init() {
+    // Only run if options are not set
     if ( ! get_option( 'mds_pro_options' ) ) {
+        $defaults = mds_pro_get_option_defaults();
         $default_options_file = __DIR__ . '/inc/theme-options/default-options.json';
+        
         if ( file_exists( $default_options_file ) ) {
-            $default_options = json_decode( file_get_contents( $default_options_file ), true );
-            update_option( 'mds_pro_options', $default_options );
+            $json_data = json_decode( file_get_contents( $default_options_file ), true );
+            
+            if ( is_array( $json_data ) ) {
+                // Flatten the nested JSON structure to match Redux/Theme keys
+                $flattened = array();
+                foreach ( $json_data as $section => $fields ) {
+                    if ( is_array( $fields ) ) {
+                        foreach ( $fields as $key => $value ) {
+                            // If the key exists in our flat defaults, use the JSON value
+                            $flattened[$key] = $value;
+                        }
+                    }
+                }
+                $defaults = wp_parse_args( $flattened, $defaults );
+            }
         }
+        
+        update_option( 'mds_pro_options', $defaults );
     }
 }
 add_action( 'after_setup_theme', 'mds_pro_init' );

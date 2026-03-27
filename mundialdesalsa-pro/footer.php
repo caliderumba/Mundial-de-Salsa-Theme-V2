@@ -85,9 +85,9 @@
 
 <?php /* Optimización: Scripts de analítica (Google Analytics, Pixel, etc.) deben ir aquí o mediante hooks para no bloquear el renderizado */ ?>
 <?php 
-global $mds_pro_options;
-if ( ! empty( $mds_pro_options['footer_scripts'] ) ) {
-    echo $mds_pro_options['footer_scripts'];
+$footer_scripts = mds_pro_get_option( 'footer_scripts', '' );
+if ( ! empty( $footer_scripts ) && is_string( $footer_scripts ) ) {
+    echo $footer_scripts;
 }
 ?>
 
