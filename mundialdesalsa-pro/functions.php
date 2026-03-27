@@ -38,9 +38,6 @@ $mds_includes = [
 	'inc/core/custom-css.php',
     'inc/core/hooks.php',
 	'inc/template-tags/single.php',
-	'inc/theme-options/admin-panel.php',
-	'inc/theme-options/settings.php',
-	'inc/theme-options/fields.php',
 	'inc/admin/metaboxes.php',
 	'inc/admin/metabox-config.php',
 	'inc/admin/dashboard.php',
@@ -56,6 +53,17 @@ $mds_includes = [
 	'inc/integrations/pwa.php',
 ];
 
+/**
+ * Theme Options Layer (Must load before Redux)
+ */
+require_once __DIR__ . '/inc/theme-options/settings.php';
+require_once __DIR__ . '/inc/theme-options/fields.php';
+require_once __DIR__ . '/inc/theme-options/helpers.php';
+require_once __DIR__ . '/inc/theme-options/admin-panel.php';
+
+/**
+ * Redux Framework Configuration
+ */
 require __DIR__ . '/inc/redux-config.php';
 
 foreach ( $mds_includes as $file ) {

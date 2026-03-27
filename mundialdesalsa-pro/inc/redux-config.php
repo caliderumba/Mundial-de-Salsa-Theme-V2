@@ -44,6 +44,9 @@ $args = array(
 
 Redux::setArgs( $opt_name, $args );
 
+// Load defaults to use in Redux definitions
+$defaults = mds_pro_get_option_defaults();
+
 // Sections
 Redux::setSection( $opt_name, array(
     'title'  => __( 'Cabecera y Navegación', 'mundialdesalsa-pro' ),
@@ -69,14 +72,14 @@ Redux::setSection( $opt_name, array(
                     'img' => 'https://placehold.co/200x100/e74c3c/ffffff?text=Logo+Derecha',
                 ),
             ),
-            'default'  => 'left',
+            'default'  => $defaults['header_layout'],
         ),
         array(
             'id'       => 'header_transparent_home',
             'type'     => 'switch',
             'title'    => __( 'Header Transparente en Home', 'mundialdesalsa-pro' ),
             'subtitle' => __( 'Activa el fondo transparente para la cabecera solo en la página de inicio.', 'mundialdesalsa-pro' ),
-            'default'  => false,
+            'default'  => $defaults['header_transparent_home'],
         ),
     ),
 ) );
@@ -95,7 +98,7 @@ Redux::setSection( $opt_name, array(
                 'right' => 'Derecha',
                 'none'  => 'Sin Sidebar',
             ),
-            'default'  => 'right',
+            'default'  => $defaults['single_sidebar_pos'],
         ),
         array(
             'id'       => 'category_sidebar_pos',
@@ -106,7 +109,7 @@ Redux::setSection( $opt_name, array(
                 'right' => 'Derecha',
                 'none'  => 'Sin Sidebar',
             ),
-            'default'  => 'right',
+            'default'  => $defaults['category_sidebar_pos'],
         ),
         array(
             'id'       => 'news_grid_style',
@@ -116,7 +119,7 @@ Redux::setSection( $opt_name, array(
                 'grid' => 'Grid (Cuadrícula)',
                 'list' => 'List (Lista)',
             ),
-            'default'  => 'grid',
+            'default'  => $defaults['news_grid_style'],
         ),
         array(
             'id'       => 'container_width',
@@ -125,7 +128,7 @@ Redux::setSection( $opt_name, array(
             'min'      => 1000,
             'max'      => 1600,
             'step'     => 10,
-            'default'  => 1200,
+            'default'  => $defaults['container_width'],
         ),
     ),
 ) );
@@ -141,11 +144,7 @@ Redux::setSection( $opt_name, array(
             'title'       => __( 'Títulos Principales', 'mundialdesalsa-pro' ),
             'google'      => true,
             'font-backup' => true,
-            'default'     => array(
-                'font-family' => 'Space Grotesk',
-                'font-size'   => '48px',
-                'font-weight' => '700',
-            ),
+            'default'     => $defaults['main_title_typo'],
         ),
         array(
             'id'          => 'subtitle_typo',
@@ -153,11 +152,7 @@ Redux::setSection( $opt_name, array(
             'title'       => __( 'Subtítulos', 'mundialdesalsa-pro' ),
             'google'      => true,
             'font-backup' => true,
-            'default'     => array(
-                'font-family' => 'Inter',
-                'font-size'   => '24px',
-                'font-weight' => '600',
-            ),
+            'default'     => $defaults['subtitle_typo'],
         ),
         array(
             'id'          => 'paragraph_typo',
@@ -165,11 +160,7 @@ Redux::setSection( $opt_name, array(
             'title'       => __( 'Texto de Párrafo', 'mundialdesalsa-pro' ),
             'google'      => true,
             'font-backup' => true,
-            'default'     => array(
-                'font-family' => 'Inter',
-                'font-size'   => '16px',
-                'font-weight' => '400',
-            ),
+            'default'     => $defaults['paragraph_typo'],
         ),
     ),
 ) );
@@ -183,19 +174,19 @@ Redux::setSection( $opt_name, array(
             'id'      => 'primary',
             'type'    => 'color',
             'title'   => __( 'Color Primario', 'mundialdesalsa-pro' ),
-            'default' => '#e74c3c',
+            'default' => $defaults['primary'],
         ),
         array(
             'id'      => 'secondary',
             'type'    => 'color',
             'title'   => __( 'Color Secundario', 'mundialdesalsa-pro' ),
-            'default' => '#2c3e50',
+            'default' => $defaults['secondary'],
         ),
         array(
             'id'      => 'accent',
             'type'    => 'color',
             'title'   => __( 'Color de Acento', 'mundialdesalsa-pro' ),
-            'default' => '#f1c40f',
+            'default' => $defaults['accent'],
         ),
     ),
 ) );
@@ -215,13 +206,13 @@ Redux::setSection( $opt_name, array(
                 '3' => '3 Columnas',
                 '4' => '4 Columnas',
             ),
-            'default'  => '4',
+            'default'  => $defaults['footer_columns'],
         ),
         array(
             'id'       => 'footer_credits',
             'type'     => 'text',
             'title'    => __( 'Aviso de Créditos', 'mundialdesalsa-pro' ),
-            'default'  => '© ' . date('Y') . ' MundialdeSalsa Pro. Todos los derechos reservados.',
+            'default'  => $defaults['footer_credits'],
         ),
     ),
 ) );
@@ -255,6 +246,64 @@ Redux::setSection( $opt_name, array(
             'title'    => __( 'CSS Personalizado', 'mundialdesalsa-pro' ),
             'mode'     => 'css',
             'theme'    => 'monokai',
+        ),
+    ),
+) );
+
+Redux::setSection( $opt_name, array(
+    'title'  => __( 'Redes Sociales', 'mundialdesalsa-pro' ),
+    'id'     => 'social_pro',
+    'icon'   => 'el el-share',
+    'fields' => array(
+        array(
+            'id'      => 'social_facebook',
+            'type'    => 'text',
+            'title'   => __( 'Facebook URL', 'mundialdesalsa-pro' ),
+            'default' => $defaults['social_facebook'],
+        ),
+        array(
+            'id'      => 'social_twitter',
+            'type'    => 'text',
+            'title'   => __( 'Twitter / X URL', 'mundialdesalsa-pro' ),
+            'default' => $defaults['social_twitter'],
+        ),
+        array(
+            'id'      => 'social_instagram',
+            'type'    => 'text',
+            'title'   => __( 'Instagram URL', 'mundialdesalsa-pro' ),
+            'default' => $defaults['social_instagram'],
+        ),
+        array(
+            'id'      => 'social_youtube',
+            'type'    => 'text',
+            'title'   => __( 'YouTube URL', 'mundialdesalsa-pro' ),
+            'default' => $defaults['social_youtube'],
+        ),
+        array(
+            'id'      => 'social_tiktok',
+            'type'    => 'text',
+            'title'   => __( 'TikTok URL', 'mundialdesalsa-pro' ),
+            'default' => $defaults['social_tiktok'],
+        ),
+    ),
+) );
+
+Redux::setSection( $opt_name, array(
+    'title'  => __( 'Rendimiento', 'mundialdesalsa-pro' ),
+    'id'     => 'performance_pro',
+    'icon'   => 'el el-dashboard',
+    'fields' => array(
+        array(
+            'id'      => 'enable_lazyload',
+            'type'    => 'switch',
+            'title'   => __( 'Activar Lazy Load', 'mundialdesalsa-pro' ),
+            'default' => $defaults['enable_lazyload'],
+        ),
+        array(
+            'id'      => 'enable_minify',
+            'type'    => 'switch',
+            'title'   => __( 'Minificar CSS/JS', 'mundialdesalsa-pro' ),
+            'default' => $defaults['enable_minify'],
         ),
     ),
 ) );
