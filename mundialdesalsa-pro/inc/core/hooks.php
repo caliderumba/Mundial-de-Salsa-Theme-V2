@@ -31,3 +31,22 @@ function mds_output_head_scripts() {
     }
 }
 add_action( 'wp_head', 'mds_output_head_scripts', 1 );
+
+/**
+ * Add layout-specific classes to the body tag.
+ * 
+ * @param array $classes Existing body classes.
+ * @return array Modified body classes.
+ */
+function mds_pro_body_classes( $classes ) {
+    $layout = mds_pro_get_option( 'site_layout', 'full' );
+    
+    if ( 'boxed' === $layout ) {
+        $classes[] = 'layout-boxed';
+    } else {
+        $classes[] = 'layout-full';
+    }
+    
+    return $classes;
+}
+add_filter( 'body_class', 'mds_pro_body_classes' );

@@ -80,5 +80,15 @@ function mds_pro_get_legacy_option_map() {
             'main_title' => 'main_title_typo',
             'body'       => 'paragraph_typo',
         ),
+
+        // Colors
+        'colors' => array(
+            'primary'   => 'color_h1',
+            'secondary' => 'color_subheader',
+            'accent'    => 'color_text',
+        ),
+        'primary'   => 'color_h1',
+        'secondary' => 'color_subheader',
+        'accent'    => 'color_text',
     ) );
 }

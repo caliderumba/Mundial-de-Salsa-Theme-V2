@@ -19,13 +19,12 @@ class Mundial_Salsa_Mega_Menu_Walker extends Walker_Nav_Menu {
      */
     public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         $classes = empty( $item->classes ) ? array() : (array) $item->classes;
+        $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
         
         // Check if it has the mega-menu-pro class
         if ( in_array( 'mega-menu-pro', $classes ) ) {
-            $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
-            
             $output .= $indent . '<li class="menu-item mega-menu-item mega-menu-pro group relative">';
-            $output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link flex items-center gap-1 py-6">' . esc_html( $item->title ) . ' <i class="fa-solid fa-chevron-down text-[8px] opacity-50 group-hover:rotate-180 transition-transform"></i></a>';
+            $output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link flex items-center gap-1 py-6 font-bold uppercase tracking-wider text-sm hover:text-[var(--mds-primary)] transition-colors">' . esc_html( $item->title ) . ' <i class="fa-solid fa-chevron-down text-[8px] opacity-50 group-hover:rotate-180 transition-transform"></i></a>';
             
             // Mega Menu Content Container (70/20/10 Layout)
             $output .= '<div class="mega-menu-content absolute left-1/2 -translate-x-1/2 top-full w-[1100px] bg-white dark:bg-slate-900 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[500] border-t-4 border-[var(--mds-primary)] mt-0 rounded-b-[var(--mds-radius)] overflow-hidden">';
@@ -123,8 +122,10 @@ class Mundial_Salsa_Mega_Menu_Walker extends Walker_Nav_Menu {
             $output .= '</div>'; // End mega-menu-content
             $output .= '</li>';
         } else {
-            // Standard Menu Item
-            parent::start_el( $output, $item, $depth, $args, $id );
+            // Standard Menu Item - Ensure it has the same py-6 and styling
+            $output .= $indent . '<li class="menu-item ' . esc_attr( implode( ' ', $classes ) ) . '">';
+            $output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link block py-6 font-bold uppercase tracking-wider text-sm hover:text-[var(--mds-primary)] transition-colors">' . esc_html( $item->title ) . '</a>';
+            $output .= '</li>';
         }
     }
 }

@@ -189,6 +189,35 @@ body.panel-open #side-panel {
 }
 
 /**
+ * Layout Engine - Boxed vs Full Width
+ */
+body.layout-boxed {
+    background-color: #f1f5f9; /* slate-100 */
+}
+
+.dark body.layout-boxed {
+    background-color: #020617; /* slate-950 */
+}
+
+body.layout-boxed #page {
+    max-width: 1280px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
+}
+
+.dark body.layout-boxed #page {
+    background-color: #0f172a; /* slate-900 */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+}
+
+body.layout-boxed #masthead {
+    max-width: 1280px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/**
  * Utility Overrides
  */
 .font-black {

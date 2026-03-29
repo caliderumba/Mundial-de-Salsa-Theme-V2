@@ -41,7 +41,32 @@ function mds_pro_inject_related_silo( $category_slug, $count = 2 ) {
 <div class="front-page-wrapper py-12">
     <div class="container mx-auto px-4">
         
-        <!-- SECTION 1: 70% - Mundial de Salsa -->
+        <?php
+        /**
+         * Standard WordPress Loop for Page Content
+         * This allows Gutenberg blocks and editor content to appear on the homepage.
+         */
+        if ( have_posts() ) :
+            while ( have_posts() ) : the_post();
+                if ( ! empty( get_the_content() ) ) :
+                    ?>
+                    <div class="front-page-editor-content mb-16 prose prose-slate dark:prose-invert max-w-none">
+                        <?php the_content(); ?>
+                    </div>
+                    <?php
+                endif;
+            endwhile;
+        endif;
+        ?>
+        
+        <?php
+        /**
+         * Hardcoded Category Sections
+         * These can be disabled from the Theme Options Panel.
+         */
+        if ( mds_pro_get_option( 'show_front_page_sections', true ) ) :
+        ?>
+            <!-- SECTION 1: 70% - Mundial de Salsa -->
         <section class="section-mundial mb-16">
             <div class="flex items-center justify-between mb-8 border-b-2 border-gray-100 pb-4">
                 <h2 class="text-3xl font-black uppercase tracking-tighter">
@@ -216,6 +241,7 @@ function mds_pro_inject_related_silo( $category_slug, $count = 2 ) {
             </div>
         </section>
 
+        <?php endif; // End show_front_page_sections check ?>
     </div>
 </div>
 

@@ -130,6 +130,24 @@ Redux::setSection( $opt_name, array(
             'step'     => 10,
             'default'  => $defaults['container_width'],
         ),
+        array(
+            'id'       => 'site_layout',
+            'type'     => 'button_set',
+            'title'    => __( 'Diseño del Sitio', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Selecciona si el sitio debe ser de ancho completo o en caja.', 'mundialdesalsa-pro' ),
+            'options'  => array(
+                'full'  => 'Ancho Completo',
+                'boxed' => 'En Caja (Boxed)',
+            ),
+            'default'  => $defaults['site_layout'],
+        ),
+        array(
+            'id'       => 'show_front_page_sections',
+            'type'     => 'switch',
+            'title'    => __( 'Mostrar Secciones por Defecto en Home', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Si se desactiva, solo se mostrará el contenido del editor de bloques en la página de inicio.', 'mundialdesalsa-pro' ),
+            'default'  => $defaults['show_front_page_sections'],
+        ),
     ),
 ) );
 
@@ -171,22 +189,34 @@ Redux::setSection( $opt_name, array(
     'icon'   => 'el el-brush',
     'fields' => array(
         array(
-            'id'      => 'primary',
+            'id'      => 'color_h1',
             'type'    => 'color',
-            'title'   => __( 'Color Primario', 'mundialdesalsa-pro' ),
-            'default' => $defaults['primary'],
+            'title'   => __( 'Color Títulos H1', 'mundialdesalsa-pro' ),
+            'default' => $defaults['color_h1'],
         ),
         array(
-            'id'      => 'secondary',
+            'id'      => 'color_subheader',
             'type'    => 'color',
-            'title'   => __( 'Color Secundario', 'mundialdesalsa-pro' ),
-            'default' => $defaults['secondary'],
+            'title'   => __( 'Color Subheader', 'mundialdesalsa-pro' ),
+            'default' => $defaults['color_subheader'],
         ),
         array(
-            'id'      => 'accent',
+            'id'      => 'color_text',
             'type'    => 'color',
-            'title'   => __( 'Color de Acento', 'mundialdesalsa-pro' ),
-            'default' => $defaults['accent'],
+            'title'   => __( 'Color Texto', 'mundialdesalsa-pro' ),
+            'default' => $defaults['color_text'],
+        ),
+        array(
+            'id'      => 'bg_page',
+            'type'    => 'color',
+            'title'   => __( 'Color de Fondo de Página', 'mundialdesalsa-pro' ),
+            'default' => $defaults['bg_page'],
+        ),
+        array(
+            'id'      => 'bg_content',
+            'type'    => 'color',
+            'title'   => __( 'Color de Fondo de Contenido', 'mundialdesalsa-pro' ),
+            'default' => $defaults['bg_content'],
         ),
     ),
 ) );

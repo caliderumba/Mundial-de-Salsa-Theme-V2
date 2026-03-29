@@ -30,6 +30,10 @@ function mds_pro_get_option_defaults() {
         'news_grid_style'         => 'grid',
         'container_width'         => 1200,
         
+        // Site Layout
+        'site_layout'             => 'full',
+        'show_front_page_sections' => true,
+        
         // Typography
         'main_title_typo'         => array(
             'font-family' => 'Space Grotesk',
@@ -51,9 +55,11 @@ function mds_pro_get_option_defaults() {
         ),
         
         // Colors
-        'primary'                 => '#e74c3c',
-        'secondary'               => '#2c3e50',
-        'accent'                  => '#f1c40f',
+        'color_h1'                => '#e74c3c',
+        'color_subheader'         => '#2c3e50',
+        'color_text'              => '#334155',
+        'bg_page'                 => '#f1f5f9',
+        'bg_content'              => '#ffffff',
         
         // Footer
         'footer_columns'          => '4',

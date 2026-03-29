@@ -23,9 +23,11 @@ function mds_pro_get_custom_css_vars() {
     $paragraph  = mds_pro_get_option( 'paragraph_typo', array() );
 
     // Colors
-    $primary_color   = mds_pro_get_option( 'primary', '#e74c3c' );
-    $secondary_color = mds_pro_get_option( 'secondary', '#2c3e50' );
-    $accent_color    = mds_pro_get_option( 'accent', '#f1c40f' );
+    $color_h1        = mds_pro_get_option( 'color_h1', '#e74c3c' );
+    $color_subheader = mds_pro_get_option( 'color_subheader', '#2c3e50' );
+    $color_text      = mds_pro_get_option( 'color_text', '#334155' );
+    $bg_page         = mds_pro_get_option( 'bg_page', '#f1f5f9' );
+    $bg_content      = mds_pro_get_option( 'bg_content', '#ffffff' );
 
     // Custom CSS from Redux
     $custom_css = mds_pro_get_option( 'custom_css', '' );
@@ -36,9 +38,9 @@ function mds_pro_get_custom_css_vars() {
     ob_start();
     ?>
     :root {
-        --mds-primary: <?php echo esc_attr( $primary_color ); ?>;
-        --mds-secondary: <?php echo esc_attr( $secondary_color ); ?>;
-        --mds-accent: <?php echo esc_attr( $accent_color ); ?>;
+        --mds-primary: <?php echo esc_attr( $color_h1 ); ?>;
+        --mds-secondary: <?php echo esc_attr( $color_subheader ); ?>;
+        --mds-accent: <?php echo esc_attr( $color_text ); ?>;
         --mds-container-width: <?php echo esc_attr( $container_width ); ?>px;
         
         /* Typography Variables */
@@ -62,11 +64,16 @@ function mds_pro_get_custom_css_vars() {
         font-family: var(--mds-font-paragraph);
         font-size: var(--mds-size-paragraph);
         font-weight: var(--mds-weight-paragraph);
-        color: #1f2937;
-        background-color: #ffffff;
+        color: <?php echo esc_attr( $color_text ); ?>;
+        background-color: <?php echo esc_attr( $bg_page ); ?>;
+    }
+
+    #page {
+        background-color: <?php echo esc_attr( $bg_content ); ?>;
     }
 
     h1, h2, h3, .main-title {
+        color: <?php echo esc_attr( $color_h1 ); ?>;
         font-family: var(--mds-font-main-title);
         font-weight: var(--mds-weight-main-title);
         text-transform: uppercase;
@@ -75,6 +82,7 @@ function mds_pro_get_custom_css_vars() {
     h1 { font-size: var(--mds-size-main-title); }
 
     .subtitle, h4, h5, h6 {
+        color: <?php echo esc_attr( $color_subheader ); ?>;
         font-family: var(--mds-font-subtitle);
         font-weight: var(--mds-weight-subtitle);
         font-size: var(--mds-size-subtitle);
