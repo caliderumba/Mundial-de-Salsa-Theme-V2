@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Track Post Views
  * 
- * Increments the view count for single posts.
+ * Increments the view count for single posts using a robust ID retrieval.
  */
 function mds_track_post_views() {
     // Only track single posts, not pages or other types
@@ -22,7 +22,7 @@ function mds_track_post_views() {
         return;
     }
 
-    // Get current post ID reliably
+    // Get current post ID reliably from the queried object
     $post_id = get_queried_object_id();
     if ( ! $post_id ) {
         return;
@@ -39,7 +39,7 @@ function mds_track_post_views() {
     if ( $count === '' ) {
         $count = 0;
         delete_post_meta( $post_id, $count_key );
-        add_post_meta( $post_id, $count_key, '0' );
+        add_post_meta( $post_id, $count_key, '1' );
     } else {
         $count++;
         update_post_meta( $post_id, $count_key, $count );
@@ -49,6 +49,8 @@ add_action( 'wp_head', 'mds_track_post_views' );
 
 /**
  * Get Post Views
+ * 
+ * Utility to retrieve the view count for display or queries.
  * 
  * @param int $post_id
  * @return int

@@ -44,6 +44,7 @@ function mds_get_site_layout_class() {
 function mds_get_header_classes() {
     $classes = array( 'site-header', 'z-[100]', 'transition-all', 'duration-300' );
     
+    // Using modern helpers from inc/theme-options/helpers.php
     $layout = mds_get_header_layout();
     $sticky = mds_pro_get_option( 'header_sticky', true );
     
@@ -55,7 +56,7 @@ function mds_get_header_classes() {
         $classes[] = 'relative';
     }
     
-    // Glassmorphism / Background
+    // Design System: Glassmorphism / Background
     $classes[] = 'bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800';
     
     return implode( ' ', apply_filters( 'mds_header_classes', $classes ) );
@@ -77,9 +78,20 @@ function mds_get_sidebar_position() {
  * @return bool
  */
 function mds_show_front_page_section( $section_id ) {
-    $sections = mds_pro_get_option( 'show_front_page_sections', array() );
-    if ( empty( $sections ) ) {
-        return true; // Default to show if not configured
+    $sections = mds_pro_get_option( 'show_front_page_sections', true );
+    
+    // If it's a boolean (global toggle)
+    if ( is_bool( $sections ) ) {
+        return $sections;
     }
-    return in_array( $section_id, $sections );
+    
+    // If it's an array (granular selection)
+    if ( is_array( $sections ) ) {
+        if ( empty( $sections ) ) {
+            return true; 
+        }
+        return in_array( $section_id, $sections );
+    }
+    
+    return true;
 }

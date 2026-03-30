@@ -14,6 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Get Ad Code from Options
  * 
+ * Hardening: This function returns raw HTML/JS code. 
+ * It is treated as "Trusted Admin Content" only.
+ * 
  * @param string $location Location key (header, article_top, article_bottom).
  * @return string Ad HTML code.
  */
@@ -21,8 +24,7 @@ function mds_get_ad_code( $location ) {
     $key = 'ad_' . $location;
     $code = mds_pro_get_option( $key, '' );
     
-    // Only allow admins to save this content (it's raw HTML/JS)
-    // We assume Redux handles the sanitization on save, but we return it as is for execution.
+    // Raw HTML/JS for ads. Trusted admin content.
     return $code;
 }
 
@@ -33,6 +35,7 @@ function mds_get_ad_code( $location ) {
  * @return string
  */
 function mds_inject_ads_into_content( $content ) {
+    // Only inject in single posts and main query
     if ( ! is_single() || ! is_main_query() ) {
         return $content;
     }
@@ -40,22 +43,25 @@ function mds_inject_ads_into_content( $content ) {
     $ad_top    = mds_get_ad_code( 'article_top' );
     $ad_bottom = mds_get_ad_code( 'article_bottom' );
 
-    // Wrapper helper
+    /**
+     * Wrapper helper for consistent ad styling
+     */
     $wrap_ad = function( $code, $label = 'Publicidad' ) {
         if ( empty( $code ) ) return '';
-        $html = '<div class="mds-ad-wrapper my-8 py-6 border-y border-slate-100 dark:border-slate-800 flex flex-col items-center gap-2">';
-        $html .= '<span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">' . esc_html( $label ) . '</span>';
-        $html .= '<div class="ad-content max-w-full overflow-hidden">' . $code . '</div>';
+        
+        $html = '<div class="mds-ad-wrapper my-10 py-6 border-y border-slate-100 dark:border-slate-800 flex flex-col items-center gap-3">';
+        $html .= '<span class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">' . esc_html( $label ) . '</span>';
+        $html .= '<div class="ad-content-inner max-w-full overflow-hidden">' . $code . '</div>';
         $html .= '</div>';
+        
         return $html;
     };
 
-    // Inject Top Ad
+    // Injection logic
     if ( ! empty( $ad_top ) ) {
         $content = $wrap_ad( $ad_top ) . $content;
     }
 
-    // Inject Bottom Ad
     if ( ! empty( $ad_bottom ) ) {
         $content .= $wrap_ad( $ad_bottom );
     }
@@ -66,12 +72,14 @@ add_filter( 'the_content', 'mds_inject_ads_into_content' );
 
 /**
  * Display Header Ad
+ * 
+ * Template tag to be used in header.php or topbar.
  */
 function mds_display_header_ad() {
     $ad_code = mds_get_ad_code( 'header' );
     if ( empty( $ad_code ) ) return;
 
-    echo '<div class="header-ad-container container mx-auto px-4 py-4 flex justify-center">';
-    echo $ad_code;
+    echo '<div class="header-ad-container container mx-auto px-4 py-6 flex justify-center overflow-hidden">';
+    echo $ad_code; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo '</div>';
 }
