@@ -3,6 +3,7 @@
  * Traffic Engine: View Tracking
  * 
  * Handles post view counts for "Most Popular" sections.
+ * Refactored for PHP 8.1+ and robust tracking.
  * 
  * @package MundialdeSalsa_Pro
  */
@@ -16,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 
  * Increments the view count for single posts using a robust ID retrieval.
  */
-function mds_track_post_views() {
+function mds_track_post_views(): void {
     // Only track single posts, not pages or other types
     if ( ! is_singular( 'post' ) ) {
         return;
@@ -36,12 +37,12 @@ function mds_track_post_views() {
     $count_key = 'mds_views_count';
     $count = get_post_meta( $post_id, $count_key, true );
     
-    if ( $count === '' ) {
+    if ( '' === $count ) {
         $count = 0;
         delete_post_meta( $post_id, $count_key );
-        add_post_meta( $post_id, $count_key, '1' );
+        add_post_meta( $post_id, $count_key, 1 );
     } else {
-        $count++;
+        $count = (int) $count + 1;
         update_post_meta( $post_id, $count_key, $count );
     }
 }
@@ -55,19 +56,9 @@ add_action( 'wp_head', 'mds_track_post_views' );
  * @param int $post_id
  * @return int
  */
-function mds_get_post_views( $post_id ) {
+function mds_get_post_views( int $post_id ): int {
     $count_key = 'mds_views_count';
     $count = get_post_meta( $post_id, $count_key, true );
-    if ( $count === '' ) {
-        return 0;
-    }
-    return (int) $count;
+    
+    return ( '' === $count ) ? 0 : (int) $count;
 }
-
-/**
- * Infinite Scroll Note:
- * 
- * This theme does not include a native PHP-only infinite scroll engine.
- * Implementation requires a custom REST API endpoint and a JS listener.
- * Placeholder removed to avoid "empty promise" logic.
- */

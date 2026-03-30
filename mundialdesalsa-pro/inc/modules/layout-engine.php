@@ -3,6 +3,7 @@
  * Layout Engine: Dynamic Layout Switcher
  * 
  * Centralized logic to determine structural classes and layouts.
+ * Refactored for PHP 8.1+ and modern Redux flat options.
  * 
  * @package MundialdeSalsa_Pro
  */
@@ -18,8 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 
  * @return string
  */
-function mds_get_archive_layout_type() {
-    return mds_pro_get_option( 'archive_layout', 'grid' );
+function mds_get_archive_layout_type(): string {
+    return (string) mds_pro_get_option( 'archive_layout', 'grid' );
 }
 
 /**
@@ -29,9 +30,9 @@ function mds_get_archive_layout_type() {
  * 
  * @return string
  */
-function mds_get_site_layout_class() {
+function mds_get_site_layout_class(): string {
     $layout = mds_pro_get_option( 'site_layout', 'full' );
-    return 'layout-' . esc_attr( $layout );
+    return 'layout-' . esc_attr( (string) $layout );
 }
 
 /**
@@ -41,14 +42,14 @@ function mds_get_site_layout_class() {
  * 
  * @return string
  */
-function mds_get_header_classes() {
+function mds_get_header_classes(): string {
     $classes = array( 'site-header', 'z-[100]', 'transition-all', 'duration-300' );
     
     // Using modern helpers from inc/theme-options/helpers.php
     $layout = mds_get_header_layout();
-    $sticky = mds_pro_get_option( 'header_sticky', true );
+    $sticky = (bool) mds_pro_get_option( 'header_sticky', true );
     
-    $classes[] = 'header-layout-' . esc_attr( $layout );
+    $classes[] = 'header-layout-' . esc_attr( (string) $layout );
     
     if ( $sticky ) {
         $classes[] = 'sticky top-0 shadow-sm';
@@ -59,7 +60,7 @@ function mds_get_header_classes() {
     // Design System: Glassmorphism / Background
     $classes[] = 'bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800';
     
-    return implode( ' ', apply_filters( 'mds_header_classes', $classes ) );
+    return (string) implode( ' ', apply_filters( 'mds_header_classes', $classes ) );
 }
 
 /**
@@ -67,8 +68,8 @@ function mds_get_header_classes() {
  * 
  * @return string 'left', 'right', or 'none'
  */
-function mds_get_sidebar_position() {
-    return mds_get_single_sidebar_pos();
+function mds_get_sidebar_position(): string {
+    return (string) mds_get_single_sidebar_pos();
 }
 
 /**
@@ -77,7 +78,7 @@ function mds_get_sidebar_position() {
  * @param string $section_id
  * @return bool
  */
-function mds_show_front_page_section( $section_id ) {
+function mds_show_front_page_section( string $section_id ): bool {
     $sections = mds_pro_get_option( 'show_front_page_sections', true );
     
     // If it's a boolean (global toggle)
@@ -90,7 +91,7 @@ function mds_show_front_page_section( $section_id ) {
         if ( empty( $sections ) ) {
             return true; 
         }
-        return in_array( $section_id, $sections );
+        return in_array( $section_id, $sections, true );
     }
     
     return true;
