@@ -1,6 +1,10 @@
 <?php
 /**
- * Traffic Engine: Infinite Scroll & View Tracking
+ * Traffic Engine: View Tracking
+ * 
+ * Handles post view counts for "Most Popular" sections.
+ * 
+ * @package MundialdeSalsa_Pro
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,31 +14,58 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Track Post Views
  * 
- * Hooked to template_redirect for cleaner logic execution.
+ * Increments the view count for single posts.
  */
-function mds_pro_track_post_views() {
+function mds_track_post_views() {
+    // Only track single posts, not pages or other types
     if ( ! is_singular( 'post' ) ) {
         return;
     }
 
-    $post_id = get_the_ID();
-    
-    // Prevent double counting if needed (optional)
-    // if ( isset( $_COOKIE['mds_viewed_' . $post_id] ) ) return;
-
-    $count = get_post_meta( $post_id, 'mds_pro_views_count', true );
-    $count = ( $count === '' ) ? 0 : (int) $count;
-    $count++;
-
-    update_post_meta( $post_id, 'mds_pro_views_count', $count );
-}
-add_action( 'template_redirect', 'mds_pro_track_post_views' );
-
-// Basic infinite scroll logic
-function mds_pro_infinite_scroll() {
-    if ( is_singular() || is_paged() ) {
+    // Get current post ID reliably
+    $post_id = get_queried_object_id();
+    if ( ! $post_id ) {
         return;
     }
-    // Add scripts for infinite scroll here
+
+    // Optional: Don't track views from administrators to keep stats cleaner
+    if ( current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $count_key = 'mds_views_count';
+    $count = get_post_meta( $post_id, $count_key, true );
+    
+    if ( $count === '' ) {
+        $count = 0;
+        delete_post_meta( $post_id, $count_key );
+        add_post_meta( $post_id, $count_key, '0' );
+    } else {
+        $count++;
+        update_post_meta( $post_id, $count_key, $count );
+    }
 }
-add_action( 'wp_enqueue_scripts', 'mds_pro_infinite_scroll' );
+add_action( 'wp_head', 'mds_track_post_views' );
+
+/**
+ * Get Post Views
+ * 
+ * @param int $post_id
+ * @return int
+ */
+function mds_get_post_views( $post_id ) {
+    $count_key = 'mds_views_count';
+    $count = get_post_meta( $post_id, $count_key, true );
+    if ( $count === '' ) {
+        return 0;
+    }
+    return (int) $count;
+}
+
+/**
+ * Infinite Scroll Note:
+ * 
+ * This theme does not include a native PHP-only infinite scroll engine.
+ * Implementation requires a custom REST API endpoint and a JS listener.
+ * Placeholder removed to avoid "empty promise" logic.
+ */

@@ -45,7 +45,6 @@ $mds_includes = [
 	'inc/builder/builder-init.php',
 	'inc/modules/ads-system.php',
 	'inc/modules/mega-menu.php',
-	'inc/modules/editorial-engine.php',
 	'inc/modules/traffic-engine.php',
 	'inc/modules/layout-engine.php',
 	'inc/widgets/trending-widget.php',
