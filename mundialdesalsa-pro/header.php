@@ -15,12 +15,21 @@
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Saltar al contenido', 'mundialdesalsa-pro' ); ?></a>
 
-	<?php /* Estructura HTML5: Header semántico con clases compatibles con Elementor */ ?>
-	<header id="masthead" class="site-header sticky top-0 z-[100] bg-white/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800 transition-all duration-300">
-		<div class="container mx-auto px-4">
-			<div class="flex justify-between items-center h-20">
+	<?php 
+    $header_sticky = mds_pro_get_option( 'header_sticky', true );
+    $header_layout = mds_pro_get_option( 'header_layout', 'left' );
+    $header_class  = 'site-header z-[100] bg-white/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800 transition-all duration-300';
+    if ( $header_sticky ) {
+        $header_class .= ' sticky top-0';
+    } else {
+        $header_class .= ' relative';
+    }
+    ?>
+	<header id="masthead" class="<?php echo esc_attr( $header_class ); ?>">
+		<div class="container mx-auto px-4 h-full">
+			<div class="flex justify-between items-center h-full">
 				
-				<div class="site-branding flex items-center">
+				<div class="site-branding flex items-center shrink-0">
 					<?php
 					if ( has_custom_logo() ) :
 						the_custom_logo();
@@ -36,14 +45,14 @@
 					?>
 				</div><!-- .site-branding -->
 
-				<nav id="site-navigation" class="main-navigation hidden lg:block" aria-label="<?php esc_attr_e( 'Navegación Principal', 'mundialdesalsa-pro' ); ?>">
+				<nav id="site-navigation" class="main-navigation hidden lg:flex items-center h-full" aria-label="<?php esc_attr_e( 'Navegación Principal', 'mundialdesalsa-pro' ); ?>">
 					<?php
 					wp_nav_menu(
 						array(
 							'theme_location' => 'menu-1',
 							'menu_id'        => 'primary-menu',
 							'container'      => false,
-							'menu_class'     => 'flex gap-8 text-[11px] font-black uppercase tracking-widest text-slate-900 dark:text-slate-200',
+							'menu_class'     => 'flex gap-6 h-full items-center text-[11px] font-black uppercase tracking-widest text-slate-900 dark:text-slate-200',
 							'fallback_cb'    => false,
 							'walker'         => new Mundial_Salsa_Mega_Menu_Walker(),
 						)
@@ -51,10 +60,10 @@
 					?>
 				</nav><!-- #site-navigation -->
 
-				<div class="header-actions flex items-center gap-4">
+				<div class="header-actions flex items-center gap-4 shrink-0">
 					<button 
                         id="mobile-menu-trigger" 
-                        class="p-2 text-slate-900 dark:text-white hover:text-emerald-500 transition-colors" 
+                        class="p-2 text-slate-900 dark:text-white hover:text-emerald-500 transition-colors lg:hidden" 
                         aria-label="<?php esc_attr_e( 'Abrir Menú', 'mundialdesalsa-pro' ); ?>"
                         aria-expanded="false"
                         aria-controls="side-panel"

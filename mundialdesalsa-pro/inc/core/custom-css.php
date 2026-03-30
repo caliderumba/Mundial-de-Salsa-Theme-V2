@@ -16,16 +16,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 function mds_pro_get_custom_css_vars() {
     // Container Width
     $container_width = mds_pro_get_option( 'container_width', '1200' );
+    $border_radius   = mds_pro_get_option( 'border_radius', '12' );
+    $header_height   = mds_pro_get_option( 'header_height', '80' );
 
     // Typography
     $main_title = mds_pro_get_option( 'main_title_typo', array() );
     $subtitle   = mds_pro_get_option( 'subtitle_typo', array() );
     $paragraph  = mds_pro_get_option( 'paragraph_typo', array() );
+    $nav_typo   = mds_pro_get_option( 'nav_typography', array() );
 
     // Colors
     $color_h1        = mds_pro_get_option( 'color_h1', '#e74c3c' );
     $color_subheader = mds_pro_get_option( 'color_subheader', '#2c3e50' );
     $color_text      = mds_pro_get_option( 'color_text', '#334155' );
+    $color_accent    = mds_pro_get_option( 'color_accent', '#10b981' );
     $bg_page         = mds_pro_get_option( 'bg_page', '#f1f5f9' );
     $bg_content      = mds_pro_get_option( 'bg_content', '#ffffff' );
 
@@ -41,23 +45,28 @@ function mds_pro_get_custom_css_vars() {
         --mds-primary: <?php echo esc_attr( $color_h1 ); ?>;
         --mds-secondary: <?php echo esc_attr( $color_subheader ); ?>;
         --mds-accent: <?php echo esc_attr( $color_text ); ?>;
+        --mds-highlight: <?php echo esc_attr( $color_accent ); ?>;
         --mds-container-width: <?php echo esc_attr( $container_width ); ?>px;
+        --mds-header-height: <?php echo esc_attr( $header_height ); ?>px;
         
         /* Typography Variables */
         --mds-font-main-title: <?php echo isset($main_title['font-family']) ? esc_attr($main_title['font-family']) : 'Space Grotesk'; ?>, sans-serif;
         --mds-font-subtitle: <?php echo isset($subtitle['font-family']) ? esc_attr($subtitle['font-family']) : 'Inter'; ?>, sans-serif;
         --mds-font-paragraph: <?php echo isset($paragraph['font-family']) ? esc_attr($paragraph['font-family']) : 'Inter'; ?>, sans-serif;
+        --mds-font-nav: <?php echo isset($nav_typo['font-family']) ? esc_attr($nav_typo['font-family']) : 'Inter'; ?>, sans-serif;
 
         --mds-size-main-title: <?php echo isset($main_title['font-size']) ? esc_attr($main_title['font-size']) : '48px'; ?>;
         --mds-size-subtitle: <?php echo isset($subtitle['font-size']) ? esc_attr($subtitle['font-size']) : '24px'; ?>;
         --mds-size-paragraph: <?php echo isset($paragraph['font-size']) ? esc_attr($paragraph['font-size']) : '16px'; ?>;
+        --mds-size-nav: <?php echo isset($nav_typo['font-size']) ? esc_attr($nav_typo['font-size']) : '13px'; ?>;
 
         --mds-weight-main-title: <?php echo isset($main_title['font-weight']) ? esc_attr($main_title['font-weight']) : '700'; ?>;
         --mds-weight-subtitle: <?php echo isset($subtitle['font-weight']) ? esc_attr($subtitle['font-weight']) : '600'; ?>;
         --mds-weight-paragraph: <?php echo isset($paragraph['font-weight']) ? esc_attr($paragraph['font-weight']) : '400'; ?>;
+        --mds-weight-nav: <?php echo isset($nav_typo['font-weight']) ? esc_attr($nav_typo['font-weight']) : '700'; ?>;
         
         --mds-gap: 30px;
-        --mds-radius: 12px;
+        --mds-radius: <?php echo esc_attr( $border_radius ); ?>px;
     }
 
     body {
@@ -86,6 +95,20 @@ function mds_pro_get_custom_css_vars() {
         font-family: var(--mds-font-subtitle);
         font-weight: var(--mds-weight-subtitle);
         font-size: var(--mds-size-subtitle);
+    }
+
+    .main-navigation a {
+        font-family: var(--mds-font-nav);
+        font-size: var(--mds-size-nav);
+        font-weight: var(--mds-weight-nav);
+        color: <?php echo isset($nav_typo['color']) ? esc_attr($nav_typo['color']) : 'inherit'; ?>;
+    }
+
+    .site-header {
+        height: var(--mds-header-height);
+    }
+    .site-header .container > div {
+        height: var(--mds-header-height);
     }
 
     .container {
