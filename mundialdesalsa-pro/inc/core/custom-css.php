@@ -225,25 +225,25 @@ function mds_pro_enqueue_custom_fonts() {
     $main_title_typo = mds_pro_get_option( 'main_title_typo', array() );
     $subtitle_typo   = mds_pro_get_option( 'subtitle_typo', array() );
     $paragraph_typo  = mds_pro_get_option( 'paragraph_typo', array() );
+    $nav_typo        = mds_pro_get_option( 'nav_typography', array() );
 
     if ( isset( $main_title_typo['font-family'] ) ) $fonts[] = $main_title_typo['font-family'];
     if ( isset( $subtitle_typo['font-family'] ) ) $fonts[] = $subtitle_typo['font-family'];
     if ( isset( $paragraph_typo['font-family'] ) ) $fonts[] = $paragraph_typo['font-family'];
+    if ( isset( $nav_typo['font-family'] ) ) $fonts[] = $nav_typo['font-family'];
 
     $fonts = array_unique( array_filter( $fonts ) );
+    
+    if ( empty( $fonts ) ) {
+        return;
+    }
+
     $font_families = [];
-    
-    foreach ($fonts as $font) {
-        $font_families[] = str_replace(' ', '+', $font) . ':wght@400;500;600;700';
+    foreach ( $fonts as $font ) {
+        $font_families[] = 'family=' . str_replace( ' ', '+', $font ) . ':wght@400;500;600;700;900';
     }
-    
-    if (!empty($font_families)) {
-        $query_args = [
-            'family' => implode('|', $font_families),
-            'display' => 'swap',
-        ];
-        $fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
-        wp_enqueue_style('mds-pro-custom-fonts', $fonts_url, [], null);
-    }
+
+    $fonts_url = 'https://fonts.googleapis.com/css2?' . implode( '&', $font_families ) . '&display=swap';
+    wp_enqueue_style( 'mds-pro-custom-fonts', $fonts_url, array(), null );
 }
 add_action( 'wp_enqueue_scripts', 'mds_pro_enqueue_custom_fonts' );

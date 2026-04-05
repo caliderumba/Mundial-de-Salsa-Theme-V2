@@ -45,10 +45,41 @@ function mds_pro_setup() {
         'flex-width'  => true,
     ) );
 
-    // Spectra & Gutenberg Optimizations
+    // Gutenberg Support
     add_theme_support( 'align-wide' );
+    add_theme_support( 'responsive-embeds' );
+    add_theme_support( 'custom-line-height' );
     add_theme_support( 'editor-styles' );
     add_editor_style( 'assets/css/editor-style.css' );
+
+    // Gutenberg Color Palette
+    add_theme_support( 'editor-color-palette', array(
+        array(
+            'name'  => esc_html__( 'Emerald', 'mundialdesalsa-pro' ),
+            'slug'  => 'emerald',
+            'color' => '#10b981',
+        ),
+        array(
+            'name'  => esc_html__( 'Black', 'mundialdesalsa-pro' ),
+            'slug'  => 'black',
+            'color' => '#000000',
+        ),
+        array(
+            'name'  => esc_html__( 'White', 'mundialdesalsa-pro' ),
+            'slug'  => 'white',
+            'color' => '#ffffff',
+        ),
+        array(
+            'name'  => esc_html__( 'Slate 900', 'mundialdesalsa-pro' ),
+            'slug'  => 'slate-900',
+            'color' => '#0f172a',
+        ),
+        array(
+            'name'  => esc_html__( 'Slate 500', 'mundialdesalsa-pro' ),
+            'slug'  => 'slate-500',
+            'color' => '#64748b',
+        ),
+    ) );
 
     // Custom Image Sizes
     add_image_size( 'card-thumb', 400, 250, true );

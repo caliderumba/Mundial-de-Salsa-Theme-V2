@@ -73,6 +73,24 @@ function mds_get_sidebar_position(): string {
 }
 
 /**
+ * Get Layout for specific context
+ * 
+ * @param string $context 'page', 'category', 'single', etc.
+ * @return string
+ */
+function mds_pro_get_layout( string $context ): string {
+    if ( $context === 'category' || $context === 'archive' ) {
+        return (string) mds_pro_get_option( 'archive_layout', 'grid' );
+    }
+    
+    if ( $context === 'page' ) {
+        return 'full'; // Default for pages
+    }
+    
+    return 'grid';
+}
+
+/**
  * Determine if a specific section should be shown on front page
  * 
  * @param string $section_id

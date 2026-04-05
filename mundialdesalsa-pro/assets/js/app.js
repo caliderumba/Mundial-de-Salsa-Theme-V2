@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Reading Progress Bar
-    const progressBar = document.getElementById('reading-progress-bar');
+    const progressBar = document.getElementById('reading-progress');
     if (progressBar) {
         window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -78,6 +78,22 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBar.style.width = scrolled + "%";
         });
     }
+
+    // --- Smooth Scroll for Internal Links ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
 
     // Live Search
     const searchInput = document.getElementById('live-search-input');
@@ -400,8 +416,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggleSidePanel = (show) => {
             if (show) {
                 document.body.classList.add('panel-open');
+                mobileMenuTrigger?.setAttribute('aria-expanded', 'true');
+                sidePanel?.setAttribute('aria-hidden', 'false');
+                sidePanelOverlay?.setAttribute('aria-hidden', 'false');
+                setTimeout(() => sidePanelClose?.focus(), 100);
             } else {
                 document.body.classList.remove('panel-open');
+                mobileMenuTrigger?.setAttribute('aria-expanded', 'false');
+                sidePanel?.setAttribute('aria-hidden', 'true');
+                sidePanelOverlay?.setAttribute('aria-hidden', 'true');
+                mobileMenuTrigger?.focus();
             }
         };
 
@@ -525,4 +549,82 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     initHeader();
+
+    // --- Mega Menu Accessibility ---
+    const initMegaMenu = () => {
+        const megaMenuItems = document.querySelectorAll('.mega-menu-item');
+        
+        megaMenuItems.forEach(item => {
+            const link = item.querySelector('a');
+            
+            item.addEventListener('mouseenter', () => {
+                item.setAttribute('aria-expanded', 'true');
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.setAttribute('aria-expanded', 'false');
+            });
+
+            // Keyboard support
+            link?.addEventListener('focus', () => {
+                item.setAttribute('aria-expanded', 'true');
+            });
+
+            link?.addEventListener('blur', (e) => {
+                // Only close if focus moved outside the item
+                if (!item.contains(e.relatedTarget)) {
+                    item.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    };
+
+    initMegaMenu();
+
+    // --- Scroll to Top ---
+    const initScrollToTop = () => {
+        const scrollBtn = document.getElementById('scroll-to-top');
+        if (!scrollBtn) return;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollBtn.classList.remove('opacity-0', 'invisible', 'translate-y-10');
+            } else {
+                scrollBtn.classList.add('opacity-0', 'invisible', 'translate-y-10');
+            }
+        });
+
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    };
+
+    initScrollToTop();
+
+    // --- Copy Link to Clipboard ---
+    const initCopyLink = () => {
+        const copyBtn = document.getElementById('mds-copy-link');
+        if (!copyBtn) return;
+
+        const copyText = copyBtn.querySelector('.copy-text');
+        const originalText = copyText.textContent;
+        const url = copyBtn.getAttribute('data-url');
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(url).then(() => {
+                copyText.textContent = '¡Copiado!';
+                copyBtn.classList.add('bg-emerald-500', 'text-white');
+                
+                setTimeout(() => {
+                    copyText.textContent = originalText;
+                    copyBtn.classList.remove('bg-emerald-500', 'text-white');
+                }, 2000);
+            });
+        });
+    };
+
+    initCopyLink();
 });

@@ -132,5 +132,10 @@ function mds_pro_get_option_defaults() {
         'footer_scripts'          => '',
         'custom_css'              => '',
         'custom_js'               => '',
+        
+        // Maintenance Mode
+        'maintenance_mode'        => false,
+        'maintenance_title'       => __( 'Mantenimiento en curso', 'mundialdesalsa-pro' ),
+        'maintenance_message'     => __( 'Estamos trabajando para ofrecerte la mejor experiencia salsera. Volvemos pronto.', 'mundialdesalsa-pro' ),
     ) );
 }

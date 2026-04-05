@@ -23,7 +23,7 @@ class Mundial_Salsa_Mega_Menu_Walker extends Walker_Nav_Menu {
         
         // Check if it has the mega-menu-pro class
         if ( in_array( 'mega-menu-pro', $classes ) ) {
-            $output .= $indent . '<li class="menu-item mega-menu-item mega-menu-pro group h-full flex items-center relative">';
+            $output .= $indent . '<li class="menu-item mega-menu-item mega-menu-pro group h-full flex items-center relative" aria-haspopup="true" aria-expanded="false">';
             $output .= '<a href="' . esc_url( $item->url ) . '" class="nav-link flex items-center gap-1 h-full font-bold uppercase tracking-wider text-sm hover:text-[var(--mds-primary)] transition-colors">' . esc_html( $item->title ) . ' <i class="fa-solid fa-chevron-down text-[8px] opacity-50 group-hover:rotate-180 transition-transform"></i></a>';
             
             // Mega Menu Content Container (70/20/10 Layout)

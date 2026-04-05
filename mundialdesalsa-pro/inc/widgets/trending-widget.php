@@ -37,7 +37,7 @@ class MDS_Pro_Trending_Widget extends WP_Widget {
 		$query_args = array(
 			'post_type'      => 'post',
 			'posts_per_page' => $count,
-			'meta_key'       => 'mds_pro_views_count',
+			'meta_key'       => 'mds_views_count',
 			'orderby'        => 'meta_value_num',
 			'order'          => 'DESC',
 			'date_query'     => array(

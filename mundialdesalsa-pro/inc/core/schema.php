@@ -72,7 +72,7 @@ add_action( 'wp_head', 'mds_output_schema' );
  */
 function mds_get_schema_organization() {
     $site_url = trailingslashit( home_url() );
-    $logo = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'header_settings', 'header_logo', [] ) : [];
+    $logo = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'site_logo', [] ) : [];
     
     $schema = [
         '@type' => 'Organization',

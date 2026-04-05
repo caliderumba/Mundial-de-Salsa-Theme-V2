@@ -16,6 +16,8 @@
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Saltar al contenido', 'mundialdesalsa-pro' ); ?></a>
 
 	<?php 
+    mds_pro_before_header();
+
     $header_sticky = mds_pro_get_option( 'header_sticky', true );
     $header_layout = mds_pro_get_option( 'header_layout', 'left' );
     $header_class  = 'site-header z-[100] bg-white/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800 transition-all duration-300';

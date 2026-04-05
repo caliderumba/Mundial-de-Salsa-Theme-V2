@@ -37,6 +37,7 @@ $mds_includes = [
 	'inc/core/editorial.php',
 	'inc/core/custom-css.php',
     'inc/core/hooks.php',
+    'inc/core/hooks-api.php',
 	'inc/template-tags/single.php',
 	'inc/admin/metaboxes.php',
 	'inc/admin/metabox-config.php',
@@ -47,8 +48,10 @@ $mds_includes = [
 	'inc/modules/mega-menu.php',
 	'inc/modules/traffic-engine.php',
 	'inc/modules/layout-engine.php',
+	'inc/modules/maintenance.php',
 	'inc/widgets/trending-widget.php',
 	'inc/performance/clean-up.php',
+	'inc/admin/db-optimization.php',
 	'inc/integrations/pwa.php',
 ];
 

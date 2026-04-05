@@ -23,3 +23,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Note: mds_pro_get_option() has been moved to inc/theme-options/settings.php
  * to provide a unified entry point for modern and legacy calls.
  */
+
+/**
+ * Get current URL
+ */
+function mds_get_current_url() {
+    global $wp;
+    return home_url( add_query_arg( array(), $wp->request ) );
+}

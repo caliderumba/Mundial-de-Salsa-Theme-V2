@@ -63,3 +63,22 @@ function mds_pro_resource_hints( $urls, $relation_type ) {
     return $urls;
 }
 add_filter( 'wp_resource_hints', 'mds_pro_resource_hints', 10, 2 );
+
+/**
+ * Performance: Add defer attribute to non-critical scripts.
+ */
+function mds_pro_defer_scripts( $tag, $handle, $src ) {
+    $defer_scripts = [
+        'mds-pro-app',
+        'mds-pro-theater-mode',
+        'mds-pro-live-updates',
+        'comment-reply'
+    ];
+
+    if ( in_array( $handle, $defer_scripts ) ) {
+        return str_replace( ' src', ' defer src', $tag );
+    }
+
+    return $tag;
+}
+add_filter( 'script_loader_tag', 'mds_pro_defer_scripts', 10, 3 );

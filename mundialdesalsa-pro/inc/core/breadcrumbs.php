@@ -43,10 +43,20 @@ function mds_get_breadcrumb_data() {
             'text' => get_the_title(),
             'url'  => get_permalink()
         ];
-    } elseif ( is_page() ) {
+    } elseif ( is_tag() ) {
         $items[] = [
-            'text' => get_the_title(),
-            'url'  => get_permalink()
+            'text' => single_tag_title( '', false ),
+            'url'  => get_tag_link( get_queried_object_id() )
+        ];
+    } elseif ( is_author() ) {
+        $items[] = [
+            'text' => get_the_author(),
+            'url'  => get_author_posts_url( get_the_author_meta( 'ID' ) )
+        ];
+    } elseif ( is_archive() ) {
+        $items[] = [
+            'text' => get_the_archive_title(),
+            'url'  => mds_get_current_url()
         ];
     } elseif ( is_search() ) {
         $items[] = [

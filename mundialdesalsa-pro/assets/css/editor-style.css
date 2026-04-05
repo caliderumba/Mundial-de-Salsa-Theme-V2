@@ -1,45 +1,62 @@
 /**
  * Editor Styles for Mundial de Salsa Pro
+ * Ensures the Gutenberg editor matches the frontend brutalist design.
  */
 
-/* Add theme fonts to the editor */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
-/* Apply CSS variables to the editor */
-.editor-styles-wrapper {
-    --mds-primary: #10b981;
-    --mds-secondary: #064e3b;
-    --mds-accent: #f59e0b;
-    --mds-bg: #ffffff;
-    --mds-text: #1f2937;
-    
-    --mds-body-font: 'Inter', sans-serif;
-    --mds-heading-font: 'Space Grotesk', sans-serif;
-    
-    --mds-body-size: 16px;
-    --mds-radius: 8px;
-    --mds-gap: 30px;
+/* 1. Base Typography */
+body {
+    font-family: 'Inter', sans-serif;
+    color: #0f172a;
 }
 
-.editor-styles-wrapper {
-    font-family: var(--mds-body-font);
-    font-size: var(--mds-body-size);
-    color: var(--mds-text);
-    background-color: var(--mds-bg);
-}
-
+/* 2. Headings */
 .editor-styles-wrapper h1,
 .editor-styles-wrapper h2,
 .editor-styles-wrapper h3,
 .editor-styles-wrapper h4,
 .editor-styles-wrapper h5,
 .editor-styles-wrapper h6 {
-    font-family: var(--mds-heading-font);
-    font-weight: 700;
-    text-transform: uppercase;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    font-style: italic !important;
+    letter-spacing: -0.05em !important;
+    line-height: 1.1 !important;
 }
 
-/* Spectra Block Overrides */
-.uagb-block-container {
-    border-radius: var(--mds-radius);
+/* 3. Block Specifics */
+.wp-block-paragraph {
+    font-size: 1.125rem;
+    line-height: 1.75;
+}
+
+.wp-block-quote {
+    border-left: 8px solid #10b981 !important;
+    background-color: #f8fafc;
+    padding: 2rem !important;
+    font-style: italic;
+    font-weight: 700;
+}
+
+.wp-block-pullquote {
+    border-top: 4px solid #10b981;
+    border-bottom: 4px solid #10b981;
+}
+
+/* 4. Custom Colors */
+.has-emerald-color { color: #10b981; }
+.has-emerald-background-color { background-color: #10b981; }
+
+/* 5. Brutalist Accents */
+.wp-block-button__link {
+    border-radius: 0 !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    font-style: italic !important;
+    letter-spacing: -0.02em !important;
+    box-shadow: 8px 8px 0px 0px rgba(16,185,129,1);
+    transition: transform 0.2s ease;
+}
+
+.wp-block-button__link:hover {
+    transform: translate(2px, -2px);
 }

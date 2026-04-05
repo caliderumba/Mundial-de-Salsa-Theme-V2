@@ -12,14 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 get_header();
+?>
+<div id="reading-progress" class="fixed top-0 left-0 w-0 h-1 bg-emerald-500 z-[999] transition-all duration-100"></div>
 
+<?php
 while ( have_posts() ) : the_post(); 
+    mds_pro_before_content();
     $post_id = get_the_ID();
     $context = function_exists('mds_get_post_context') ? mds_get_post_context( $post_id ) : 'news';
-    $show_sidebar = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'layout', 'sidebar_position', 'right' ) !== 'none' : true;
+    $show_sidebar = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'single_sidebar_pos', 'right' ) !== 'none' : true;
 ?>
 
 <main id="primary" class="site-main py-12 bg-white dark:bg-slate-950 transition-colors duration-500" data-editorial-context="<?php echo esc_attr( $context ); ?>">
+    <?php mds_pro_before_single_content(); ?>
     <div class="container mx-auto px-4 max-w-7xl">
         <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             
@@ -30,7 +35,7 @@ while ( have_posts() ) : the_post();
             }
 
             // 2. Hero Section (Image/Video)
-            if ( function_exists('mds_single_hero') ) {
+            if ( function_exists('mds_single_hero') && mds_pro_get_option( 'single_featured_image', true ) ) {
                 mds_single_hero(); 
             }
             ?>
@@ -57,7 +62,7 @@ while ( have_posts() ) : the_post();
 
                         <?php 
                         // 3. Meta Editorial (Author, Date, Reading Time)
-                        if ( function_exists('mds_single_meta') ) {
+                        if ( function_exists('mds_single_meta') && mds_pro_get_option( 'single_post_meta', true ) ) {
                             mds_single_meta(); 
                         }
                         ?>
@@ -108,14 +113,19 @@ while ( have_posts() ) : the_post();
 
                     <?php 
                     // 6. Author Box
-                    if ( function_exists('mds_single_author_box') ) {
+                    if ( function_exists('mds_single_author_box') && mds_pro_get_option( 'single_author_box', true ) ) {
                         mds_single_author_box(); 
+                    }
+
+                    // 6.5 Social Sharing
+                    if ( function_exists('mds_pro_social_sharing') ) {
+                        mds_pro_social_sharing();
                     }
                     ?>
 
                     <?php 
                     // 7. Related Posts
-                    if ( function_exists('mds_single_related') ) {
+                    if ( function_exists('mds_single_related') && mds_pro_get_option( 'single_related_posts', true ) ) {
                         mds_single_related(); 
                     }
 
@@ -125,12 +135,15 @@ while ( have_posts() ) : the_post();
                             <?php comments_template(); ?>
                         </div>
                     <?php endif; ?>
+                    <?php mds_pro_after_single_content(); ?>
                 </div>
 
                 <?php if ( $show_sidebar ) : ?>
                     <aside class="w-full lg:w-1/3 mt-12 lg:mt-0">
                         <div class="sticky top-24">
+                            <?php mds_pro_before_sidebar(); ?>
                             <?php get_sidebar(); ?>
+                            <?php mds_pro_after_sidebar(); ?>
                         </div>
                     </aside>
                 <?php endif; ?>
@@ -141,6 +154,7 @@ while ( have_posts() ) : the_post();
 </main>
 
 <?php 
+mds_pro_after_content();
 endwhile; 
 
 get_footer();

@@ -78,7 +78,7 @@ function mds_get_primary_image_data( $post_id = null ) {
 
     // 4. Default Placeholder
     $data['has_image'] = true; // Fallback is still an image to display
-    $default_logo = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'header_settings', 'header_logo', [] ) : [];
+    $default_logo = function_exists('mds_pro_get_option') ? mds_pro_get_option( 'site_logo', [] ) : [];
     
     if ( ! empty( $default_logo['url'] ) ) {
         $data['url']    = esc_url_raw( $default_logo['url'] );
@@ -96,9 +96,9 @@ function mds_get_primary_image_data( $post_id = null ) {
  * Get Theme Logo
  */
 function mds_pro_get_logo() {
-    $logo_main = mds_pro_get_option( 'header_settings', 'header_logo', array() );
-    $logo_dark = mds_pro_get_option( 'header_settings', 'header_logo_dark', array() );
-    $site_name = mds_pro_get_option( 'general', 'site_name', get_bloginfo( 'name' ) );
+    $logo_main = mds_pro_get_option( 'site_logo', array() );
+    $logo_dark = mds_pro_get_option( 'site_logo_dark', array() );
+    $site_name = mds_pro_get_option( 'site_name', get_bloginfo( 'name' ) );
     
     $output = '';
     
@@ -127,4 +127,22 @@ function mds_pro_get_logo() {
     }
     
     return $output;
+}
+
+/**
+ * Handle Lazy Loading for images
+ */
+add_filter( 'wp_get_attachment_image_attributes', 'mds_pro_handle_lazy_loading', 10, 3 );
+function mds_pro_handle_lazy_loading( $attr, $attachment, $size ) {
+    if ( ! function_exists( 'mds_is_lazyload_enabled' ) ) {
+        return $attr;
+    }
+
+    if ( mds_is_lazyload_enabled() ) {
+        $attr['loading'] = 'lazy';
+    } else {
+        $attr['loading'] = 'eager';
+    }
+
+    return $attr;
 }

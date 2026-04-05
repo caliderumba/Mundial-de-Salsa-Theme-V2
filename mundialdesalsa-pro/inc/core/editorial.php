@@ -81,7 +81,7 @@ function mds_get_trending_posts( $count = 3 ) {
             'posts_per_page' => $count,
             'post_status'    => 'publish',
             'orderby'        => 'meta_value_num',
-            'meta_key'       => 'mds_pro_views_count',
+            'meta_key'       => 'mds_views_count',
             'no_found_rows'  => true,
             'ignore_sticky_posts' => true,
         ) );

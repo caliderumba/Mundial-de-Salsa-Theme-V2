@@ -556,6 +556,36 @@ Redux::setSection( $opt_name, array(
     ),
 ) );
 
+// --- MAINTENANCE MODE ---
+Redux::setSection( $opt_name, array(
+    'title'  => __( 'Modo Mantenimiento', 'mundialdesalsa-pro' ),
+    'id'     => 'maintenance_mode_section',
+    'icon'   => 'el el-wrench',
+    'fields' => array(
+        array(
+            'id'       => 'maintenance_mode',
+            'type'     => 'switch',
+            'title'    => __( 'Activar Modo Mantenimiento', 'mundialdesalsa-pro' ),
+            'subtitle' => __( 'Muestra una página de mantenimiento a los visitantes no logueados.', 'mundialdesalsa-pro' ),
+            'default'  => false,
+        ),
+        array(
+            'id'       => 'maintenance_title',
+            'type'     => 'text',
+            'title'    => __( 'Título de Mantenimiento', 'mundialdesalsa-pro' ),
+            'default'  => __( 'Mantenimiento en curso', 'mundialdesalsa-pro' ),
+            'required' => array( 'maintenance_mode', '=', true ),
+        ),
+        array(
+            'id'       => 'maintenance_message',
+            'type'     => 'textarea',
+            'title'    => __( 'Mensaje de Mantenimiento', 'mundialdesalsa-pro' ),
+            'default'  => __( 'Estamos trabajando para ofrecerte la mejor experiencia salsera. Volvemos pronto.', 'mundialdesalsa-pro' ),
+            'required' => array( 'maintenance_mode', '=', true ),
+        ),
+    ),
+) );
+
 // --- IMPORT / EXPORT ---
 Redux::setSection( $opt_name, array(
     'title' => __( 'Importar / Exportar', 'mundialdesalsa-pro' ),
